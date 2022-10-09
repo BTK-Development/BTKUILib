@@ -12,7 +12,7 @@
         /// </summary>
         public void Delete()
         {
-            //TODO: Add this
+            QuickMenuAPI.DeleteElement(ElementID);
         }
     }
 }

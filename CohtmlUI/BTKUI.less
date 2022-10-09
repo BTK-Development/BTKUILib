@@ -1,0 +1,731 @@
+@wrapper-background: transparent;
+@element-background: #292929;
+@element-hover: #525252;
+@color-confirm: #37BD3C;
+@color-deny: #C41F1F;
+@color-secondary: #ABABAB;
+@color-btn: #323232;
+@color-btn-warn: #C58F05;
+@color-btn-primary: #1664BE;
+@color-btn-border: #FFFFFF;
+@color-btn-text: #FFFFFF;
+
+@standard-text-color: #D2D2D2;
+@standard-font-family: Droid Sans;
+@font-size-nrm: 24px;
+@font-size-nrm2: 28px;
+@font-size-popup: 32px;
+@font-size-big: 36px;
+@font-size-bigger: 48px;
+@font-size-stupid-big: 100px;
+@font-color-dark: #4A4A4A;
+
+@container-border-radius: 10px;
+@button-border-radius: 10px;
+
+.setIcon(@width, @row, @col){
+  background-size: @width * 10;
+  background-position: @col * -@width @row * -@width;
+}
+
+#quickmenu-wrapper {
+  .btkUI-btn {
+    background-color: rgba(41, 41, 41, 0);
+    width: 150px;
+    height: 150px;
+    border-radius: 10px;
+    font-size: 36px;
+    text-align: center;
+    position: absolute;
+    left: 1280px;
+    top: 485px;
+
+    &:hover {
+      filter: brightness(75%);
+    }
+
+    .icon {
+      background: url("images/BTKIcon.png");
+      background-size: cover;
+      background-repeat: no-repeat;
+
+      height: 150px;
+      width: 150px;
+      position: absolute;
+      margin-bottom: 100px;
+      padding: 10px;
+      z-index: 0;
+    }
+  }
+}
+
+.btkUI {
+  .disabled {
+    filter: brightness(40%);
+    pointer-events: none;
+  }
+
+  .header-section {
+    height: 100px;
+    width: 100%;
+    margin-top: 20px;
+    margin-bottom: 100px;
+    padding-right: 20px;
+    padding-left: 20px;
+    position: absolute;
+    z-index: 1;
+  }
+
+  .round-box {
+    height: 250px;
+    width: 250px;
+    background-color: #ffffff;
+    border-radius: 16%;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    align-content: center;
+    padding: 3px;
+  }
+
+  .popup-container {
+    width: 800px;
+    height: 800px;
+    margin-top: 20%;
+    left: 15%;
+    background-color: #363636;
+    border: 2px solid @color-btn-border;
+    border-radius: 10px;
+    position: absolute;
+    display: inline-block;
+    box-shadow: 20px 20px 100px black;
+    z-index: 1;
+
+    .header {
+      font-size: @font-size-bigger;
+      text-align: center;
+      margin-top: 20px;
+    }
+
+    .notice-text {
+      font-size: @font-size-popup;
+      text-align: center;
+      margin-top: 20px;
+
+      p {
+        margin-bottom: 20px;
+      }
+    }
+
+    .control-row {
+      margin-left: 84px;
+      horiz-align: center;
+      display: flex;
+    }
+
+    .content {
+      width: 100%;
+      height: 75%;
+    }
+
+    .button {
+      border: 3px solid @standard-text-color;
+      border-radius: 10px;
+      background: transparent;
+      padding: 3px;
+      width: 250px;
+      height: 100px;
+      color: @standard-text-color;
+      font-size: @font-size-big;
+      margin-top: 10px;
+      margin-bottom: 10px;
+      align-content: center;
+
+      .text {
+        text-align: center;
+        position: relative;
+        top: 10%;
+      }
+    }
+  }
+
+  .container-main {
+    position: absolute;
+    width: 1234px;
+    height: 186px;
+    background: @element-background;
+    border-radius: 10px;
+
+    .header {
+      font-size: @font-size-bigger;
+      margin-left: 29px;
+      margin-top: 16px;
+      margin-bottom: 35px;
+    }
+
+    .content {
+      margin: 16px 29px;
+      font-size: @font-size-big;
+    }
+  }
+
+  .container-controls {
+    position: absolute;
+    width: 1234px;
+    height: 1050px;
+    top: 222px;
+    background: @element-background;
+    border-radius: 10px;
+
+    .header {
+      font-size: @font-size-bigger;
+      margin-left: 29px;
+      margin-top: 16px;
+    }
+
+    .header-category {
+      font-size: @font-size-bigger;
+      margin-left: 29px;
+      margin-top: 16px;
+      margin-bottom: 16px;
+    }
+
+    .user-count {
+      font-size: @font-size-big;
+    }
+
+    .icon-back {
+      background: url("images/Arrow Left.png");
+      background-size: cover;
+      background-repeat: no-repeat;
+      height: 100px;
+      width: 100px;
+    }
+
+    .icon-close {
+      background: url("images/TW-Close.png");
+      background-size: cover;
+      background-repeat: no-repeat;
+      height: 100px;
+      width: 100px;
+    }
+
+    .category-row {
+      margin-top: 10px;
+      margin-bottom: 10px;
+      display: flex;
+      flex-direction: row;
+    }
+
+    .scroll-view {
+      bottom: 16px;
+      left: 29px;
+      right: 29px;
+      position: absolute;
+    }
+
+    .content {
+      margin: 16px 29px;
+      font-size: @font-size-big;
+    }
+
+    .content-subpage {
+      margin: 100px 29px 16px;
+      font-size: @font-size-big;
+    }
+  }
+
+  .container-back {
+    position: absolute;
+    width: 1234px;
+    height: 136px;
+    top: 1304px;
+    background: @element-background;
+    border-radius: 10px;
+
+    &:hover {
+      filter: brightness(75%);
+    }
+
+    .icon {
+      width: 100px;
+      height: 100px;
+      margin-top: 18px;
+      margin-left: 38px;
+      .setIcon(100px, 3, 3)
+    }
+
+    .content {
+      top: 26px;
+      left: 180px;
+      margin-top: 16px;
+      position: absolute;
+      font-size: @font-size-bigger;
+    }
+  }
+
+  .container-tooltip {
+    position: absolute;
+    width: 1234px;
+    height: 136px;
+    top: 1460px;
+    background: @element-background;
+    border-radius: 10px;
+
+    .content {
+      margin: 20px;
+      text-align: center;
+      position: absolute;
+      font-size: @font-size-big;
+    }
+  }
+
+  .dropdown-option {
+    width: 100%;
+    height: 100px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    display: inline;
+
+    &:hover {
+      filter: brightness(75%);
+    }
+
+    .selection-icon {
+      height: 100px;
+      width: 100px;
+      border-radius: 50%;
+      border: 3px solid @color-btn-border;
+      background-color: @color-btn;
+      display: inline;
+    }
+
+    .selected {
+      background-color: @color-btn-primary;
+    }
+
+    .option-text {
+      text-align: center;
+      margin-left: 20px;
+      font-size: @font-size-big;
+      display: inline;
+    }
+  }
+
+  .slider {
+    width: 90%;
+    height: 75px;
+    margin-bottom: 30px;
+
+    .sliderBar {
+      top: 35px;
+      position: relative;
+      margin-left: auto;
+      margin-right: auto;
+      height: 20px;
+      border: 3px solid @color-btn-border;
+      border-radius: @button-border-radius;
+    }
+
+    .slider-knob {
+      height: 100px;
+      width: 100px;
+      position: relative;
+      top: -40px;
+      background-color: @color-btn;
+      border: 3px solid @color-btn-border;
+      border-radius: 90px;
+      display: inline-block;
+
+      &:hover {
+        filter: brightness(75%);
+      }
+    }
+  }
+
+  .toggle {
+    border: 3px solid @standard-text-color;
+    border-radius: 10px;
+    background: transparent;
+    padding: 3px;
+    width: 250px;
+    height: 250px;
+    color: @standard-text-color;
+    font-size: @font-size-big;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    align-content: center;
+
+    &:hover {
+      filter: brightness(75%);
+    }
+
+    .text {
+      text-align: center;
+      vertical-align: bottom;
+      margin-left: auto;
+      margin-right: auto;
+      display: inline;
+    }
+
+    .text-sm {
+      text-align: center;
+      vertical-align: bottom;
+      margin-left: auto;
+      margin-right: auto;
+      display: inline;
+      font-size: @font-size-nrm2;
+    }
+
+    .enable {
+      background: url("images/Checkmark.png");
+      background-size: cover;
+      background-repeat: no-repeat;
+
+      height: 60px;
+      width: 60px;
+
+      margin-left: 15px;
+      margin-top: 30px;
+      margin-bottom: 30px;
+    }
+
+    .disable {
+      background: url("images/TW-Close.png");
+      background-size: cover;
+      background-repeat: no-repeat;
+
+      height: 60px;
+      width: 60px;
+
+      margin-right: 15px;
+      margin-top: 30px;
+    }
+
+    .circle {
+      border-radius: 50%;
+      height: 90px;
+      width: 90px;
+      padding: 5px;
+      border: 4px solid;
+      border-color: #FFFFFF;
+
+      filter: brightness(40%);
+    }
+
+    .active {
+      border-color: #0a53be;
+      filter: brightness(100%);
+    }
+  }
+
+  .button {
+    border: 3px solid @standard-text-color;
+    border-radius: 10px;
+    background: transparent;
+    padding: 3px;
+    width: 250px;
+    height: 250px;
+    color: @standard-text-color;
+    font-size: @font-size-big;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    align-content: center;
+
+    &:hover {
+      filter: brightness(75%);
+    }
+
+    &:active {
+      border: 3px solid @color-btn-primary;
+    }
+
+    .text {
+      text-align: center;
+      margin-left: auto;
+      margin-right: auto;
+      display: inline;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 100%;
+    }
+
+    .icon-close {
+      background: url("images/TW-Close.png");
+      background-size: cover;
+      background-repeat: no-repeat;
+      height: 150px;
+      width: 150px;
+      margin-left: 45px;
+    }
+
+    .icon-trash {
+      background: url("images/TW-Trash.png");
+      background-size: cover;
+      background-repeat: no-repeat;
+      height: 150px;
+      width: 150px;
+      margin-left: 45px;
+    }
+
+    .icon-star {
+      background: url("images/Star.png");
+      background-size: cover;
+      background-repeat: no-repeat;
+      height: 150px;
+      width: 150px;
+      margin-left: 45px;
+    }
+
+    .icon-settings {
+      background: url("images/Settings.png");
+      background-size: cover;
+      background-repeat: no-repeat;
+      height: 150px;
+      width: 150px;
+      margin-left: 45px;
+    }
+
+    .icon-reload {
+      background: url("images/Reload.png");
+      background-size: cover;
+      background-repeat: no-repeat;
+      height: 150px;
+      width: 150px;
+      margin-left: 45px;
+    }
+
+    .icon-profile {
+      background: url("images/Profile.png");
+      background-size: cover;
+      background-repeat: no-repeat;
+      height: 150px;
+      width: 150px;
+      margin-left: 45px;
+    }
+
+    .icon-multiuser {
+      background: url("images/Multiuser.png");
+      background-size: cover;
+      background-repeat: no-repeat;
+      height: 150px;
+      width: 150px;
+      margin-left: 45px;
+    }
+
+    .icon-micoff {
+      background: url("images/Microphone Off.png");
+      background-size: cover;
+      background-repeat: no-repeat;
+      height: 150px;
+      width: 150px;
+      margin-left: 45px;
+    }
+
+    .icon-megaphone {
+      background: url("images/Megaphone.png");
+      background-size: cover;
+      background-repeat: no-repeat;
+      height: 150px;
+      width: 150px;
+      margin-left: 45px;
+    }
+
+    .icon-list {
+      background: url("images/List x3.png");
+      background-size: cover;
+      background-repeat: no-repeat;
+      height: 150px;
+      width: 150px;
+      margin-left: 45px;
+    }
+
+    .icon-link {
+      background: url("images/Link.png");
+      background-size: cover;
+      background-repeat: no-repeat;
+      height: 150px;
+      width: 150px;
+      margin-left: 45px;
+    }
+
+    .icon-key {
+      background: url("images/Key.png");
+      background-size: cover;
+      background-repeat: no-repeat;
+      height: 150px;
+      width: 150px;
+      margin-left: 45px;
+    }
+
+    .icon-handcuffs {
+      background: url("images/Handcuffs.png");
+      background-size: cover;
+      background-repeat: no-repeat;
+      height: 150px;
+      width: 150px;
+      margin-left: 45px;
+    }
+
+    .icon-exit {
+      background: url("images/Exit.png");
+      background-size: cover;
+      background-repeat: no-repeat;
+      height: 150px;
+      width: 150px;
+      margin-left: 45px;
+    }
+
+    .icon-discord {
+      background: url("images/Discord-Logo-White.png");
+      background-size: cover;
+      background-repeat: no-repeat;
+      height: 150px;
+      width: 150px;
+      margin-left: 45px;
+    }
+
+    .icon-crown {
+      background: url("images/Crown - Stars.png");
+      background-size: cover;
+      background-repeat: no-repeat;
+      height: 150px;
+      width: 150px;
+      margin-left: 45px;
+    }
+
+    .icon-checkmark {
+      background: url("images/Checkmark.png");
+      background-size: cover;
+      background-repeat: no-repeat;
+      height: 150px;
+      width: 150px;
+      margin-left: 45px;
+    }
+
+    .icon-bolt {
+      background: url("images/Bolt.png");
+      background-size: cover;
+      background-repeat: no-repeat;
+      height: 150px;
+      width: 150px;
+      margin-left: 45px;
+    }
+
+    .icon-body {
+      background: url("images/Body.png");
+      background-size: cover;
+      background-repeat: no-repeat;
+      height: 150px;
+      width: 150px;
+      margin-left: 45px;
+    }
+
+    .icon-alert {
+      background: url("images/Alert.png");
+      background-size: cover;
+      background-repeat: no-repeat;
+      height: 150px;
+      width: 150px;
+      margin-left: 45px;
+    }
+
+    .icon-volume {
+      background: url("images/Volume - Maximum.png");
+      background-size: cover;
+      background-repeat: no-repeat;
+      height: 150px;
+      width: 150px;
+      margin-left: 45px;
+    }
+
+    .icon-turnoff {
+      background: url("images/Turn Off.png");
+      background-size: cover;
+      background-repeat: no-repeat;
+      height: 150px;
+      width: 150px;
+      margin-left: 45px;
+    }
+
+    .icon-resize {
+      background: url("images/Resize.png");
+      background-size: cover;
+      background-repeat: no-repeat;
+      height: 150px;
+      width: 150px;
+      margin-left: 45px;
+    }
+  }
+
+  .int-button {
+    border: 2px solid @standard-text-color;
+    border-radius: 6px;
+    background: transparent;
+    padding: 2px;
+    width: 165px;
+    height: 165px;
+    color: @standard-text-color;
+    font-size: @font-size-big;
+    margin-top: 6px;
+    margin-bottom: 6px;
+    align-content: center;
+
+    &:hover {
+      filter: brightness(75%);
+    }
+
+    .button-text {
+      font-size: 160px;
+      text-align: center;
+      top: -15px;
+      position: relative;
+      color: #FFFFFF;
+    }
+
+    .icon-checkmark {
+      background: url("images/Checkmark.png");
+      background-size: cover;
+      background-repeat: no-repeat;
+      height: 150px;
+      width: 150px;
+      margin-left: 5px;
+      align-content: center;
+    }
+
+    .icon-close {
+      background: url("images/TW-Close.png");
+      background-size: cover;
+      background-repeat: no-repeat;
+      height: 150px;
+      width: 150px;
+      margin-left: 5px;
+      align-content: center;
+    }
+
+    .icon-back {
+      background: url("images/Arrow Left.png");
+      background-size: cover;
+      background-repeat: no-repeat;
+      height: 150px;
+      width: 150px;
+      margin-left: 5px;
+      align-content: center;
+    }
+  }
+
+  .int-box {
+    border: 3px solid @standard-text-color;
+    border-radius: 6px;
+    background: transparent;
+    padding-top: 25px;
+    width: 330px;
+    height: 165px;
+    color: @standard-text-color;
+    font-size: @font-size-stupid-big;
+    margin-left: 40px;
+    margin-top: 6px;
+    margin-bottom: 6px;
+    align-content: center;
+    text-align: center;
+  }
+}

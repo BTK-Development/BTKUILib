@@ -100,6 +100,7 @@
     </ItemGroup>
     <ItemGroup>
         <Compile Include="BTKUILib.cs" />
+        <Compile Include="Patches.cs" />
         <Compile Include="Properties\AssemblyInfo.cs" />
         <Compile Include="QuickMenuAPI.cs" />
         <Compile Include="UIObjects\Category.cs" />
@@ -110,6 +111,51 @@
         <Compile Include="UIObjects\QMUIElement.cs" />
         <Compile Include="UIUtils.cs" />
         <Compile Include="UserInterface.cs" />
+    </ItemGroup>
+    <ItemGroup>
+      <EmbeddedResource Include="BTKUIBuild.zip" />
+    </ItemGroup>
+    <ItemGroup>
+      <Content Include="CohtmlUI\.idea\.gitignore" />
+      <Content Include="CohtmlUI\.idea\CohtmlUI.iml" />
+      <Content Include="CohtmlUI\.idea\discord.xml" />
+      <Content Include="CohtmlUI\.idea\modules.xml" />
+      <Content Include="CohtmlUI\.idea\vcs.xml" />
+      <Content Include="CohtmlUI\.idea\watcherTasks.xml" />
+      <Content Include="CohtmlUI\.idea\workspace.xml" />
+      <Content Include="CohtmlUI\bootstrap-grid.min.css" />
+      <Content Include="CohtmlUI\BTKUI.css" />
+      <Content Include="CohtmlUI\BTKUI.css.map" />
+      <Content Include="CohtmlUI\BTKUI.less" />
+      <Content Include="CohtmlUI\images\Alert.png" />
+      <Content Include="CohtmlUI\images\Arrow Left.png" />
+      <Content Include="CohtmlUI\images\Body.png" />
+      <Content Include="CohtmlUI\images\Bolt.png" />
+      <Content Include="CohtmlUI\images\BTKIcon.png" />
+      <Content Include="CohtmlUI\images\Checkmark.png" />
+      <Content Include="CohtmlUI\images\Close.png" />
+      <Content Include="CohtmlUI\images\Crown - Stars.png" />
+      <Content Include="CohtmlUI\images\Discord-Logo-White.png" />
+      <Content Include="CohtmlUI\images\Exit.png" />
+      <Content Include="CohtmlUI\images\Handcuffs.png" />
+      <Content Include="CohtmlUI\images\Key.png" />
+      <Content Include="CohtmlUI\images\Link.png" />
+      <Content Include="CohtmlUI\images\List x3.png" />
+      <Content Include="CohtmlUI\images\Megaphone.png" />
+      <Content Include="CohtmlUI\images\Microphone Off.png" />
+      <Content Include="CohtmlUI\images\Multiuser.png" />
+      <Content Include="CohtmlUI\images\Profile.png" />
+      <Content Include="CohtmlUI\images\Reload.png" />
+      <Content Include="CohtmlUI\images\Resize.png" />
+      <Content Include="CohtmlUI\images\Settings.png" />
+      <Content Include="CohtmlUI\images\SpecialMark.png" />
+      <Content Include="CohtmlUI\images\Star.png" />
+      <Content Include="CohtmlUI\images\Turn Off.png" />
+      <Content Include="CohtmlUI\images\TW-Close.png" />
+      <Content Include="CohtmlUI\images\TW-Trash.png" />
+      <Content Include="CohtmlUI\images\User - Plus Right.png" />
+      <Content Include="CohtmlUI\images\Volume - Maximum.png" />
+      <Content Include="CohtmlUI\mod.js" />
     </ItemGroup>
     <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
     <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

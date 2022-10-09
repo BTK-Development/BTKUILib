@@ -3,7 +3,7 @@
 namespace BTKUILib.UIObjects
 {
     /// <summary>
-    /// This act as Bootstrap rows within Cohtml
+    /// This act as category with header and row within Cohtml
     /// </summary>
     public class Category
     {
@@ -19,6 +19,11 @@ namespace BTKUILib.UIObjects
 
         private string _categoryName;
 
+        internal Category(string categoryName, Page page)
+        {
+            
+        }
+        
         private void UpdateCategoryName()
         {
             
