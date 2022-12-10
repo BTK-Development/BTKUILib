@@ -50,6 +50,48 @@ cvr.menu.prototype.BTKUI = {
         console.log("Setting up btkUI");
 
         menu.templates["btkUI-btn"] = {c: "btkUI-btn", s: [{c: "icon"}], x: "btkUI-open", a:{"id":"btkUI-QMButton"}};
+        menu.templates["btkUI-shared"] = {c: "btkUI-shared", s:[
+                {c: "container btk-popup-container hide", a: {"id": "btkUI-PopupConfirm"}, s:[
+                        {c: "row", s: [
+                                {c: "col align-self-center", s: [{c: "header", h: "Notice", a: {"id": "btkUI-PopupConfirmHeader"}}]}
+                            ]},
+                        {c: "content notice-text", h:"This is some text!", a: {"id": "btkUI-PopupConfirmText"}},
+                        {c: "control-row", s: [
+                                {c: "col", s: [{c: "button", s: [{c: "text", h: "Yes", a: {"id": "btkUI-PopupConfirmOk"}}], x:"btkUI-ConfirmOK"}]},
+                                {c: "col", s: [{c: "button", s: [{c: "text", h: "No", a: {"id": "btkUI-PopupConfirmNo"}}], x:"btkUI-ConfirmNO"}]}
+                            ]},
+                    ]},
+                {c: "container btk-popup-container hide", a: {"id": "btkUI-PopupNotice"}, s:[
+                        {c:"row", s:[
+                                {c:"col align-self-center", s:[{c:"header", h:"Notice", a: {"id": "btkUI-PopupNoticeHeader"}}]}
+                            ]},
+                        {c: "content notice-text", h:"This is some text!", a: {"id": "btkUI-PopupNoticeText"}},
+                        {c:"row justify-content-center", s:[
+                                {c:"col offset-4 align-self-center", s:[{c:"button", s:[{c:"text", h:"OK", a: {"id": "btkUI-PopupNoticeOK"}}], x:"btkUI-NoticeClose"}]}
+                            ]},
+                    ]},
+                {c: "container container-tabs", s:[
+                        {c:"row justify-content-md-center", a: {"id": "btkUI-TabRoot"}, s:[
+                                {c: "col-md-2 tab  selected", s:[
+                                        {c: "tab-content", h: "Main"}
+                                    ]},
+                                {c: "col-md-2 tab", s:[
+                                        {c: "tab-content", h: "Test"}
+                                    ]},
+                                {c: "col-md-2 tab", s:[
+                                        {c: "tab-content", h: "Test"}
+                                    ]},
+                                {c: "col-md-2 tab", s:[
+                                        {c: "tab-content", h: "Test"}
+                                    ]},
+                                {c: "col-md-2 tab", s:[
+                                        {c: "tab-content", h: "Test"}
+                                    ]},
+
+                            ]}
+                    ]},
+                {c: "container-tooltip hide", s:[{c:"content", h:"tooltip info", a:{"id": "btkUI-Tooltip"}}], a:{"id": "btkUI-TooltipContainer"}}
+            ]};
         menu.templates["btkUI-menu"] = {c: "btkUI menu-category hide", s: [
                 {c: "container container-main", s:[
                         {c:"row", s:[
@@ -97,27 +139,7 @@ cvr.menu.prototype.BTKUI = {
                                         {c:"col-2", s:[{c: "int-button", s:[{c:"button-text", h:"."}], x: "btkUI-NumInput", a:{"str": "."}}]},
                                     ]},
                             ]}, {c: "scroll-marker-v"}]}]},
-                {c: "container popup-container hide", a: {"id": "btkUI-PopupConfirm"}, s:[
-                        {c: "row", s: [
-                                {c: "col align-self-center", s: [{c: "header", h: "Notice", a: {"id": "btkUI-PopupConfirmHeader"}}]}
-                            ]},
-                        {c: "content notice-text", h:"This is some text!", a: {"id": "btkUI-PopupConfirmText"}},
-                        {c: "control-row", s: [
-                                {c: "col", s: [{c: "button", s: [{c: "text", h: "Yes", a: {"id": "btkUI-PopupConfirmOk"}}], x:"btkUI-ConfirmOK"}]},
-                                {c: "col", s: [{c: "button", s: [{c: "text", h: "No", a: {"id": "btkUI-PopupConfirmNo"}}], x:"btkUI-ConfirmNO"}]}
-                            ]},
-                    ]},
-                {c: "container popup-container hide", a: {"id": "btkUI-PopupNotice"}, s:[
-                        {c:"row", s:[
-                                {c:"col align-self-center", s:[{c:"header", h:"Notice", a: {"id": "btkUI-PopupNoticeHeader"}}]}
-                            ]},
-                        {c: "content notice-text", h:"This is some text!", a: {"id": "btkUI-PopupNoticeText"}},
-                        {c:"row justify-content-center", s:[
-                                {c:"col offset-4 align-self-center", s:[{c:"button", s:[{c:"text", h:"OK", a: {"id": "btkUI-PopupNoticeOK"}}], x:"btkUI-NoticeClose"}]}
-                            ]},
-                    ]},
-                {c: "container-back", s:[{c: "icon"}, {c: "content", h: "Back to QuickMenu"}], x: "switchCategory", a: {"data-category": "quickmenu-home"}},
-                {c: "container-tooltip hide", s:[{c:"content", h:"tooltip info", a:{"id": "btkUI-Tooltip"}}], a:{"id": "btkUI-TooltipContainer"}}
+
             ], a:{"id":"btkUI-Root"}};
 
 
@@ -131,6 +153,7 @@ cvr.menu.prototype.BTKUI = {
         menu.templates["btkUIRow"] = {c: "row", a: {"id": "btkUI-[ModName-[ModPage]-[ModRow]"}, s:[{c:"col", s:[{c:"header", h:"[Header]"}]}]};
 
         menu.templates["core-quickmenu"].l.push("btkUI-btn");
+        menu.templates["core-quickmenu"].l.push("btkUI-shared");
         menu.templates["core-quickmenu"].l.push("btkUI-menu");
 
         uiRefBTK.actions["btkUI-open"] = this.actions.btkOpen;

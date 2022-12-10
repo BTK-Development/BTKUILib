@@ -57,37 +57,64 @@
       z-index: 0;
     }
   }
-}
 
-.btkUI {
-  .disabled {
-    filter: brightness(40%);
-    pointer-events: none;
+  .quick-buttons-container{
+    left: 13px;
   }
 
-  .header-section {
-    height: 100px;
-    width: 100%;
-    margin-top: 20px;
-    margin-bottom: 100px;
-    padding-right: 20px;
-    padding-left: 20px;
+  .primary-buttons-container {
+    left: 13px;
+  }
+
+  .container-tabs {
     position: absolute;
-    z-index: 1;
+    width: 1234px;
+    height: auto;
+    top: 1470px;
+
+    .tab {
+      height: 150px;
+      width: 150px;
+      background: @element-background;
+      border-radius: 10px;
+      margin: 10px;
+      border: 4px solid @color-btn-border;
+      transition-duration: 0.2s;
+
+      .tab-content {
+        font-size: 2vw;
+        text-align: center;
+      }
+    }
+
+    .tab:hover {
+      filter: brightness(75%);
+      height: 160px;
+      width: 160px;
+    }
+
+    .selected {
+      border: 4px solid @color-btn-primary;
+    }
   }
 
-  .round-box {
-    height: 250px;
-    width: 250px;
-    background-color: #ffffff;
-    border-radius: 16%;
-    margin-top: 10px;
-    margin-bottom: 10px;
-    align-content: center;
-    padding: 3px;
+  .container-tooltip {
+    position: absolute;
+    width: 1234px;
+    height: 136px;
+    top: 1470px;
+    background: @element-background;
+    border-radius: 10px;
+
+    .content {
+      margin: 20px;
+      text-align: center;
+      position: absolute;
+      font-size: @font-size-big;
+    }
   }
 
-  .popup-container {
+  .btk-popup-container {
     width: 800px;
     height: 800px;
     margin-top: 20%;
@@ -96,7 +123,6 @@
     border: 2px solid @color-btn-border;
     border-radius: 10px;
     position: absolute;
-    display: inline-block;
     box-shadow: 20px 20px 100px black;
     z-index: 1;
 
@@ -146,6 +172,35 @@
         top: 10%;
       }
     }
+  }
+}
+
+.btkUI {
+  .disabled {
+    filter: brightness(40%);
+    pointer-events: none;
+  }
+
+  .header-section {
+    height: 100px;
+    width: 100%;
+    margin-top: 20px;
+    margin-bottom: 100px;
+    padding-right: 20px;
+    padding-left: 20px;
+    position: absolute;
+    z-index: 1;
+  }
+
+  .round-box {
+    height: 250px;
+    width: 250px;
+    background-color: #ffffff;
+    border-radius: 16%;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    align-content: center;
+    padding: 3px;
   }
 
   .container-main {
@@ -230,51 +285,6 @@
 
     .content-subpage {
       margin: 100px 29px 16px;
-      font-size: @font-size-big;
-    }
-  }
-
-  .container-back {
-    position: absolute;
-    width: 1234px;
-    height: 136px;
-    top: 1304px;
-    background: @element-background;
-    border-radius: 10px;
-
-    &:hover {
-      filter: brightness(75%);
-    }
-
-    .icon {
-      width: 100px;
-      height: 100px;
-      margin-top: 18px;
-      margin-left: 38px;
-      .setIcon(100px, 3, 3)
-    }
-
-    .content {
-      top: 26px;
-      left: 180px;
-      margin-top: 16px;
-      position: absolute;
-      font-size: @font-size-bigger;
-    }
-  }
-
-  .container-tooltip {
-    position: absolute;
-    width: 1234px;
-    height: 136px;
-    top: 1460px;
-    background: @element-background;
-    border-radius: 10px;
-
-    .content {
-      margin: 20px;
-      text-align: center;
-      position: absolute;
       font-size: @font-size-big;
     }
   }
@@ -449,206 +459,8 @@
       max-width: 100%;
     }
 
-    .icon-close {
+    .icon {
       background: url("images/TW-Close.png");
-      background-size: cover;
-      background-repeat: no-repeat;
-      height: 150px;
-      width: 150px;
-      margin-left: 45px;
-    }
-
-    .icon-trash {
-      background: url("images/TW-Trash.png");
-      background-size: cover;
-      background-repeat: no-repeat;
-      height: 150px;
-      width: 150px;
-      margin-left: 45px;
-    }
-
-    .icon-star {
-      background: url("images/Star.png");
-      background-size: cover;
-      background-repeat: no-repeat;
-      height: 150px;
-      width: 150px;
-      margin-left: 45px;
-    }
-
-    .icon-settings {
-      background: url("images/Settings.png");
-      background-size: cover;
-      background-repeat: no-repeat;
-      height: 150px;
-      width: 150px;
-      margin-left: 45px;
-    }
-
-    .icon-reload {
-      background: url("images/Reload.png");
-      background-size: cover;
-      background-repeat: no-repeat;
-      height: 150px;
-      width: 150px;
-      margin-left: 45px;
-    }
-
-    .icon-profile {
-      background: url("images/Profile.png");
-      background-size: cover;
-      background-repeat: no-repeat;
-      height: 150px;
-      width: 150px;
-      margin-left: 45px;
-    }
-
-    .icon-multiuser {
-      background: url("images/Multiuser.png");
-      background-size: cover;
-      background-repeat: no-repeat;
-      height: 150px;
-      width: 150px;
-      margin-left: 45px;
-    }
-
-    .icon-micoff {
-      background: url("images/Microphone Off.png");
-      background-size: cover;
-      background-repeat: no-repeat;
-      height: 150px;
-      width: 150px;
-      margin-left: 45px;
-    }
-
-    .icon-megaphone {
-      background: url("images/Megaphone.png");
-      background-size: cover;
-      background-repeat: no-repeat;
-      height: 150px;
-      width: 150px;
-      margin-left: 45px;
-    }
-
-    .icon-list {
-      background: url("images/List x3.png");
-      background-size: cover;
-      background-repeat: no-repeat;
-      height: 150px;
-      width: 150px;
-      margin-left: 45px;
-    }
-
-    .icon-link {
-      background: url("images/Link.png");
-      background-size: cover;
-      background-repeat: no-repeat;
-      height: 150px;
-      width: 150px;
-      margin-left: 45px;
-    }
-
-    .icon-key {
-      background: url("images/Key.png");
-      background-size: cover;
-      background-repeat: no-repeat;
-      height: 150px;
-      width: 150px;
-      margin-left: 45px;
-    }
-
-    .icon-handcuffs {
-      background: url("images/Handcuffs.png");
-      background-size: cover;
-      background-repeat: no-repeat;
-      height: 150px;
-      width: 150px;
-      margin-left: 45px;
-    }
-
-    .icon-exit {
-      background: url("images/Exit.png");
-      background-size: cover;
-      background-repeat: no-repeat;
-      height: 150px;
-      width: 150px;
-      margin-left: 45px;
-    }
-
-    .icon-discord {
-      background: url("images/Discord-Logo-White.png");
-      background-size: cover;
-      background-repeat: no-repeat;
-      height: 150px;
-      width: 150px;
-      margin-left: 45px;
-    }
-
-    .icon-crown {
-      background: url("images/Crown - Stars.png");
-      background-size: cover;
-      background-repeat: no-repeat;
-      height: 150px;
-      width: 150px;
-      margin-left: 45px;
-    }
-
-    .icon-checkmark {
-      background: url("images/Checkmark.png");
-      background-size: cover;
-      background-repeat: no-repeat;
-      height: 150px;
-      width: 150px;
-      margin-left: 45px;
-    }
-
-    .icon-bolt {
-      background: url("images/Bolt.png");
-      background-size: cover;
-      background-repeat: no-repeat;
-      height: 150px;
-      width: 150px;
-      margin-left: 45px;
-    }
-
-    .icon-body {
-      background: url("images/Body.png");
-      background-size: cover;
-      background-repeat: no-repeat;
-      height: 150px;
-      width: 150px;
-      margin-left: 45px;
-    }
-
-    .icon-alert {
-      background: url("images/Alert.png");
-      background-size: cover;
-      background-repeat: no-repeat;
-      height: 150px;
-      width: 150px;
-      margin-left: 45px;
-    }
-
-    .icon-volume {
-      background: url("images/Volume - Maximum.png");
-      background-size: cover;
-      background-repeat: no-repeat;
-      height: 150px;
-      width: 150px;
-      margin-left: 45px;
-    }
-
-    .icon-turnoff {
-      background: url("images/Turn Off.png");
-      background-size: cover;
-      background-repeat: no-repeat;
-      height: 150px;
-      width: 150px;
-      margin-left: 45px;
-    }
-
-    .icon-resize {
-      background: url("images/Resize.png");
       background-size: cover;
       background-repeat: no-repeat;
       height: 150px;

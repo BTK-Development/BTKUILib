@@ -23,6 +23,105 @@
   padding: 10px;
   z-index: 0;
 }
+#quickmenu-wrapper .quick-buttons-container {
+  left: 13px;
+}
+#quickmenu-wrapper .primary-buttons-container {
+  left: 13px;
+}
+#quickmenu-wrapper .container-tabs {
+  position: absolute;
+  width: 1234px;
+  height: auto;
+  top: 1470px;
+}
+#quickmenu-wrapper .container-tabs .tab {
+  height: 150px;
+  width: 150px;
+  background: #292929;
+  border-radius: 10px;
+  margin: 10px;
+  border: 4px solid #FFFFFF;
+  transition-duration: 0.2s;
+}
+#quickmenu-wrapper .container-tabs .tab .tab-content {
+  font-size: 2vw;
+  text-align: center;
+}
+#quickmenu-wrapper .container-tabs .tab:hover {
+  filter: brightness(75%);
+  height: 160px;
+  width: 160px;
+}
+#quickmenu-wrapper .container-tabs .selected {
+  border: 4px solid #1664BE;
+}
+#quickmenu-wrapper .container-tooltip {
+  position: absolute;
+  width: 1234px;
+  height: 136px;
+  top: 1470px;
+  background: #292929;
+  border-radius: 10px;
+}
+#quickmenu-wrapper .container-tooltip .content {
+  margin: 20px;
+  text-align: center;
+  position: absolute;
+  font-size: 36px;
+}
+#quickmenu-wrapper .btk-popup-container {
+  width: 800px;
+  height: 800px;
+  margin-top: 20%;
+  left: 15%;
+  background-color: #363636;
+  border: 2px solid #FFFFFF;
+  border-radius: 10px;
+  position: absolute;
+  box-shadow: 20px 20px 100px black;
+  z-index: 1;
+}
+#quickmenu-wrapper .btk-popup-container .header {
+  font-size: 48px;
+  text-align: center;
+  margin-top: 20px;
+}
+#quickmenu-wrapper .btk-popup-container .notice-text {
+  font-size: 32px;
+  text-align: center;
+  margin-top: 20px;
+}
+#quickmenu-wrapper .btk-popup-container .notice-text p {
+  margin-bottom: 20px;
+}
+#quickmenu-wrapper .btk-popup-container .control-row {
+  margin-left: 84px;
+  horiz-align: center;
+  display: flex;
+}
+#quickmenu-wrapper .btk-popup-container .content {
+  width: 100%;
+  height: 75%;
+}
+#quickmenu-wrapper .btk-popup-container .button {
+  border: 3px solid #D2D2D2;
+  border-radius: 10px;
+  background: transparent;
+  padding: 3px;
+  width: 250px;
+  height: 100px;
+  color: #D2D2D2;
+  font-size: 36px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  align-content: center;
+}
+#quickmenu-wrapper .btk-popup-container .button .text {
+  text-align: center;
+  position: relative;
+  top: 10%;
+}
 .btkUI .disabled {
   filter: brightness(40%);
   pointer-events: none;
@@ -46,59 +145,6 @@
   margin-bottom: 10px;
   align-content: center;
   padding: 3px;
-}
-.btkUI .popup-container {
-  width: 800px;
-  height: 800px;
-  margin-top: 20%;
-  left: 15%;
-  background-color: #363636;
-  border: 2px solid #FFFFFF;
-  border-radius: 10px;
-  position: absolute;
-  display: inline-block;
-  box-shadow: 20px 20px 100px black;
-  z-index: 1;
-}
-.btkUI .popup-container .header {
-  font-size: 48px;
-  text-align: center;
-  margin-top: 20px;
-}
-.btkUI .popup-container .notice-text {
-  font-size: 32px;
-  text-align: center;
-  margin-top: 20px;
-}
-.btkUI .popup-container .notice-text p {
-  margin-bottom: 20px;
-}
-.btkUI .popup-container .control-row {
-  margin-left: 84px;
-  horiz-align: center;
-  display: flex;
-}
-.btkUI .popup-container .content {
-  width: 100%;
-  height: 75%;
-}
-.btkUI .popup-container .button {
-  border: 3px solid #D2D2D2;
-  border-radius: 10px;
-  background: transparent;
-  padding: 3px;
-  width: 250px;
-  height: 100px;
-  color: #D2D2D2;
-  font-size: 36px;
-  margin-top: 10px;
-  margin-bottom: 10px;
-  align-content: center;
-}
-.btkUI .popup-container .button .text {
-  text-align: center;
-  position: relative;
-  top: 10%;
 }
 .btkUI .container-main {
   position: absolute;
@@ -171,46 +217,6 @@
 }
 .btkUI .container-controls .content-subpage {
   margin: 100px 29px 16px;
-  font-size: 36px;
-}
-.btkUI .container-back {
-  position: absolute;
-  width: 1234px;
-  height: 136px;
-  top: 1304px;
-  background: #292929;
-  border-radius: 10px;
-}
-.btkUI .container-back:hover {
-  filter: brightness(75%);
-}
-.btkUI .container-back .icon {
-  width: 100px;
-  height: 100px;
-  margin-top: 18px;
-  margin-left: 38px;
-  background-size: 1000px;
-  background-position: -300px -300px;
-}
-.btkUI .container-back .content {
-  top: 26px;
-  left: 180px;
-  margin-top: 16px;
-  position: absolute;
-  font-size: 48px;
-}
-.btkUI .container-tooltip {
-  position: absolute;
-  width: 1234px;
-  height: 136px;
-  top: 1460px;
-  background: #292929;
-  border-radius: 10px;
-}
-.btkUI .container-tooltip .content {
-  margin: 20px;
-  text-align: center;
-  position: absolute;
   font-size: 36px;
 }
 .btkUI .dropdown-option {
@@ -358,184 +364,8 @@
   text-overflow: ellipsis;
   max-width: 100%;
 }
-.btkUI .button .icon-close {
+.btkUI .button .icon {
   background: url("images/TW-Close.png");
-  background-size: cover;
-  background-repeat: no-repeat;
-  height: 150px;
-  width: 150px;
-  margin-left: 45px;
-}
-.btkUI .button .icon-trash {
-  background: url("images/TW-Trash.png");
-  background-size: cover;
-  background-repeat: no-repeat;
-  height: 150px;
-  width: 150px;
-  margin-left: 45px;
-}
-.btkUI .button .icon-star {
-  background: url("images/Star.png");
-  background-size: cover;
-  background-repeat: no-repeat;
-  height: 150px;
-  width: 150px;
-  margin-left: 45px;
-}
-.btkUI .button .icon-settings {
-  background: url("images/Settings.png");
-  background-size: cover;
-  background-repeat: no-repeat;
-  height: 150px;
-  width: 150px;
-  margin-left: 45px;
-}
-.btkUI .button .icon-reload {
-  background: url("images/Reload.png");
-  background-size: cover;
-  background-repeat: no-repeat;
-  height: 150px;
-  width: 150px;
-  margin-left: 45px;
-}
-.btkUI .button .icon-profile {
-  background: url("images/Profile.png");
-  background-size: cover;
-  background-repeat: no-repeat;
-  height: 150px;
-  width: 150px;
-  margin-left: 45px;
-}
-.btkUI .button .icon-multiuser {
-  background: url("images/Multiuser.png");
-  background-size: cover;
-  background-repeat: no-repeat;
-  height: 150px;
-  width: 150px;
-  margin-left: 45px;
-}
-.btkUI .button .icon-micoff {
-  background: url("images/Microphone Off.png");
-  background-size: cover;
-  background-repeat: no-repeat;
-  height: 150px;
-  width: 150px;
-  margin-left: 45px;
-}
-.btkUI .button .icon-megaphone {
-  background: url("images/Megaphone.png");
-  background-size: cover;
-  background-repeat: no-repeat;
-  height: 150px;
-  width: 150px;
-  margin-left: 45px;
-}
-.btkUI .button .icon-list {
-  background: url("images/List x3.png");
-  background-size: cover;
-  background-repeat: no-repeat;
-  height: 150px;
-  width: 150px;
-  margin-left: 45px;
-}
-.btkUI .button .icon-link {
-  background: url("images/Link.png");
-  background-size: cover;
-  background-repeat: no-repeat;
-  height: 150px;
-  width: 150px;
-  margin-left: 45px;
-}
-.btkUI .button .icon-key {
-  background: url("images/Key.png");
-  background-size: cover;
-  background-repeat: no-repeat;
-  height: 150px;
-  width: 150px;
-  margin-left: 45px;
-}
-.btkUI .button .icon-handcuffs {
-  background: url("images/Handcuffs.png");
-  background-size: cover;
-  background-repeat: no-repeat;
-  height: 150px;
-  width: 150px;
-  margin-left: 45px;
-}
-.btkUI .button .icon-exit {
-  background: url("images/Exit.png");
-  background-size: cover;
-  background-repeat: no-repeat;
-  height: 150px;
-  width: 150px;
-  margin-left: 45px;
-}
-.btkUI .button .icon-discord {
-  background: url("images/Discord-Logo-White.png");
-  background-size: cover;
-  background-repeat: no-repeat;
-  height: 150px;
-  width: 150px;
-  margin-left: 45px;
-}
-.btkUI .button .icon-crown {
-  background: url("images/Crown - Stars.png");
-  background-size: cover;
-  background-repeat: no-repeat;
-  height: 150px;
-  width: 150px;
-  margin-left: 45px;
-}
-.btkUI .button .icon-checkmark {
-  background: url("images/Checkmark.png");
-  background-size: cover;
-  background-repeat: no-repeat;
-  height: 150px;
-  width: 150px;
-  margin-left: 45px;
-}
-.btkUI .button .icon-bolt {
-  background: url("images/Bolt.png");
-  background-size: cover;
-  background-repeat: no-repeat;
-  height: 150px;
-  width: 150px;
-  margin-left: 45px;
-}
-.btkUI .button .icon-body {
-  background: url("images/Body.png");
-  background-size: cover;
-  background-repeat: no-repeat;
-  height: 150px;
-  width: 150px;
-  margin-left: 45px;
-}
-.btkUI .button .icon-alert {
-  background: url("images/Alert.png");
-  background-size: cover;
-  background-repeat: no-repeat;
-  height: 150px;
-  width: 150px;
-  margin-left: 45px;
-}
-.btkUI .button .icon-volume {
-  background: url("images/Volume - Maximum.png");
-  background-size: cover;
-  background-repeat: no-repeat;
-  height: 150px;
-  width: 150px;
-  margin-left: 45px;
-}
-.btkUI .button .icon-turnoff {
-  background: url("images/Turn Off.png");
-  background-size: cover;
-  background-repeat: no-repeat;
-  height: 150px;
-  width: 150px;
-  margin-left: 45px;
-}
-.btkUI .button .icon-resize {
-  background: url("images/Resize.png");
   background-size: cover;
   background-repeat: no-repeat;
   height: 150px;
