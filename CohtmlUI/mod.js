@@ -7,6 +7,7 @@ cvr.menu.prototype.BTKUI = {
     currentSliderKnobBTK: {},
     setSliderFunctionBTK: {},
     pushPageBTK: {},
+    updateTitle: {},
     currentMod: "",
     isDraggingBTK: false,
 
@@ -46,6 +47,7 @@ cvr.menu.prototype.BTKUI = {
         isDraggingBTK = false;
         setSliderFunctionBTK = this.btkSliderSetValue;
         pushPageBTK = this.btkPushPage;
+        updateTitle = this.btkUpdateTitle;
 
         console.log("Setting up btkUI");
 
@@ -72,22 +74,9 @@ cvr.menu.prototype.BTKUI = {
                     ]},
                 {c: "container container-tabs", s:[
                         {c:"row justify-content-md-center", a: {"id": "btkUI-TabRoot"}, s:[
-                                {c: "col-md-2 tab  selected", s:[
-                                        {c: "tab-content", h: "Main"}
-                                    ]},
-                                {c: "col-md-2 tab", s:[
-                                        {c: "tab-content", h: "Test"}
-                                    ]},
-                                {c: "col-md-2 tab", s:[
-                                        {c: "tab-content", h: "Test"}
-                                    ]},
-                                {c: "col-md-2 tab", s:[
-                                        {c: "tab-content", h: "Test"}
-                                    ]},
-                                {c: "col-md-2 tab", s:[
-                                        {c: "tab-content", h: "Test"}
-                                    ]},
-
+                                {c: "col-md-2 tab selected", s:[
+                                        {c: "tab-content", a:{"id":"btkUI-TabContentText"}, h: "Main"}
+                                    ], a:{"id":"btkUI-Tab-CVRMainQM", "tabTarget": "CVRMainQM"}, x: "btkUI-TabChange"},
                             ]}
                     ]},
                 {c: "container-tooltip hide", s:[{c:"content", h:"tooltip info", a:{"id": "btkUI-Tooltip"}}], a:{"id": "btkUI-TooltipContainer"}}
@@ -96,7 +85,10 @@ cvr.menu.prototype.BTKUI = {
                 {c: "container container-main", s:[
                         {c:"row", s:[
                                 {c:"col", s:[
-                                        {c: "header", a:{"id": "btkUI-MenuHeader"}, h: "BTKUI"},
+                                        {c: "header", a:{"id": "btkUI-MenuHeader"}, h: "RootPage"},
+                                        {c: "content", s:[
+                                                {c: "subtitle", a: {"id": "btkUI-MenuSubtitle"}, h: "This is a page!"},
+                                            ]}
                                     ]},
                             ]}
                     ]},
@@ -142,19 +134,24 @@ cvr.menu.prototype.BTKUI = {
 
             ], a:{"id":"btkUI-Root"}};
 
+        console.log("Setting up btkUI 2");
+
 
         menu.templates["btkMenuRow"] = {c:"row justify-content-start", a:{"id": "[row-id]"}};
         menu.templates["btkSlider"] = {c:"", s:[{c:"col-12", s:[{c:"text", h:"[slider-name] - [current-value]", a:{"id": "btkUI-SliderTitle-[slider-id]", "data-title": "[slider-name]"}}]}, {c: "col-12", s:[{c:"slider", s:[{c:"sliderBar", s:[{c:"slider-knob", a:{"id": "btkUI-SliderKnob-[slider-id]"}}], a:{"id": "btkUI-SliderBar-[slider-id]"}}], a:{"id":"btkUI-Slider-[slider-id]", "data-slider": "[slider-id]", "data-slider-value": "[current-value]", "data-min": "[min-value]", "data-max": "[max-value]"}}], a:{"data-tooltip": "[tooltip-text]"}}]};
         menu.templates["btkToggle"] = {c:"col-3", s:[{c: "toggle", s:[{c:"row", s:[{c:"col align-content-start", s:[{c:"enable circle", a:{"id": "btkUI-toggle-enable"}}]}, {c:"col align-content-end", s:[{c:"disable circle active", a:{"id": "btkUI-toggle-disable"}}]}]},{c:"text-sm", h:"[toggle-name]"}], x: "btkUI-Toggle", a:{"id": "btkUI-Toggle-[toggle-location]-[toggle-page]-[toggle-id]", "data-toggle": "[toggle-location]-[toggle-page]-[toggle-id]", "data-toggleState": "false", "data-tooltip": "[tooltip-data]"}}]};
         menu.templates["btkButton"] = {c:"col-3", s:[{c: "button", s:[{c:"icon-[button-icon]"}, {c:"text", h:"[button-text]"}], x: "btkUI-ButtonAction", a:{"data-tooltip": "[button-tooltip]", "data-action": "[button-action]"}}]};
         menu.templates["btkMultiSelectOption"] = {c:"col-12", s: [{c:"dropdown-option", s: [{c:"selection-icon"}, {c:"option-text", h: "[option-text]"}], a: {"id": "btkUI-DropdownOption-[option-index]", "data-index": "[option-index]"}, x: "btkUI-DropdownSelect"}]}
-        menu.templates["btkUIRootPage"] = {c: "container container-controls", a:{"id": "btkUI-[ModName]-[ModPage]"}, s:[{c: "scroll-view", s:[{c: "content scroll-content", s:[]}, {c: "scroll-marker-v"}]}]};
+        menu.templates["btkUIRootPage"] = {c: "container container-controls", a:{"id": "btkUI-[ModName]-MainPage"}, s:[{c: "scroll-view", s:[{c: "content scroll-content", s:[]}, {c: "scroll-marker-v"}]}]};
         menu.templates["btkUIPage"] = {c: "container container-controls hide", a:{"id": "btkUI-[ModName]-[ModPage]"}, s:[{c: "row header-section", s:[{c:"col-1", s:[{c: "icon-back", x: "btkUI-Back"}]}, {c:"col", s:[{c:"header", h:"[PageHeader]"}]}]}, {c: "scroll-view", s:[{c: "content-subpage scroll-content", s:[]}, {c: "scroll-marker-v"}]}]};
         menu.templates["btkUIRow"] = {c: "row", a: {"id": "btkUI-[ModName-[ModPage]-[ModRow]"}, s:[{c:"col", s:[{c:"header", h:"[Header]"}]}]};
+        menu.templates["btkUITab"] = {c: "col-md-2 tab selected", s:[{c: "tab-content", a:{"id":"btkUI-TabContentText"}, h: "[TabName]"}], a:{"id":"btkUI-Tab-[RootTarget]", "tabTarget": "[RootTarget]"}, x: "btkUI-TabChange"};
 
         menu.templates["core-quickmenu"].l.push("btkUI-btn");
         menu.templates["core-quickmenu"].l.push("btkUI-shared");
         menu.templates["core-quickmenu"].l.push("btkUI-menu");
+
+        console.log("Setting up btkUI 3");
 
         uiRefBTK.actions["btkUI-open"] = this.actions.btkOpen;
         uiRefBTK.actions["btkUI-Test"] = this.actions.test;
@@ -169,6 +166,9 @@ cvr.menu.prototype.BTKUI = {
         uiRefBTK.actions["btkUI-NumInput"] = this.actions.btkNumInput;
         uiRefBTK.actions["btkUI-NumBack"] = this.actions.btkNumBack;
         uiRefBTK.actions["btkUI-NumSubmit"] = this.actions.btkNumSubmit;
+        uiRefBTK.actions["btkUI-TabChange"] = this.actions.btkTabChange;
+
+        console.log("Setting up btkUI 5");
 
         engine.on("btkModInit", this.btkUILibInit);
         engine.on("btkCreateToggle", this.btkCreateToggle);
@@ -180,13 +180,18 @@ cvr.menu.prototype.BTKUI = {
         engine.on("btkCreateButton", this.btkCreateButton);
         engine.on("btkOpenMultiSelect", this.btkOpenMultiSelect);
         engine.on("btkOpenNumberInput", this.btkOpenNumberInput);
+        engine.on("btkCreatePage", this.btkCreatePage);
+        engine.on("btkChangeTab", this.btkChangeTab);
+        engine.on("btkUpdateTitle", this.btkUpdateTitle);
+
+        console.log("Setting up btkUI done");
     },
 
     init: function(menu){
         console.log("btkUI Init");
 
         document.addEventListener('mouseover', this.btkOnHover);
-        document.addEventListener('mousemove', this.btkkSliderMouseMove);
+        document.addEventListener('mousemove', this.btkSliderMouseMove);
         document.addEventListener("mouseup", this.btkSliderMouseUp);
         document.addEventListener('mousedown', this.btkSliderMouseDown);
     },
@@ -273,7 +278,7 @@ cvr.menu.prototype.BTKUI = {
         isDraggingBTK = false;
     },
 
-    btkkSliderMouseMove: function(e){
+    btkSliderMouseMove: function(e){
         if(!isDraggingBTK)
             return;
         if(currentDraggedSliderBTK === null)
@@ -485,7 +490,7 @@ cvr.menu.prototype.BTKUI = {
     },
 
     btkPushPage: function (targetPage, modPage = currentMod){
-        if(currentPage === target)
+        if(currentPage === targetPage)
             return;
 
         cvr("#btkUI-" + target).show();
@@ -501,20 +506,81 @@ cvr.menu.prototype.BTKUI = {
             //We're going to a new root page, clear the breadcrumbs
             currentMod = modPage;
 
-            breadcrumbsBTK.clear();
+            breadcrumbsBTK.length = 0;
         }
     },
 
-    btkCreatePage: function (pageName, modName, rootPage){
+    btkCreateRow: function (parentID, modName, rowUUID, rowHeader = null){
+        if(rowHeader != null){
 
+        }
+
+        cvr("#" + parentID).appendChild(cvr.render(uiRefBTK.templates["btkMenuRow"], {
+
+        }))
     },
-    
+
+    btkCreatePage: function (pageName, modName, elementID, rootPage){
+        if(!rootPage) return;
+
+        cvr("#btkUI-TabRoot").appendChild(cvr.render(uiRefBTK.templates["btkUITab"], {
+            "[RootTarget]": elementID,
+            "[TabName]": modName,
+        }, uiRefBTK.templates, uiRefBTK.actions));
+
+        cvr("#btkUI-Root").appendChild(cvr.render(uiRefBTK.templates["btkUIRootPage"], {
+            "[ModName]": modName
+        }, uiRefBTK.templates, uiRefBTK.actions));
+    },
+
+    btkChangeTab: function (rootTarget, menuTitle, menuSubtitle){
+        if(rootTarget === "CVRMainQM"){
+            uiRefBTK.core.switchCategorySelected("quickmenu-home");
+            return;
+        }
+
+        uiRefBTK.core.switchCategorySelected("btkUI");
+
+        //Clean things up before changing roots
+        if(currentMod !== rootTarget){
+               cvr("#btkUI-" + currentPageBTK).hide();
+        }
+
+        updateTitle(menuTitle, menuSubtitle);
+
+        pushPageBTK(rootTarget + "-MainPage", rootTarget);
+    },
+
+    btkUpdateTitle: function (menuTitle, menuSubtitle){
+        cvr("#btkUI-MenuHeader").innerHTML(menuTitle);
+        cvr("#btkUI-MenuSubtitle").innerHTML(menuSubtitle);
+    },
 
     actions: {
         btkOpen: function(){
             uiRefBTK.core.playSoundCore("Click");
             uiRefBTK.core.switchCategorySelected("btkUI");
             engine.call("btkUI-OpenMainMenu");
+        },
+        btkTabChange: function(e){
+            uiRefBTK.core.playSoundCore("Click");
+
+            let target = e.currentTarget.getAttribute("tabTarget");
+
+            if(target === null) {
+                console.error("Tab did not have a tabTarget!" + e);
+                return;
+            }
+
+            var tabs = document.querySelectorAll(".container-tabs .tab");
+            for(let i=0; i < tabs.length; i++){
+                let tab = tabs[i];
+                tab.classList.remove("selected");
+            }
+
+            e.currentTarget.classList.add("selected");
+
+            engine.call("btkUI-TabChange", target);
         },
         btkPushPage: function (e){
             uiRefBTK.core.playSoundCore("Click");

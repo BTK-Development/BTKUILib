@@ -18,6 +18,9 @@ namespace BTKUILib
         public static UserInterface Instance;
         public static List<SliderFloat> SliderFloats = new();
         public static List<ToggleButton> ToggleButtons = new();
+        public static List<Page> RootPages = new();
+
+        public Page SelectedPage;
 
         private MultiSelection SelectedMultiSelect;
 
@@ -66,11 +69,53 @@ namespace BTKUILib
             CVR_MenuManager.Instance.quickMenu.View.BindCall("btkUI-BackAction", new Action<string, string>(OnBackActionEvent));
             CVR_MenuManager.Instance.quickMenu.View.BindCall("btkUI-DropdownSelected", new Action<int>(DropdownSelected));
             CVR_MenuManager.Instance.quickMenu.View.BindCall("btkUI-NumSubmit", new Action<string>(OnNumberInputSubmitted));
+            CVR_MenuManager.Instance.quickMenu.View.BindCall("btkUI-RootCreated", new Action<string, string>(OnRootCreated));
+            CVR_MenuManager.Instance.quickMenu.View.BindCall("btkUI-TabChange", new Action<string>(OnTabChange));
             
             CVR_MenuManager.Instance.quickMenu.View.TriggerEvent("btkModInit");
+            
+            //Begin creating the UI elements!
+            foreach (var root in RootPages)
+            {
+                BTKUILib.Log.Msg($"Creating root page | Name: {root.PageName} | ModName: {root.ModName} | ElementID: {root.ElementID}");
+                CVR_MenuManager.Instance.quickMenu.View.TriggerEvent("btkCreatePage", root.PageName, root.ModName, root.ElementID, true);
+            }
         }
 
         #region Cohtml Event Functions
+        
+        private void OnTabChange(string tabTarget)
+        {
+            if (tabTarget == "CVRMainQM")
+            {
+                CVR_MenuManager.Instance.quickMenu.View.TriggerEvent("btkChangeTab", tabTarget, "", "");
+                return;
+            }
+                
+            
+            var root = RootPages.FirstOrDefault(x => x.ElementID == tabTarget);
+
+            if (root == null)
+            {
+                BTKUILib.Log.Error("RootPage was not found! Cannot switch tabs!");
+                return;
+            }
+            
+            CVR_MenuManager.Instance.quickMenu.View.TriggerEvent("btkChangeTab", tabTarget, root.MenuTitle, root.MenuSubtitle);
+        }
+
+        private void OnRootCreated(string elementID, string uuid)
+        {
+            var page = RootPages.FirstOrDefault(x => x.UUID == uuid);
+
+            if (page == null)
+            {
+                BTKUILib.Log.Error("OnRootCreated fired but the UUID did not match an existing page?!");
+                return;
+            }
+
+            page.ElementID = elementID;
+        }
 
         private void OnNumberInputSubmitted(string input)
         {

@@ -29,18 +29,21 @@
 #quickmenu-wrapper .primary-buttons-container {
   left: 13px;
 }
+#quickmenu-wrapper .game-rules {
+  z-index: 1;
+}
 #quickmenu-wrapper .container-tabs {
   position: absolute;
   width: 1234px;
   height: auto;
-  top: 1470px;
+  top: 1570px;
 }
 #quickmenu-wrapper .container-tabs .tab {
-  height: 150px;
-  width: 150px;
+  height: 160px;
+  width: 160px;
   background: #292929;
   border-radius: 10px;
-  margin: 10px;
+  margin: 5px;
   border: 4px solid #FFFFFF;
   transition-duration: 0.2s;
 }
@@ -50,8 +53,8 @@
 }
 #quickmenu-wrapper .container-tabs .tab:hover {
   filter: brightness(75%);
-  height: 160px;
-  width: 160px;
+  height: 170px;
+  width: 170px;
 }
 #quickmenu-wrapper .container-tabs .selected {
   border: 4px solid #1664BE;
@@ -153,6 +156,9 @@
   background: #292929;
   border-radius: 10px;
 }
+.btkUI .container-main .subtitle {
+  font-size: 36px;
+}
 .btkUI .container-main .header {
   font-size: 48px;
   margin-left: 29px;
@@ -166,7 +172,7 @@
 .btkUI .container-controls {
   position: absolute;
   width: 1234px;
-  height: 1050px;
+  height: 1220px;
   top: 222px;
   background: #292929;
   border-radius: 10px;

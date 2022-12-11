@@ -30,21 +30,10 @@ namespace BTKUILib
 
         #region Creation/Deletion Functions
 
-        public static void DeleteElement(string elementID)
+        public static void DeleteElement(QMUIElement element)
         {
+            if (!UIUtils.IsQMReady()) return;
             
-        }
-
-        /// <summary>
-        /// Creates a new root page in the QuickMenu
-        /// </summary>
-        /// <param name="modName">The name of the mod creating a root page</param>
-        /// <param name="pageName">The name of the page, will be used as a header</param>
-        /// <returns></returns>
-        public static Page CreateRootPage(string modName, string pageName)
-        {
-            var page = new Page(modName, pageName, true);
-            return page;
         }
 
         #endregion
@@ -53,7 +42,15 @@ namespace BTKUILib
 
         public static void SetToggleState(ToggleButton toggle, bool state)
         {
+            if (!UIUtils.IsQMReady()) return;
             
+        }
+
+        internal static void UpdateMenuTitle(string title, string subtitle)
+        {
+            if (!UIUtils.IsQMReady()) return;
+            
+            CVR_MenuManager.Instance.quickMenu.View.TriggerEvent("btkUpdateTitle", title, subtitle);
         }
 
         #endregion
@@ -62,6 +59,8 @@ namespace BTKUILib
         
         public static void ShowConfirm(string title, string content, string yesText = "Yes", Action onYes = null, string noText = "No", Action onNo = null)
         {
+            if (!UIUtils.IsQMReady()) return;
+            
             ConfirmYes = onYes;
             ConfirmNo = onNo;
             
@@ -70,12 +69,16 @@ namespace BTKUILib
         
         public static void ShowNotice(string title, string content, string okText = "OK", Action onOK = null)
         {
+            if (!UIUtils.IsQMReady()) return;
+            
             NoticeOk = onOK;
             CVR_MenuManager.Instance.quickMenu.View.TriggerEvent("btkShowNotice", title, content, okText);
         }
         
         public static void OpenNumberInput(string name, float input, Action<float> onCompleted)
         {
+            if (!UIUtils.IsQMReady()) return;
+            
             NumberInputComplete = onCompleted;
             CVR_MenuManager.Instance.quickMenu.View.TriggerEvent("btkOpenNumberInput", name, input);
         }

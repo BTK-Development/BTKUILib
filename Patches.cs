@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections;
 using ABI_RC.Core.InteractionSystem;
-using Harmony;
+using cohtml;
+using HarmonyLib;
 using MelonLoader;
 
 namespace BTKUILib
@@ -33,11 +35,11 @@ namespace BTKUILib
         }
     }
     
-    [HarmonyLib.HarmonyPatch(typeof(CVR_MenuManager))]
+    [HarmonyPatch(typeof(CVR_MenuManager))]
     class CVRMenuManagerPatch
     {
-        [HarmonyLib.HarmonyPatch("markMenuAsReady")]
-        [HarmonyLib.HarmonyPostfix]
+        [HarmonyPatch("markMenuAsReady")]
+        [HarmonyPostfix]
         static void MarkMenuAsReady(CVR_MenuManager __instance)
         {
             try

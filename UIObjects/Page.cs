@@ -4,26 +4,44 @@ namespace BTKUILib.UIObjects
 {
     public class Page : QMUIElement
     {
-        public string PageName;
+        public string PageName = "MainPage";
         public readonly string ModName;
         public List<Category> PageCategories = new();
 
-        internal bool RootPage;
-
-        public Page(string modName, string pageName)
+        public string MenuTitle
         {
-            PageName = pageName;
-            ModName = modName;
-            RootPage = false;
-
-            ElementID = $"btkUI-{UIUtils.GetCleanName(modName)}-{UIUtils.GetCleanName(pageName)}";
+            get => _menuTitle;
+            set
+            {
+                _menuTitle = value;
+                QuickMenuAPI.UpdateMenuTitle(_menuTitle, _menuSubtitle);
+            }
         }
 
-        internal Page(string modName, string pageName, bool rootPage)
+        private string _menuTitle;
+        
+        public string MenuSubtitle
         {
-            PageName = pageName;
+            get => _menuSubtitle;
+            set
+            {
+                _menuSubtitle = value;
+                QuickMenuAPI.UpdateMenuTitle(_menuTitle, _menuSubtitle);
+            }
+        }
+
+        private string _menuSubtitle;
+
+        internal bool RootPage;
+
+        public Page(string modName, string pageName, bool rootPage = false)
+        {
+            if(!rootPage)
+                PageName = pageName;
             ModName = modName;
             RootPage = rootPage;
+            
+            UserInterface.RootPages.Add(this);
             
             ElementID = $"btkUI-{UIUtils.GetCleanName(modName)}-{UIUtils.GetCleanName(pageName)}";
         }
