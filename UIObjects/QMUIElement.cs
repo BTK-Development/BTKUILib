@@ -14,9 +14,15 @@ namespace BTKUILib.UIObjects
         /// </summary>
         public string UUID;
 
+        /// <summary>
+        /// Set when element is generated in Cohtml
+        /// </summary>
+        public bool IsGenerated;
+
         public QMUIElement()
         {
             UUID = Guid.NewGuid().ToString();
+            UserInterface.QMElements.Add(this);
         }
 
         /// <summary>

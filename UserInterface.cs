@@ -19,6 +19,7 @@ namespace BTKUILib
         public static List<SliderFloat> SliderFloats = new();
         public static List<ToggleButton> ToggleButtons = new();
         public static List<Page> RootPages = new();
+        internal static List<QMUIElement> QMElements = new(); 
 
         public Page SelectedPage;
 
@@ -57,6 +58,9 @@ namespace BTKUILib
         private void OnMenuRegenerate(CVR_MenuManager cvrMenuManager)
         {
             MelonDebug.Msg("Registering events");
+
+            foreach (var element in QMElements)
+                element.IsGenerated = false;
             
             CVR_MenuManager.Instance.quickMenu.View.BindCall("btkUI-ButtonAction", new Action<string>(HandleButtonAction));
             CVR_MenuManager.Instance.quickMenu.View.BindCall("btkUI-Toggle", new Action<string, bool>(OnToggle));
@@ -78,7 +82,7 @@ namespace BTKUILib
             foreach (var root in RootPages)
             {
                 BTKUILib.Log.Msg($"Creating root page | Name: {root.PageName} | ModName: {root.ModName} | ElementID: {root.ElementID}");
-                CVR_MenuManager.Instance.quickMenu.View.TriggerEvent("btkCreatePage", root.PageName, root.ModName, root.ElementID, true);
+                root.GenerateCohtml();
             }
         }
 
@@ -88,7 +92,7 @@ namespace BTKUILib
         {
             if (tabTarget == "CVRMainQM")
             {
-                CVR_MenuManager.Instance.quickMenu.View.TriggerEvent("btkChangeTab", tabTarget, "", "");
+                CVR_MenuManager.Instance.quickMenu.View.TriggerEvent("btkChangeTab", tabTarget, "CVR", "", "");
                 return;
             }
                 
@@ -101,7 +105,7 @@ namespace BTKUILib
                 return;
             }
             
-            CVR_MenuManager.Instance.quickMenu.View.TriggerEvent("btkChangeTab", tabTarget, root.MenuTitle, root.MenuSubtitle);
+            CVR_MenuManager.Instance.quickMenu.View.TriggerEvent("btkChangeTab", tabTarget, root.ModName, root.MenuTitle, root.MenuSubtitle);
         }
 
         private void OnRootCreated(string elementID, string uuid)

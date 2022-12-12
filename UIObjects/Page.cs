@@ -1,4 +1,6 @@
 ﻿using System.Collections.Generic;
+using ABI_RC.Core.InteractionSystem;
+using cohtml;
 
 namespace BTKUILib.UIObjects
 {
@@ -56,7 +58,25 @@ namespace BTKUILib.UIObjects
             var category = new Category(categoryName, this);
             PageCategories.Add(category);
 
+            if (UIUtils.IsQMReady())
+            {
+                category.GenerateCohtml();
+            }
+
             return category;
+        }
+
+        internal void GenerateCohtml()
+        {
+            if(!IsGenerated)
+                CVR_MenuManager.Instance.quickMenu.View.TriggerEvent("btkCreatePage", PageName, ModName, ElementID, true);
+            
+            IsGenerated = true;
+            
+            foreach (var category in PageCategories)
+            {
+                category.GenerateCohtml();
+            }
         }
     }
 }
