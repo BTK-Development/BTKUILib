@@ -32,5 +32,13 @@ namespace BTKUILib.UIObjects
         {
             QuickMenuAPI.DeleteElement(this);
         }
+
+        /// <summary>
+        /// Used to generate the cohtml side of this element, expected to be overriden
+        /// </summary>
+        internal virtual void GenerateCohtml()
+        {
+            
+        }
     }
 }

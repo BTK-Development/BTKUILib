@@ -66,7 +66,7 @@ namespace BTKUILib.UIObjects
             return category;
         }
 
-        internal void GenerateCohtml()
+        internal override void GenerateCohtml()
         {
             if(!IsGenerated)
                 CVR_MenuManager.Instance.quickMenu.View.TriggerEvent("btkCreatePage", PageName, ModName, ElementID, true);

@@ -140,10 +140,10 @@ cvr.menu.prototype.BTKUI = {
         menu.templates["btkUIRowContent"] = {c:"row justify-content-start", a:{"id": "btkUI-Row-[UUID]"}};
         menu.templates["btkSlider"] = {c:"", s:[{c:"col-12", s:[{c:"text", h:"[slider-name] - [current-value]", a:{"id": "btkUI-SliderTitle-[slider-id]", "data-title": "[slider-name]"}}]}, {c: "col-12", s:[{c:"slider", s:[{c:"sliderBar", s:[{c:"slider-knob", a:{"id": "btkUI-SliderKnob-[slider-id]"}}], a:{"id": "btkUI-SliderBar-[slider-id]"}}], a:{"id":"btkUI-Slider-[slider-id]", "data-slider": "[slider-id]", "data-slider-value": "[current-value]", "data-min": "[min-value]", "data-max": "[max-value]"}}], a:{"data-tooltip": "[tooltip-text]"}}]};
         menu.templates["btkToggle"] = {c:"col-3", s:[{c: "toggle", s:[{c:"row", s:[{c:"col align-content-start", s:[{c:"enable circle", a:{"id": "btkUI-toggle-enable"}}]}, {c:"col align-content-end", s:[{c:"disable circle active", a:{"id": "btkUI-toggle-disable"}}]}]},{c:"text-sm", h:"[toggle-name]"}], x: "btkUI-Toggle", a:{"id": "btkUI-Toggle-[toggle-location]-[toggle-page]-[toggle-id]", "data-toggle": "[toggle-location]-[toggle-page]-[toggle-id]", "data-toggleState": "false", "data-tooltip": "[tooltip-data]"}}]};
-        menu.templates["btkButton"] = {c:"col-3", s:[{c: "button", s:[{c:"icon-[button-icon]"}, {c:"text", h:"[button-text]"}], x: "btkUI-ButtonAction", a:{"data-tooltip": "[button-tooltip]", "data-action": "[button-action]"}}]};
+        menu.templates["btkButton"] = {c:"col-3", a:{"id": "btkUI-Button-[UUID]"}, s:[{c: "button", s:[{c:"icon-[button-icon]"}, {c:"text", h:"[button-text]"}], x: "btkUI-ButtonAction", a:{"data-tooltip": "[button-tooltip]", "data-action": "[button-action]"}}]};
         menu.templates["btkMultiSelectOption"] = {c:"col-12", s: [{c:"dropdown-option", s: [{c:"selection-icon"}, {c:"option-text", h: "[option-text]"}], a: {"id": "btkUI-DropdownOption-[option-index]", "data-index": "[option-index]"}, x: "btkUI-DropdownSelect"}]}
-        menu.templates["btkUIRootPage"] = {c: "container container-controls hide", a:{"id": "btkUI-[ModName]-MainPage"}, s:[{c: "scroll-view", s:[{c: "content scroll-content", s:[]}, {c: "scroll-marker-v"}]}]};
-        menu.templates["btkUIPage"] = {c: "container container-controls hide", a:{"id": "btkUI-[ModName]-[ModPage]"}, s:[{c: "row header-section", s:[{c:"col-1", s:[{c: "icon-back", x: "btkUI-Back"}]}, {c:"col", s:[{c:"header", h:"[PageHeader]"}]}]}, {c: "scroll-view", s:[{c: "content-subpage scroll-content", s:[]}, {c: "scroll-marker-v"}]}]};
+        menu.templates["btkUIRootPage"] = {c: "container container-controls hide", a:{"id": "btkUI-[ModName]-MainPage"}, s:[{c: "scroll-view", s:[{c: "content scroll-content", s:[], a:{"id": "btkUI-[ModName]-MainPage-Content"}}, {c: "scroll-marker-v"}]}]};
+        menu.templates["btkUIPage"] = {c: "container container-controls hide", a:{"id": "btkUI-[ModName]-[ModPage]"}, s:[{c: "row header-section", s:[{c:"col-1", s:[{c: "icon-back", x: "btkUI-Back"}]}, {c:"col", s:[{c:"header", h:"[PageHeader]"}]}]}, {c: "scroll-view", s:[{c: "content-subpage scroll-content", s:[], a:{"id": "btkUI-[ModName]-[ModPage]-Content"}}, {c: "scroll-marker-v"}]}]};
         menu.templates["btkUIRowHeader"] = {c: "row", a: {"id": "btkUI-Row-Header-[UUID]"}, s:[{c:"col", s:[{c:"header", h:"[Header]", a:{"id": "btkUI-Row-HeaderText-[UUID]"}}]}]};
         menu.templates["btkUITab"] = {c: "col-md-2 tab", s:[{c: "tab-content", a:{"id":"btkUI-TabContentText"}, h: "[TabName]"}], a:{"id":"btkUI-Tab-[RootTarget]", "tabTarget": "[RootTarget]"}, x: "btkUI-TabChange"};
 
@@ -435,12 +435,13 @@ cvr.menu.prototype.BTKUI = {
 
         element.setAttribute("data-toggleState", state.toString());
     },
-    btkCreateButton: function(parent, buttonName, buttonIcon, tooltip, buttonAction){
+    btkCreateButton: function(parent, buttonName, buttonIcon, tooltip, buttonUUID){
         cvr("#" + parent).appendChild(cvr.render(uiRefBTK.templates["btkButton"], {
             "[button-text]": buttonName,
             "[button-icon]": buttonIcon,
             "[button-tooltip]": tooltip,
-            "[button-action]": buttonAction,
+            "[button-action]": buttonUUID,
+            "[UUID]": buttonUUID,
         }, uiRefBTK.templates, uiRefBTK.actions));
     },
     btkOpenMultiSelect: function(name, options, selectedIndex){
@@ -492,10 +493,10 @@ cvr.menu.prototype.BTKUI = {
     },
 
     btkPushPage: function (targetPage, modPage = currentMod){
-        if(currentPage === targetPage)
+        if(currentPageBTK === targetPage)
             return;
 
-        console.log("Switching page " + targetPage);
+        console.log("Switching page to " + targetPage + " | modPage = " + modPage);
 
         cvr("#" + targetPage).show();
         cvr("#" + currentPageBTK).hide();
@@ -526,13 +527,13 @@ cvr.menu.prototype.BTKUI = {
 
     btkCreateRow: function (parentID, rowUUID, rowHeader = null){
         if(rowHeader != null){
-            cvr("#" + parentID).appendChild(cvr.render(uiRefBTK.templates["btkUIRowHeader"], {
+            cvr("#" + parentID + "-Content").appendChild(cvr.render(uiRefBTK.templates["btkUIRowHeader"], {
                 "[UUID]": rowUUID,
                 "[Header]": rowHeader
             }, uiRefBTK.templates, uiRefBTK.actions))
         }
 
-        cvr("#" + parentID).appendChild(cvr.render(uiRefBTK.templates["btkUIRowContent"], {
+        cvr("#" + parentID + "-Content").appendChild(cvr.render(uiRefBTK.templates["btkUIRowContent"], {
             "[UUID]": rowUUID
         }, uiRefBTK.templates, uiRefBTK.actions))
     },
@@ -551,7 +552,7 @@ cvr.menu.prototype.BTKUI = {
     },
 
     btkChangeTab: function (rootTarget, rootMod, menuTitle, menuSubtitle){
-        console.log("Setting to rootTarget " + rootTarget)
+        console.log("Setting to rootTarget " + rootTarget + " | currentMod = " + currentMod + " | rootMod = " + rootMod);
 
         if(rootTarget === "CVRMainQM"){
             uiRefBTK.core.switchCategorySelected("quickmenu-home");

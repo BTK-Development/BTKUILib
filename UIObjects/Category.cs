@@ -1,4 +1,6 @@
-﻿using ABI_RC.Core.InteractionSystem;
+﻿using System.Collections.Generic;
+using ABI_RC.Core.InteractionSystem;
+using BTKUILib.UIObjects.Components;
 using cohtml;
 
 namespace BTKUILib.UIObjects
@@ -18,6 +20,8 @@ namespace BTKUILib.UIObjects
             }
         }
 
+        internal List<QMUIElement> CategoryElements = new();
+
         private string _categoryName;
         private Page _linkedPage;
         private bool _showHeader = false;
@@ -28,14 +32,27 @@ namespace BTKUILib.UIObjects
             _linkedPage = page;
             _showHeader = showHeader;
             
-            page.PageCategories.Add(this);
             ElementID = "btkUI-Row-" + UUID;
         }
 
-        internal void GenerateCohtml()
+        public Button AddButton(string buttonText, string buttonIcon, string buttonTooltip)
+        {
+            var button = new Button(buttonText, buttonIcon, buttonTooltip, this);
+            CategoryElements.Add(button);
+            
+            if(UIUtils.IsQMReady())
+                button.GenerateCohtml();
+
+            return button;
+        }
+
+        internal override void GenerateCohtml()
         {
             if(!IsGenerated)
                 CVR_MenuManager.Instance.quickMenu.View.TriggerEvent("btkCreateRow", _linkedPage.ElementID, UUID, _showHeader ? _categoryName : null);
+            
+            foreach(var element in CategoryElements)
+                element.GenerateCohtml();
 
             IsGenerated = true;
         }

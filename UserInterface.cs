@@ -19,7 +19,8 @@ namespace BTKUILib
         public static List<SliderFloat> SliderFloats = new();
         public static List<ToggleButton> ToggleButtons = new();
         public static List<Page> RootPages = new();
-        internal static List<QMUIElement> QMElements = new(); 
+        internal static List<QMUIElement> QMElements = new();
+        internal static Dictionary<string, QMInteractable> Interactables = new();
 
         public Page SelectedPage;
 
@@ -197,34 +198,15 @@ namespace BTKUILib
             QuickMenuAPI.ConfirmYes?.Invoke();
         }
         
-        private void HandleButtonAction(string action)
+        private void HandleButtonAction(string buttonUUID)
         {
-            /*if (_multiSelectionOptions.ContainsKey(action))
+            if (!Interactables.ContainsKey(buttonUUID))
             {
-                var ms = _multiSelectionOptions[action];
-                UIUtils.OpenMultiSelect(ms);
-                return;
-            }
-
-            if (_generatedRemoteControlSingles.ContainsKey(action) && ParamControlLeadPair != null)
-            {
-                var param = _generatedRemoteControlSingles[action];
-                UIUtils.OpenNumberInput(param.ParameterTarget, param.ParameterValue, f =>
-                {
-                    param.ParameterValue = f;
-                    param.IsUpdated = true;
-                    AvatarParameterManager.Instance.SendUpdatedParameters(ParamControlLeadPair);
-                });
-                
+                BTKUILib.Log.Error($"{buttonUUID} is not registered as an interactable!");
                 return;
             }
             
-            if (!_handlers.TryGetValue(action, out var func))
-                return;
-            
-            Con.Debug($"Found action for {action}");
-
-            func();*/
+            Interactables[buttonUUID].OnInteraction();
         }
 
         #endregion
