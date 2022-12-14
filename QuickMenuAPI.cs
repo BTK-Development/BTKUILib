@@ -40,14 +40,17 @@ namespace BTKUILib
 
         #region Update Functions
 
-        public static void SetToggleState(ToggleButton toggle, bool state)
-        {
-            if (!UIUtils.IsQMReady()) return;
-            
-        }
-
         internal static void UpdateMenuTitle(string title, string subtitle)
         {
+            if (!BTKUILib.Instance.IsOnMainThread())
+            {
+                BTKUILib.Instance.MainThreadQueue.Enqueue(() =>
+                {
+                    UpdateMenuTitle(title, subtitle);
+                });
+                return;
+            }
+            
             if (!UIUtils.IsQMReady()) return;
             
             CVR_MenuManager.Instance.quickMenu.View.TriggerEvent("btkUpdateTitle", title, subtitle);

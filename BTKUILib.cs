@@ -22,8 +22,10 @@ namespace BTKUILib
         internal Queue<Action> MainThreadQueue = new();
         
         private Thread _mainThread;
+        
+        
 
-        public override void OnApplicationStart()
+        public override void OnInitializeMelon()
         {
             Log = LoggerInstance;
             Instance = this;

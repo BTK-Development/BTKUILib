@@ -10,7 +10,7 @@ namespace BTKUILib
     {
         private static MD5 _hasher = MD5.Create();
         private static FieldInfo _qmReady = typeof(CVR_MenuManager).GetField("_quickMenuReady", BindingFlags.Instance | BindingFlags.NonPublic);
-        
+
         public static bool IsQMReady()
         {
             if (CVR_MenuManager.Instance == null)

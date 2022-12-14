@@ -47,6 +47,7 @@ public class Button : QMInteractable
     {
         _buttonIcon = buttonIcon;
         _buttonText = buttonText;
+        _buttonTooltip = buttonTooltip;
         _category = category;
         
         ElementID = "btkUI-Button-" + UUID;
@@ -60,13 +61,19 @@ public class Button : QMInteractable
     internal override void GenerateCohtml()
     {
         if(!IsGenerated)
-            CVR_MenuManager.Instance.quickMenu.View.TriggerEvent("btkCreateButton", _category.ElementID, _buttonText, _buttonIcon, "This is a test", UUID);
+            CVR_MenuManager.Instance.quickMenu.View.TriggerEvent("btkCreateButton", _category.ElementID, _buttonText, _buttonIcon, _buttonTooltip, UUID);
 
         IsGenerated = true;
     }
 
     private void UpdateButton()
     {
+        if (!BTKUILib.Instance.IsOnMainThread())
+        {
+            BTKUILib.Instance.MainThreadQueue.Enqueue(UpdateButton);
+            return;
+        }
         
+        //TODO Add button update function
     }
 }

@@ -49,8 +49,6 @@ cvr.menu.prototype.BTKUI = {
         pushPageBTK = this.btkPushPage;
         updateTitle = this.btkUpdateTitle;
 
-        console.log("Setting up btkUI");
-
         menu.templates["btkUI-btn"] = {c: "btkUI-btn", s: [{c: "icon"}], x: "btkUI-open", a:{"id":"btkUI-QMButton"}};
         menu.templates["btkUI-shared"] = {c: "btkUI-shared", s:[
                 {c: "container btk-popup-container hide", a: {"id": "btkUI-PopupConfirm"}, s:[
@@ -134,12 +132,9 @@ cvr.menu.prototype.BTKUI = {
 
             ], a:{"id":"btkUI-Root"}};
 
-        console.log("Setting up btkUI 2");
-
-
         menu.templates["btkUIRowContent"] = {c:"row justify-content-start", a:{"id": "btkUI-Row-[UUID]"}};
         menu.templates["btkSlider"] = {c:"", s:[{c:"col-12", s:[{c:"text", h:"[slider-name] - [current-value]", a:{"id": "btkUI-SliderTitle-[slider-id]", "data-title": "[slider-name]"}}]}, {c: "col-12", s:[{c:"slider", s:[{c:"sliderBar", s:[{c:"slider-knob", a:{"id": "btkUI-SliderKnob-[slider-id]"}}], a:{"id": "btkUI-SliderBar-[slider-id]"}}], a:{"id":"btkUI-Slider-[slider-id]", "data-slider": "[slider-id]", "data-slider-value": "[current-value]", "data-min": "[min-value]", "data-max": "[max-value]"}}], a:{"data-tooltip": "[tooltip-text]"}}]};
-        menu.templates["btkToggle"] = {c:"col-3", s:[{c: "toggle", s:[{c:"row", s:[{c:"col align-content-start", s:[{c:"enable circle", a:{"id": "btkUI-toggle-enable"}}]}, {c:"col align-content-end", s:[{c:"disable circle active", a:{"id": "btkUI-toggle-disable"}}]}]},{c:"text-sm", h:"[toggle-name]"}], x: "btkUI-Toggle", a:{"id": "btkUI-Toggle-[toggle-location]-[toggle-page]-[toggle-id]", "data-toggle": "[toggle-location]-[toggle-page]-[toggle-id]", "data-toggleState": "false", "data-tooltip": "[tooltip-data]"}}]};
+        menu.templates["btkToggle"] = {c:"col-3", a:{"id": "btkUI-Toggle-[toggle-id]-Root"}, s:[{c: "toggle", s:[{c:"row", s:[{c:"col align-content-start", s:[{c:"enable circle", a:{"id": "btkUI-toggle-enable"}}]}, {c:"col align-content-end", s:[{c:"disable circle active", a:{"id": "btkUI-toggle-disable"}}]}]},{c:"text-sm", h:"[toggle-name]", a:{"id": "btkUI-Toggle-[toggle-id]-Text"}}], x: "btkUI-Toggle", a:{"id": "btkUI-Toggle-[toggle-id]", "data-toggle": "[toggle-id]", "data-toggleState": "false", "data-tooltip": "[tooltip-data]"}}]};
         menu.templates["btkButton"] = {c:"col-3", a:{"id": "btkUI-Button-[UUID]"}, s:[{c: "button", s:[{c:"icon-[button-icon]"}, {c:"text", h:"[button-text]"}], x: "btkUI-ButtonAction", a:{"data-tooltip": "[button-tooltip]", "data-action": "[button-action]"}}]};
         menu.templates["btkMultiSelectOption"] = {c:"col-12", s: [{c:"dropdown-option", s: [{c:"selection-icon"}, {c:"option-text", h: "[option-text]"}], a: {"id": "btkUI-DropdownOption-[option-index]", "data-index": "[option-index]"}, x: "btkUI-DropdownSelect"}]}
         menu.templates["btkUIRootPage"] = {c: "container container-controls hide", a:{"id": "btkUI-[ModName]-MainPage"}, s:[{c: "scroll-view", s:[{c: "content scroll-content", s:[], a:{"id": "btkUI-[ModName]-MainPage-Content"}}, {c: "scroll-marker-v"}]}]};
@@ -150,8 +145,6 @@ cvr.menu.prototype.BTKUI = {
         menu.templates["core-quickmenu"].l.push("btkUI-btn");
         menu.templates["core-quickmenu"].l.push("btkUI-shared");
         menu.templates["core-quickmenu"].l.push("btkUI-menu");
-
-        console.log("Setting up btkUI 3");
 
         uiRefBTK.actions["btkUI-open"] = this.actions.btkOpen;
         uiRefBTK.actions["btkUI-Test"] = this.actions.test;
@@ -168,8 +161,6 @@ cvr.menu.prototype.BTKUI = {
         uiRefBTK.actions["btkUI-NumSubmit"] = this.actions.btkNumSubmit;
         uiRefBTK.actions["btkUI-TabChange"] = this.actions.btkTabChange;
 
-        console.log("Setting up btkUI 5");
-
         engine.on("btkModInit", this.btkUILibInit);
         engine.on("btkCreateToggle", this.btkCreateToggle);
         engine.on("btkSetToggleState", this.btkSetToggleState);
@@ -185,8 +176,7 @@ cvr.menu.prototype.BTKUI = {
         engine.on("btkUpdateTitle", this.btkUpdateTitle);
         engine.on("btkCreateRow", this.btkCreateRow);
         engine.on("btkUpdateText", this.btkUpdateText);
-
-        console.log("Setting up btkUI done");
+        engine.on("btkPushPage", this.btkPushPage);
     },
 
     init: function(menu){
@@ -384,24 +374,22 @@ cvr.menu.prototype.BTKUI = {
         cvr("#btkUI-PopupNotice").show();
     },
 
-    btkCreateToggle: function(settingsCategory, pageID, toggleName, toggleID, tooltip, state)
+    btkCreateToggle: function(parentID, toggleName, toggleID, tooltip, state)
     {
-        let targetRow = cvr("#btkUI-" + pageID + "-" + settingsCategory);
+        let target = cvr("#" + parentID);
 
-        if(targetRow == null) {
-            console.error("Attempted to create a settings toggle for a category that doesn't exist! Category=" + settingsCategory)
+        if(target == null) {
+            console.error("Attempted to create a toggle in a parent that doesn't exist! - " + parentID);
             return;
         }
 
-        targetRow.appendChild(cvr.render(uiRefBTK.templates["btkToggle"], {
+        target.appendChild(cvr.render(uiRefBTK.templates["btkToggle"], {
             "[toggle-name]": toggleName,
             "[toggle-id]": toggleID,
             "[tooltip-data]": tooltip,
-            "[toggle-location]": settingsCategory,
-            "[toggle-page]": pageID
         }, uiRefBTK.templates, uiRefBTK.actions));
 
-        newToggle = document.getElementById("btkUI-Toggle-" + settingsCategory + "-" + pageID + "-" + toggleID);
+        newToggle = document.getElementById("btkUI-Toggle-" + toggleID);
 
         let enabled = newToggle.querySelector("#btkUI-toggle-enable");
         let disabled = newToggle.querySelector("#btkUI-toggle-disable");
@@ -464,11 +452,11 @@ cvr.menu.prototype.BTKUI = {
         cvr("#btkUI-DropdownHeader").innerHTML(name);
 
         cvr("#btkUI-DropdownPage").show();
-        cvr("#btkUI-" + currentPageBTK).hide();
+        cvr("#" + currentPageBTK).hide();
 
-        breadcrumbsBTK.push(currentPage);
+        breadcrumbsBTK.push(currentPageBTK);
 
-        engine.call("btkUI-OpenedPage", "DropdownPage", currentPage);
+        engine.call("btkUI-OpenedPage", "DropdownPage", currentPageBTK);
 
         currentPageBTK = "DropdownPage";
     },
@@ -483,20 +471,18 @@ cvr.menu.prototype.BTKUI = {
         uiRefBTK.core.playSoundCore("Click");
 
         cvr("#btkUI-NumberEntry").show();
-        cvr("#btkUI-" + currentPageBTK).hide();
+        cvr("#" + currentPageBTK).hide();
 
-        breadcrumbsBTK.push(currentPage);
+        breadcrumbsBTK.push(currentPageBTK);
 
-        engine.call("btkUI-OpenedPage", "NumberEntry", currentPage);
+        engine.call("btkUI-OpenedPage", "NumberEntry", currentPageBTK);
 
-        currentPageBTK = "NumberEntry";
+        currentPageBTK = "btkUI-NumberEntry";
     },
 
     btkPushPage: function (targetPage, modPage = currentMod){
         if(currentPageBTK === targetPage)
             return;
-
-        console.log("Switching page to " + targetPage + " | modPage = " + modPage);
 
         cvr("#" + targetPage).show();
         cvr("#" + currentPageBTK).hide();
@@ -512,6 +498,7 @@ cvr.menu.prototype.BTKUI = {
             currentMod = modPage;
 
             breadcrumbsBTK.length = 0;
+            breadcrumbsBTK.push(targetPage);
         }
     },
 
@@ -538,8 +525,16 @@ cvr.menu.prototype.BTKUI = {
         }, uiRefBTK.templates, uiRefBTK.actions))
     },
 
-    btkCreatePage: function (pageName, modName, elementID, rootPage){
-        if(!rootPage) return;
+    btkCreatePage: function (pageName, modName, elementID, rootPage, cleanedPageName){
+        if(!rootPage) {
+            cvr("#btkUI-Root").appendChild(cvr.render(uiRefBTK.templates["btkUIPage"], {
+                "[ModName]": modName,
+                "[ModPage]": cleanedPageName,
+                "[PageHeader]": pageName,
+            }, uiRefBTK.templates, uiRefBTK.actions));
+
+            return;
+        }
 
         cvr("#btkUI-TabRoot").appendChild(cvr.render(uiRefBTK.templates["btkUITab"], {
             "[RootTarget]": elementID,
@@ -614,8 +609,8 @@ cvr.menu.prototype.BTKUI = {
 
             let target = breadcrumbsBTK.pop();
 
-            cvr("#btkUI-" + target).show();
-            cvr("#btkUI-" + currentPageBTK).hide();
+            cvr("#" + target).show();
+            cvr("#" + currentPageBTK).hide();
 
             engine.call("btkUI-BackAction", target, currentPageBTK);
 
@@ -652,14 +647,14 @@ cvr.menu.prototype.BTKUI = {
             }
             uiRefBTK.core.playSoundCore("Click");
 
-            let target = breadcrumbs.pop();
+            let target = breadcrumbsBTK.pop();
 
-            cvr("#btkUI-" + target).show();
-            cvr("#btkUI-" + currentPage).hide();
+            cvr("#" + target).show();
+            cvr("#" + currentPageBTK).hide();
 
-            engine.call("btkUI-BackAction", target, currentPage);
+            engine.call("btkUI-BackAction", target, currentPageBTK);
 
-            currentPage = target;
+            currentPageBTK = target;
         },
         btkNumBack: function (){
             let display = document.getElementById("btkUI-numDisplay");

@@ -17,7 +17,6 @@ namespace BTKUILib
     {
         public static UserInterface Instance;
         public static List<SliderFloat> SliderFloats = new();
-        public static List<ToggleButton> ToggleButtons = new();
         public static List<Page> RootPages = new();
         internal static List<QMUIElement> QMElements = new();
         internal static Dictionary<string, QMInteractable> Interactables = new();
@@ -180,7 +179,13 @@ namespace BTKUILib
         
         private void OnToggle(string toggleID, bool state)
         {
-            MelonDebug.Msg($"Toggle state changed for {toggleID} to {state}");
+            if (!Interactables.ContainsKey(toggleID))
+            {
+                BTKUILib.Log.Error($"OnToggle triggered for toggle that is not registered as an interactable! {toggleID}");
+                return;
+            }
+            
+            Interactables[toggleID].OnInteraction(state);
         }
         
         private void NoticeClose()

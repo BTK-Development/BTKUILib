@@ -43,14 +43,17 @@ namespace BTKUILib.UIObjects
             ModName = modName;
             RootPage = rootPage;
             
-            UserInterface.RootPages.Add(this);
+            if(rootPage)
+                UserInterface.RootPages.Add(this);
             
             ElementID = $"btkUI-{UIUtils.GetCleanName(modName)}-{UIUtils.GetCleanName(pageName)}";
         }
 
         public void OpenPage()
         {
+            if (!UIUtils.IsQMReady() || !IsGenerated) return;
             
+            CVR_MenuManager.Instance.quickMenu.View.TriggerEvent("btkPushPage", ElementID);
         }
 
         public Category AddCategory(string categoryName)
@@ -69,7 +72,7 @@ namespace BTKUILib.UIObjects
         internal override void GenerateCohtml()
         {
             if(!IsGenerated)
-                CVR_MenuManager.Instance.quickMenu.View.TriggerEvent("btkCreatePage", PageName, ModName, ElementID, true);
+                CVR_MenuManager.Instance.quickMenu.View.TriggerEvent("btkCreatePage", PageName, ModName, ElementID, RootPage, UIUtils.GetCleanName(PageName));
             
             IsGenerated = true;
             

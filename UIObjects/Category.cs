@@ -46,6 +46,38 @@ namespace BTKUILib.UIObjects
             return button;
         }
 
+        public ToggleButton AddToggle(string toggleText, string toggleTooltip, bool state)
+        {
+            var toggle = new ToggleButton(toggleText, toggleTooltip, state, this);
+            CategoryElements.Add(toggle);
+            
+            if(UIUtils.IsQMReady())
+                toggle.GenerateCohtml();
+
+            return toggle;
+        }
+
+        public Page AddPage(string pageName, string pageIcon, string pageTooltip, string modName)
+        {
+            var page = new Page(modName, pageName);
+            CategoryElements.Add(page);
+
+            var pageButton = new Button($"Open {pageName}", pageIcon, pageTooltip, this);
+            CategoryElements.Add(pageButton);
+            pageButton.OnPress += () =>
+            {
+                page.OpenPage();
+            };
+
+            if (UIUtils.IsQMReady())
+            {
+                page.GenerateCohtml();
+                pageButton.GenerateCohtml();
+            }
+
+            return page;
+        }
+
         internal override void GenerateCohtml()
         {
             if(!IsGenerated)
@@ -59,6 +91,12 @@ namespace BTKUILib.UIObjects
         
         private void UpdateCategoryName()
         {
+            if (!BTKUILib.Instance.IsOnMainThread())
+            {
+                BTKUILib.Instance.MainThreadQueue.Enqueue(UpdateCategoryName);
+                return;
+            }
+            
             if (!UIUtils.IsQMReady()) return;
             
             CVR_MenuManager.Instance.quickMenu.View.TriggerEvent("btkUpdateText", $"btkUI-Row-HeaderText-{UUID}", _categoryName);
