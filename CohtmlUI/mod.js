@@ -437,7 +437,7 @@ cvr.menu.prototype.BTKUI = {
         element.clear();
 
         for(let i=0; i<options.length; i++){
-            let option = element.appendChild(cvr.render(uiRefBTK.templates["twMultiSelectOption"], {
+            let option = element.appendChild(cvr.render(uiRefBTK.templates["btkMultiSelectOption"], {
                 "[option-text]": options[i],
                 "[option-index]": i,
             }, uiRefBTK.templates, uiRefBTK.actions));
@@ -458,7 +458,7 @@ cvr.menu.prototype.BTKUI = {
 
         engine.call("btkUI-OpenedPage", "DropdownPage", currentPageBTK);
 
-        currentPageBTK = "DropdownPage";
+        currentPageBTK = "btkUI-DropdownPage";
     },
     btkOpenNumberInput: function(name, number) {
         let display = document.getElementById("btkUI-numDisplay");

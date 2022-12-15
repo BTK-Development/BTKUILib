@@ -22,8 +22,7 @@ namespace BTKUILib
         internal static Dictionary<string, QMInteractable> Interactables = new();
 
         public Page SelectedPage;
-
-        private MultiSelection SelectedMultiSelect;
+        internal MultiSelection SelectedMultiSelect;
 
         internal void SetupUI()
         {

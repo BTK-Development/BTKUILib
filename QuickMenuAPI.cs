@@ -86,6 +86,12 @@ namespace BTKUILib
             CVR_MenuManager.Instance.quickMenu.View.TriggerEvent("btkOpenNumberInput", name, input);
         }
         
+        public static void OpenMultiSelect(MultiSelection multiSelection)
+        {
+            UserInterface.Instance.SelectedMultiSelect = multiSelection;
+            CVR_MenuManager.Instance.quickMenu.View.TriggerEvent("btkOpenMultiSelect", multiSelection.Name, multiSelection.Options, multiSelection.SelectedOption);
+        }
+        
         #endregion
     }
 }
