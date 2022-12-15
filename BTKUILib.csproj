@@ -40,13 +40,13 @@
           <HintPath>..\3rdparty\Managed\Assembly-CSharp.dll</HintPath>
         </Reference>
         <Reference Include="cohtml.Net">
-          <HintPath>..\3rdparty\publicizer\cohtml.Net-nstrip.dll</HintPath>
+          <HintPath>..\3rdparty\Managed\cohtml.Net.dll</HintPath>
         </Reference>
         <Reference Include="Cohtml.RenderingBackend">
           <HintPath>..\3rdparty\Managed\Cohtml.RenderingBackend.dll</HintPath>
         </Reference>
         <Reference Include="Cohtml.Runtime">
-          <HintPath>..\3rdparty\publicizer\Cohtml.Runtime-nstrip.dll</HintPath>
+          <HintPath>..\3rdparty\Managed\Cohtml.Runtime.dll</HintPath>
         </Reference>
         <Reference Include="MelonLoader">
           <HintPath>..\3rdparty\ml\MelonLoader.dll</HintPath>
