@@ -45,7 +45,7 @@
     }
 
     .icon {
-      background: url("images/BTKIcon.png");
+      background: url("images/Multiuser.png");
       background-size: cover;
       background-repeat: no-repeat;
 
@@ -88,6 +88,11 @@
       .tab-content {
         font-size: 2vw;
         text-align: center;
+        margin-top: 10px;
+        height: 100%;
+        background-image: url("images/Home-Icon.png");
+        background-size: contain;
+        background-repeat: no-repeat;
       }
     }
 
@@ -128,7 +133,7 @@
     border-radius: 10px;
     position: absolute;
     box-shadow: 20px 20px 100px black;
-    z-index: 1;
+    z-index: 2;
 
     .header {
       font-size: @font-size-bigger;
@@ -265,7 +270,7 @@
     }
 
     .icon-close {
-      background: url("images/TW-Close.png");
+      background: url("images/BTK-Close.png");
       background-size: cover;
       background-repeat: no-repeat;
       height: 100px;
@@ -408,7 +413,7 @@
     }
 
     .disable {
-      background: url("images/TW-Close.png");
+      background: url("images/BTK-Close.png");
       background-size: cover;
       background-repeat: no-repeat;
 
@@ -468,12 +473,48 @@
     }
 
     .icon {
-      background: url("images/TW-Close.png");
+      background: url("images/BTK-Close.png");
       background-size: cover;
       background-repeat: no-repeat;
       height: 150px;
       width: 150px;
       margin-left: 45px;
+    }
+  }
+
+  .button-user {
+    border: 3px solid @standard-text-color;
+    border-radius: 10px;
+    background: transparent;
+    padding: 3px;
+    width: 250px;
+    height: 250px;
+    color: @standard-text-color;
+    font-size: @font-size-big;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    align-content: center;
+    background: url("images/BTK-Close.png");
+    background-size: cover;
+    background-repeat: no-repeat;
+
+    &:hover {
+      filter: brightness(75%);
+    }
+
+    &:active {
+      border: 3px solid @color-btn-primary;
+    }
+
+    .text {
+      text-align: center;
+      margin-left: auto;
+      margin-right: auto;
+      display: inline;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 100%;
+      text-shadow: #000 0 0 10px;
     }
   }
 
@@ -513,7 +554,7 @@
     }
 
     .icon-close {
-      background: url("images/TW-Close.png");
+      background: url("images/BTK-Close.png");
       background-size: cover;
       background-repeat: no-repeat;
       height: 150px;

@@ -1,16 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading;
+using ABI_RC.Core.InteractionSystem;
+using BTKUILib.UIObjects;
 using MelonLoader;
 
 namespace BTKUILib
 {
-    public static class BuildInfo
+    internal static class BuildInfo
     {
         public const string Name = "BTKUILib";
         public const string Author = "BTK Development Team";
         public const string Company = "BTK Development";
-        public const string Version = "0.0.1-alpha";
+        public const string Version = "0.1.0-preview";
     }
     
     internal class BTKUILib : MelonMod
@@ -20,8 +22,11 @@ namespace BTKUILib
 
         internal UserInterface UI;
         internal Queue<Action> MainThreadQueue = new();
-        
+
+        private MelonPreferences_Entry<bool> _displayPrefsTab;
+
         private Thread _mainThread;
+        private Page _mlPrefsPage;
 
         public override void OnInitializeMelon()
         {
@@ -30,14 +35,75 @@ namespace BTKUILib
             _mainThread = Thread.CurrentThread;
             
             Log.Msg("BTKUILib is starting up!");
+
+            MelonPreferences.CreateCategory("BTKUILib", "BTKUILib");
+            _displayPrefsTab = MelonPreferences.CreateEntry("BTKUILib", "DisplayPrefsTab", false, "Display MelonPrefs Tab", "Sets if the MelonLoader Prefs tab should be displayed");
+            _displayPrefsTab.OnEntryValueChanged.Subscribe((_, b1) =>
+            {
+                if (!b1 && _mlPrefsPage != null)
+                {
+                    _mlPrefsPage.Delete();
+                    _mlPrefsPage = null;
+                }
+                else
+                {
+                    GenerateMlPrefsTab(null);
+                }
+            });
             
             Patches.Initialize(HarmonyInstance);
 
             UI = new UserInterface();
             UI.SetupUI();
+
+            QuickMenuAPI.PlayerSelectPage = new Page("btkUI-PlayerSelectPage");
+            
+            QuickMenuAPI.OnMenuRegenerate += GenerateMlPrefsTab;
         }
-        
-        public bool IsOnMainThread(Thread thread = null)
+
+        private void GenerateMlPrefsTab(CVR_MenuManager obj)
+        {
+            if(_mlPrefsPage != null) return;
+            if (!_displayPrefsTab.Value) return;
+
+            _mlPrefsPage = new Page("MelonLoader", "Prefs", true, "Settings");
+            _mlPrefsPage.MenuTitle = "MelonLoader Preferences";
+            _mlPrefsPage.MenuSubtitle = "Control your MelonLoader Preferences from other mods!";
+
+            var prefCat = _mlPrefsPage.AddCategory("Categories");
+
+            foreach (var category in MelonPreferences.Categories)
+            {
+                var page = prefCat.AddPage(category.DisplayName, "", $"Opens the preferences category for {category.DisplayName}", "MelonLoader");
+                var pageCat = page.AddCategory("Preferences");
+
+                foreach (var pref in category.Entries)
+                {
+                    if (pref.GetReflectedType() == typeof(bool))
+                    {
+                        var toggle = pageCat.AddToggle(pref.DisplayName, pref.Description, (bool)pref.BoxedValue);
+                        toggle.OnValueUpdated += b =>
+                        {
+                            pref.BoxedValue = b;
+                        };
+
+                        if (pref.GetReflectedType() == typeof(string))
+                        {
+                            var button = pageCat.AddButton($"Edit {pref.DisplayName}", "", pref.Description);
+                            button.OnPress += () =>
+                            {
+                                QuickMenuAPI.OpenKeyboard((string)pref.BoxedValue, s =>
+                                {
+                                    pref.BoxedValue = s;
+                                });
+                            };
+                        }
+                    }
+                }
+            }
+        }
+
+        internal bool IsOnMainThread(Thread thread = null)
         {
             thread ??= Thread.CurrentThread;
 

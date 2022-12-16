@@ -6,11 +6,18 @@ using ABI_RC.Core.InteractionSystem;
 
 namespace BTKUILib
 {
-    public class UIUtils
+    /// <summary>
+    /// Basic utilities used within the UI
+    /// </summary>
+    public static class UIUtils
     {
         private static MD5 _hasher = MD5.Create();
         private static FieldInfo _qmReady = typeof(CVR_MenuManager).GetField("_quickMenuReady", BindingFlags.Instance | BindingFlags.NonPublic);
 
+        /// <summary>
+        /// Check if the CVR_MenuManager view is ready
+        /// </summary>
+        /// <returns>True if view is ready, false if it's not</returns>
         public static bool IsQMReady()
         {
             if (CVR_MenuManager.Instance == null)
@@ -19,9 +26,14 @@ namespace BTKUILib
             return (bool)_qmReady.GetValue(CVR_MenuManager.Instance);
         }
         
-        public static string GetCleanName(string name)
+        /// <summary>
+        /// Clean non alphanumeric characters from a given string
+        /// </summary>
+        /// <param name="input">Input string</param>
+        /// <returns>Cleaned string</returns>
+        public static string GetCleanString(string input)
         {
-            return Regex.Replace(Regex.Replace(name, "<.*?>", string.Empty), @"[^0-9a-zA-Z_]+", string.Empty);
+            return Regex.Replace(Regex.Replace(input, "<.*?>", string.Empty), @"[^0-9a-zA-Z_]+", string.Empty);
         }
         
         internal static string CreateMD5(string input)

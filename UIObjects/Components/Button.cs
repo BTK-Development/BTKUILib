@@ -4,8 +4,14 @@ using cohtml;
 
 namespace BTKUILib.UIObjects.Components;
 
+/// <summary>
+/// Basic button element
+/// </summary>
 public class Button : QMInteractable
 {
+    /// <summary>
+    /// Get or set the text displayed on this button, will update on the fly
+    /// </summary>
     public string ButtonText
     {
         get => _buttonText;
@@ -16,6 +22,9 @@ public class Button : QMInteractable
         }
     }
 
+    /// <summary>
+    /// Get or set the button icon, will update on the fly
+    /// </summary>
     public string ButtonIcon
     {
         get => _buttonIcon;
@@ -26,6 +35,9 @@ public class Button : QMInteractable
         }
     }
     
+    /// <summary>
+    /// Get or set the tooltip displayed on this button, will update on the fly
+    /// </summary>
     public string ButtonTooltip
     {
         get => _buttonTooltip;
@@ -36,6 +48,9 @@ public class Button : QMInteractable
         }
     }
 
+    /// <summary>
+    /// Action to listen for clicks of the button
+    /// </summary>
     public Action OnPress;
 
     private string _buttonText;

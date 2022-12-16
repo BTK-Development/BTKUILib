@@ -4,8 +4,14 @@ using cohtml;
 
 namespace BTKUILib.UIObjects.Components
 {
+    /// <summary>
+    /// Basic toggle button element
+    /// </summary>
     public class ToggleButton : QMInteractable
     {
+        /// <summary>
+        /// Gets or sets the current state of the toggle, will update on the fly
+        /// </summary>
         public bool ToggleValue
         {
             get => _toggleValue;
@@ -16,6 +22,9 @@ namespace BTKUILib.UIObjects.Components
             }
         }
 
+        /// <summary>
+        /// Get or set the current name of the toggle, will update on the fly
+        /// </summary>
         public string ToggleName
         {
             get => _toggleName;
@@ -26,6 +35,9 @@ namespace BTKUILib.UIObjects.Components
             }
         }
 
+        /// <summary>
+        /// Get or set the current tooltip displayed on this toggle, will update on the fly
+        /// </summary>
         public string ToggleTooltip
         {
             get => _toggleTooltip;
@@ -36,6 +48,9 @@ namespace BTKUILib.UIObjects.Components
             }
         }
 
+        /// <summary>
+        /// Action to listen for changes of the toggle state
+        /// </summary>
         public Action<bool> OnValueUpdated;
 
         private bool _toggleValue;

@@ -2,6 +2,9 @@
 
 namespace BTKUILib.UIObjects
 {
+    /// <summary>
+    /// This object is the base class for all other UI elements
+    /// </summary>
     public class QMUIElement
     {
         /// <summary>
@@ -19,7 +22,12 @@ namespace BTKUILib.UIObjects
         /// </summary>
         public bool IsGenerated;
 
-        public QMUIElement()
+        /// <summary>
+        /// Set to prevent changes to some elements (Internal use)
+        /// </summary>
+        internal bool Protected;
+
+        internal QMUIElement()
         {
             UUID = Guid.NewGuid().ToString();
             UserInterface.QMElements.Add(this);
@@ -30,7 +38,9 @@ namespace BTKUILib.UIObjects
         /// </summary>
         public void Delete()
         {
-            QuickMenuAPI.DeleteElement(this);
+            if (Protected) return;
+
+            
         }
 
         /// <summary>

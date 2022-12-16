@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using ABI_RC.Core.InteractionSystem;
+using ABI_RC.Core.Player;
 using BTKUILib.UIObjects;
 using BTKUILib.UIObjects.Components;
 using BTKUILib.UIObjects.Objects;
@@ -15,13 +16,13 @@ namespace BTKUILib
 {
     internal class UserInterface
     {
-        public static UserInterface Instance;
-        public static List<SliderFloat> SliderFloats = new();
-        public static List<Page> RootPages = new();
+        internal static UserInterface Instance;
+        
+        internal static List<Page> RootPages = new();
         internal static List<QMUIElement> QMElements = new();
+        internal static Dictionary<string, SliderFloat> Sliders = new();
         internal static Dictionary<string, QMInteractable> Interactables = new();
-
-        public Page SelectedPage;
+        
         internal MultiSelection SelectedMultiSelect;
 
         internal void SetupUI()
@@ -29,30 +30,12 @@ namespace BTKUILib
             Instance = this;
 
             QuickMenuAPI.OnMenuRegenerate += OnMenuRegenerate;
+            QuickMenuAPI.UserJoin += UserJoin;
+            QuickMenuAPI.UserLeave += UserLeave;
             
             BTKUILib.Log.Msg("Checking if BTKUI is updated...");
             CheckUpdateUI();
         }
-
-        #region Element Creation
-
-        public static void CreatePage(Page page)
-        {
-            //Check if CreatePage has been ran on main thread, otherwise queue up for main thread
-            if (BTKUILib.Instance.IsOnMainThread())
-            {
-                BTKUILib.Instance.MainThreadQueue.Enqueue(() =>
-                {
-                    CreatePage(page);
-                });
-
-                return;
-            }
-
-            CVR_MenuManager.Instance.quickMenu.View.TriggerEvent("btkCreatePage", page.PageName, page.RootPage);
-        }
-
-        #endregion
 
         private void OnMenuRegenerate(CVR_MenuManager cvrMenuManager)
         {
@@ -66,7 +49,6 @@ namespace BTKUILib
             CVR_MenuManager.Instance.quickMenu.View.BindCall("btkUI-PopupConfirmOK", new Action(ConfirmOK));
             CVR_MenuManager.Instance.quickMenu.View.BindCall("btkUI-PopupConfirmNo", new Action(ConfirmNo));
             CVR_MenuManager.Instance.quickMenu.View.BindCall("btkUI-PopupNoticeOK", new Action(NoticeClose));
-            CVR_MenuManager.Instance.quickMenu.View.BindCall("btkUI-OpenMainMenu", new Action(OpenMainMenu));
             CVR_MenuManager.Instance.quickMenu.View.BindCall("btkUI-SliderValueUpdated", new Action<string, string>(OnSliderUpdated));
             CVR_MenuManager.Instance.quickMenu.View.BindCall("btkUI-OpenedPage", new Action<string, string>(OnOpenedPageEvent));
             CVR_MenuManager.Instance.quickMenu.View.BindCall("btkUI-BackAction", new Action<string, string>(OnBackActionEvent));
@@ -74,6 +56,7 @@ namespace BTKUILib
             CVR_MenuManager.Instance.quickMenu.View.BindCall("btkUI-NumSubmit", new Action<string>(OnNumberInputSubmitted));
             CVR_MenuManager.Instance.quickMenu.View.BindCall("btkUI-RootCreated", new Action<string, string>(OnRootCreated));
             CVR_MenuManager.Instance.quickMenu.View.BindCall("btkUI-TabChange", new Action<string>(OnTabChange));
+            CVR_MenuManager.Instance.quickMenu.View.BindCall("btkUI-SelectedPlayer", new Action<string, string>(OnSelectedPlayer));
             
             CVR_MenuManager.Instance.quickMenu.View.TriggerEvent("btkModInit");
             
@@ -85,7 +68,24 @@ namespace BTKUILib
             }
         }
 
+        private void UserLeave(CVRPlayerEntity obj)
+        {
+            CVR_MenuManager.Instance.quickMenu.View.TriggerEvent("btkRemovePlayer", obj.Uuid);
+        }
+
+        private void UserJoin(CVRPlayerEntity obj)
+        {
+            CVR_MenuManager.Instance.quickMenu.View.TriggerEvent("btkAddPlayer", obj.Username, obj.Uuid, obj.ApiProfileImageUrl);
+        }
+
         #region Cohtml Event Functions
+        
+        private void OnSelectedPlayer(string playerName, string playerID)
+        {
+            QuickMenuAPI.SelectedPlayerName = playerName;
+            QuickMenuAPI.SelectedPlayerID = playerID;
+            QuickMenuAPI.OnPlayerSelected?.Invoke(playerName, playerID);
+        }
         
         private void OnTabChange(string tabTarget)
         {
@@ -159,23 +159,11 @@ namespace BTKUILib
             if (!float.TryParse(value, out var valueFloat))
                 return;
 
-            var sliders = SliderFloats.Where(x => x.ElementID.Equals(sliderID));
+            if (!Sliders.ContainsKey(sliderID)) return;
 
-            foreach (var slider in sliders)
-                slider.SliderValue = valueFloat;
+            Sliders[sliderID].SliderValue = valueFloat;
         }
-        
-        private void OpenMainMenu()
-        {
-            QuickMenuAPI.ShowConfirm("Testing", "Hello world!", "Memes", () =>
-            {
-                BTKUILib.Log.Msg("Hey a button press");
-            }, "No Memes", () =>
-            {
-                BTKUILib.Log.Msg("Hey a different button press!");
-            });
-        }
-        
+
         private void OnToggle(string toggleID, bool state)
         {
             if (!Interactables.ContainsKey(toggleID))

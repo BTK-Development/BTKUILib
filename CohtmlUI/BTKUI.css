@@ -13,7 +13,7 @@
   filter: brightness(75%);
 }
 #quickmenu-wrapper .btkUI-btn .icon {
-  background: url("images/BTKIcon.png");
+  background: url("images/Multiuser.png");
   background-size: cover;
   background-repeat: no-repeat;
   height: 150px;
@@ -50,6 +50,11 @@
 #quickmenu-wrapper .container-tabs .tab .tab-content {
   font-size: 2vw;
   text-align: center;
+  margin-top: 10px;
+  height: 100%;
+  background-image: url("images/Home-Icon.png");
+  background-size: contain;
+  background-repeat: no-repeat;
 }
 #quickmenu-wrapper .container-tabs .tab:hover {
   filter: brightness(75%);
@@ -83,7 +88,7 @@
   border-radius: 10px;
   position: absolute;
   box-shadow: 20px 20px 100px black;
-  z-index: 1;
+  z-index: 2;
 }
 #quickmenu-wrapper .btk-popup-container .header {
   font-size: 48px;
@@ -199,7 +204,7 @@
   width: 100px;
 }
 .btkUI .container-controls .icon-close {
-  background: url("images/TW-Close.png");
+  background: url("images/BTK-Close.png");
   background-size: cover;
   background-repeat: no-repeat;
   height: 100px;
@@ -321,7 +326,7 @@
   margin-bottom: 30px;
 }
 .btkUI .toggle .disable {
-  background: url("images/TW-Close.png");
+  background: url("images/BTK-Close.png");
   background-size: cover;
   background-repeat: no-repeat;
   height: 60px;
@@ -371,12 +376,44 @@
   max-width: 100%;
 }
 .btkUI .button .icon {
-  background: url("images/TW-Close.png");
+  background: url("images/BTK-Close.png");
   background-size: cover;
   background-repeat: no-repeat;
   height: 150px;
   width: 150px;
   margin-left: 45px;
+}
+.btkUI .button-user {
+  border: 3px solid #D2D2D2;
+  border-radius: 10px;
+  background: transparent;
+  padding: 3px;
+  width: 250px;
+  height: 250px;
+  color: #D2D2D2;
+  font-size: 36px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  align-content: center;
+  background: url("images/BTK-Close.png");
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+.btkUI .button-user:hover {
+  filter: brightness(75%);
+}
+.btkUI .button-user:active {
+  border: 3px solid #1664BE;
+}
+.btkUI .button-user .text {
+  text-align: center;
+  margin-left: auto;
+  margin-right: auto;
+  display: inline;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+  text-shadow: #000 0 0 10px;
 }
 .btkUI .int-button {
   border: 2px solid #D2D2D2;
@@ -411,7 +448,7 @@
   align-content: center;
 }
 .btkUI .int-button .icon-close {
-  background: url("images/TW-Close.png");
+  background: url("images/BTK-Close.png");
   background-size: cover;
   background-repeat: no-repeat;
   height: 150px;
