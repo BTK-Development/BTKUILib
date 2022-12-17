@@ -12,7 +12,7 @@ namespace BTKUILib
         public const string Name = "BTKUILib";
         public const string Author = "BTK Development Team";
         public const string Company = "BTK Development";
-        public const string Version = "0.2.1-preview";
+        public const string Version = "0.2.2-preview";
     }
     
     internal class BTKUILib : MelonMod
@@ -68,6 +68,8 @@ namespace BTKUILib
             _mlPrefsPage.MenuTitle = "MelonLoader Preferences";
             _mlPrefsPage.MenuSubtitle = "Control your MelonLoader Preferences from other mods!";
             _mlPrefsPage.Protected = true;
+            
+            _mlPrefsPage.GenerateCohtml();
 
             var prefCat = _mlPrefsPage.AddCategory("Categories");
 
@@ -100,8 +102,6 @@ namespace BTKUILib
                     }
                 }
             }
-            
-            _mlPrefsPage.GenerateCohtml();
         }
 
         internal bool IsOnMainThread(Thread thread = null)
