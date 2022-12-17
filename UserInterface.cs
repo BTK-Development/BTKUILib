@@ -66,6 +66,9 @@ namespace BTKUILib
                 BTKUILib.Log.Msg($"Creating root page | Name: {root.PageName} | ModName: {root.ModName} | ElementID: {root.ElementID}");
                 root.GenerateCohtml();
             }
+            
+            //Run the ml prefs tab generation
+            BTKUILib.Instance.GenerateMlPrefsTab();
         }
 
         private void UserLeave(CVRPlayerEntity obj)

@@ -1,4 +1,6 @@
 ﻿using System;
+using ABI_RC.Core.InteractionSystem;
+using cohtml;
 
 namespace BTKUILib.UIObjects
 {
@@ -36,11 +38,18 @@ namespace BTKUILib.UIObjects
         /// <summary>
         /// Deletes this element from the QuickMenu
         /// </summary>
-        public void Delete()
+        public virtual void Delete()
         {
-            if (Protected) return;
+            if (Protected)
+            {
+                BTKUILib.Log.Error($"You cannot delete a protected element! ElementID: {ElementID}");
+                return;
+            }
 
-            
+            UserInterface.QMElements.Remove(this);
+
+            if (!UIUtils.IsQMReady()) return;
+            CVR_MenuManager.Instance.quickMenu.View.TriggerEvent("btkDeleteElement", ElementID);
         }
 
         /// <summary>

@@ -68,6 +68,20 @@ namespace BTKUILib.UIObjects.Components
             ElementID = $"btkUI-Toggle-{UUID}";
         }
 
+        /// <inheritdoc />
+        public override void Delete()
+        {
+            if (Protected)
+                BTKUILib.Log.Error($"You cannot delete a protected element! ElementID: {ElementID}");
+            
+            _category.CategoryElements.Remove(this);
+            
+            UserInterface.QMElements.Remove(this);
+
+            if (!UIUtils.IsQMReady()) return;
+            CVR_MenuManager.Instance.quickMenu.View.TriggerEvent("btkDeleteElement", $"{ElementID}-Root");
+        }
+
         internal override void OnInteraction(bool? toggle = null)
         {
             if (toggle == null)
@@ -99,6 +113,8 @@ namespace BTKUILib.UIObjects.Components
             if (!UIUtils.IsQMReady()) return;
             
             CVR_MenuManager.Instance.quickMenu.View.TriggerEvent("btkSetToggleState", ElementID, _toggleValue);
+            CVR_MenuManager.Instance.quickMenu.View.TriggerEvent("btkUpdateTooltip", $"{ElementID}-Tooltip", _toggleTooltip);
+            CVR_MenuManager.Instance.quickMenu.View.TriggerEvent("btkUpdateText", $"{ElementID}-Text", _toggleName);
         }
     }
 }

@@ -109,6 +109,16 @@ namespace BTKUILib.UIObjects.Components
             _sliderValue = value;
             UpdateSlider();
         }
+        
+        /// <inheritdoc />
+        public override void Delete()
+        {
+            base.Delete();
+            
+            if (Protected) return;
+            
+            _page.PageElements.Remove(this);
+        }
 
         internal override void GenerateCohtml()
         {

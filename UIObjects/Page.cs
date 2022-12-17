@@ -37,7 +37,7 @@ namespace BTKUILib.UIObjects
                     QuickMenuAPI.UpdateMenuTitle(_menuTitle, _menuSubtitle);
             }
         }
-        
+
         internal bool RootPage;
         internal string PageName = "MainPage";
         internal readonly string ModName;
@@ -46,6 +46,8 @@ namespace BTKUILib.UIObjects
         private string _menuSubtitle;
         private string _tabIcon;
         private string _menuTitle;
+        private Category _category;
+        private string _tabID;
 
         /// <summary>
         /// Create a new page object, this will automatically be created within Cohtml when it is ready
@@ -54,21 +56,28 @@ namespace BTKUILib.UIObjects
         /// <param name="pageName">Name of the page, this isn't visible anywhere</param>
         /// <param name="rootPage">Sets if this page should also generate a tab</param>
         /// <param name="tabIcon">Icon to be displayed on the tab</param>
-        public Page(string modName, string pageName, bool rootPage = false, string tabIcon = null)
+        /// <param name="category">Only set if this page was created from a category</param>
+        public Page(string modName, string pageName, bool rootPage = false, string tabIcon = null, Category category = null)
         {
             if(!rootPage)
                 PageName = pageName;
             ModName = modName;
             RootPage = rootPage;
             _tabIcon = tabIcon;
-            
-            if(rootPage)
+            _category = category;
+
+            if (rootPage) 
                 UserInterface.RootPages.Add(this);
-            
+
             if(!rootPage)
+            {
                 ElementID = $"btkUI-{UIUtils.GetCleanString(modName)}-{UIUtils.GetCleanString(pageName)}";
+            }
             else
+            {
                 ElementID = $"btkUI-{UIUtils.GetCleanString(modName)}-MainPage";
+                _tabID = $"btkUI-Tab-{UIUtils.GetCleanString(modName)}";
+            }
         }
 
         /// <summary>
@@ -126,6 +135,24 @@ namespace BTKUILib.UIObjects
                 slider.GenerateCohtml();
 
             return slider;
+        }
+
+        /// <inheritdoc />
+        public override void Delete()
+        {
+            base.Delete();
+
+            if (Protected) return;
+            
+            if (RootPage)
+            {
+                UserInterface.RootPages.Remove(this);
+                CVR_MenuManager.Instance.quickMenu.View.TriggerEvent("btkDeleteElement", _tabID);
+            }
+
+            //Remove this page from the category list
+            if(_category != null && _category.CategoryElements.Contains(this))
+                _category.CategoryElements.Remove(this);
         }
 
         internal override void GenerateCohtml()

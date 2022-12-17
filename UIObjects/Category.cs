@@ -22,17 +22,18 @@ namespace BTKUILib.UIObjects
                 UpdateCategoryName();
             }
         }
+        
+        public readonly Page LinkedPage;
 
         internal List<QMUIElement> CategoryElements = new();
 
         private string _categoryName;
-        private Page _linkedPage;
         private bool _showHeader = false;
 
         internal Category(string categoryName, Page page, bool showHeader = true)
         {
             _categoryName = categoryName;
-            _linkedPage = page;
+            LinkedPage = page;
             _showHeader = showHeader;
             
             ElementID = "btkUI-Row-" + UUID;
@@ -87,7 +88,7 @@ namespace BTKUILib.UIObjects
             var page = new Page(modName, pageName);
             CategoryElements.Add(page);
 
-            var pageButton = new Button($"Open {pageName}", pageIcon, pageTooltip, this);
+            var pageButton = new Button(pageName, pageIcon, pageTooltip, this);
             CategoryElements.Add(pageButton);
             pageButton.OnPress += () =>
             {
@@ -103,10 +104,18 @@ namespace BTKUILib.UIObjects
             return page;
         }
 
+        /// <inheritdoc />
+        public override void Delete()
+        {
+            base.Delete();
+            if (Protected) return;
+            LinkedPage.PageElements.Remove(this);
+        }
+
         internal override void GenerateCohtml()
         {
             if(!IsGenerated)
-                CVR_MenuManager.Instance.quickMenu.View.TriggerEvent("btkCreateRow", _linkedPage.ElementID, UUID, _showHeader ? _categoryName : null);
+                CVR_MenuManager.Instance.quickMenu.View.TriggerEvent("btkCreateRow", LinkedPage.ElementID, UUID, _showHeader ? _categoryName : null);
             
             foreach(var element in CategoryElements)
                 element.GenerateCohtml();
@@ -124,7 +133,7 @@ namespace BTKUILib.UIObjects
             
             if (!UIUtils.IsQMReady()) return;
             
-            CVR_MenuManager.Instance.quickMenu.View.TriggerEvent("btkUpdateText", $"btkUI-Row-HeaderText-{UUID}", _categoryName);
+            CVR_MenuManager.Instance.quickMenu.View.TriggerEvent("btkUpdateText", $"btkUI-Row-{UUID}-HeaderText", _categoryName);
         }
     }
 }

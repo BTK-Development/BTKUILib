@@ -47,7 +47,7 @@ namespace BTKUILib
                 }
                 else
                 {
-                    GenerateMlPrefsTab(null);
+                    GenerateMlPrefsTab();
                 }
             });
             
@@ -57,11 +57,9 @@ namespace BTKUILib
             UI.SetupUI();
 
             QuickMenuAPI.PlayerSelectPage = new Page("btkUI-PlayerSelectPage");
-            
-            QuickMenuAPI.OnMenuRegenerate += GenerateMlPrefsTab;
         }
 
-        private void GenerateMlPrefsTab(CVR_MenuManager obj)
+        internal void GenerateMlPrefsTab()
         {
             if(_mlPrefsPage != null) return;
             if (!_displayPrefsTab.Value) return;
@@ -69,12 +67,13 @@ namespace BTKUILib
             _mlPrefsPage = new Page("MelonLoader", "Prefs", true, "Settings");
             _mlPrefsPage.MenuTitle = "MelonLoader Preferences";
             _mlPrefsPage.MenuSubtitle = "Control your MelonLoader Preferences from other mods!";
+            _mlPrefsPage.Protected = true;
 
             var prefCat = _mlPrefsPage.AddCategory("Categories");
 
             foreach (var category in MelonPreferences.Categories)
             {
-                var page = prefCat.AddPage(category.DisplayName, "", $"Opens the preferences category for {category.DisplayName}", "MelonLoader");
+                var page = prefCat.AddPage(category.DisplayName, "Star", $"Opens the preferences category for {category.DisplayName}", "MelonLoader");
                 var pageCat = page.AddCategory("Preferences");
 
                 foreach (var pref in category.Entries)
@@ -89,7 +88,7 @@ namespace BTKUILib
 
                         if (pref.GetReflectedType() == typeof(string))
                         {
-                            var button = pageCat.AddButton($"Edit {pref.DisplayName}", "", pref.Description);
+                            var button = pageCat.AddButton($"Edit {pref.DisplayName}", "Pencil", pref.Description);
                             button.OnPress += () =>
                             {
                                 QuickMenuAPI.OpenKeyboard((string)pref.BoxedValue, s =>

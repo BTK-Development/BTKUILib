@@ -67,6 +67,14 @@ public class Button : QMInteractable
         
         ElementID = "btkUI-Button-" + UUID;
     }
+    
+    /// <inheritdoc />
+    public override void Delete()
+    {
+        base.Delete();
+        if (Protected) return;
+        _category.CategoryElements.Remove(this);
+    }
 
     internal override void OnInteraction(bool? toggle = null)
     {
@@ -76,7 +84,7 @@ public class Button : QMInteractable
     internal override void GenerateCohtml()
     {
         if(!IsGenerated)
-            CVR_MenuManager.Instance.quickMenu.View.TriggerEvent("btkCreateButton", _category.ElementID, _buttonText, _buttonIcon, _buttonTooltip, UUID);
+            CVR_MenuManager.Instance.quickMenu.View.TriggerEvent("btkCreateButton", _category.ElementID, _buttonText, _buttonIcon, _buttonTooltip, UUID, _category.LinkedPage.ModName);
 
         IsGenerated = true;
     }
@@ -89,6 +97,8 @@ public class Button : QMInteractable
             return;
         }
         
-        //TODO Add button update function
+        CVR_MenuManager.Instance.quickMenu.View.TriggerEvent("btkUpdateIcon", ElementID, _buttonIcon);
+        CVR_MenuManager.Instance.quickMenu.View.TriggerEvent("btkUpdateTooltip", $"{ElementID}-Tooltip", _buttonTooltip);
+        CVR_MenuManager.Instance.quickMenu.View.TriggerEvent("btkUpdateText", $"{ElementID}-Text", _buttonText);
     }
 }
