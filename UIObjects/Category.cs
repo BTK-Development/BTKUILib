@@ -22,9 +22,8 @@ namespace BTKUILib.UIObjects
                 UpdateCategoryName();
             }
         }
-        
-        public readonly Page LinkedPage;
 
+        internal readonly Page LinkedPage;
         internal List<QMUIElement> CategoryElements = new();
 
         private string _categoryName;

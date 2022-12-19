@@ -52,6 +52,9 @@
         <Reference Include="DarkRift">
           <HintPath>..\3rdparty\Managed\DarkRift.dll</HintPath>
         </Reference>
+        <Reference Include="DarkRift.Client">
+          <HintPath>..\3rdparty\Managed\DarkRift.Client.dll</HintPath>
+        </Reference>
         <Reference Include="MelonLoader">
           <HintPath>..\3rdparty\ml\MelonLoader.dll</HintPath>
         </Reference>

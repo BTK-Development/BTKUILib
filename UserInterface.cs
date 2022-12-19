@@ -32,6 +32,7 @@ namespace BTKUILib
             QuickMenuAPI.OnMenuRegenerate += OnMenuRegenerate;
             QuickMenuAPI.UserJoin += UserJoin;
             QuickMenuAPI.UserLeave += UserLeave;
+            QuickMenuAPI.OnWorldLeave += OnWorldLeave;
             
             BTKUILib.Log.Msg("Checking if BTKUI is updated...");
             CheckUpdateUI();
@@ -79,6 +80,11 @@ namespace BTKUILib
         private void UserJoin(CVRPlayerEntity obj)
         {
             CVR_MenuManager.Instance.quickMenu.View.TriggerEvent("btkAddPlayer", obj.Username, obj.Uuid, obj.ApiProfileImageUrl);
+        }
+        
+        private void OnWorldLeave()
+        {
+            
         }
 
         #region Cohtml Event Functions

@@ -3,12 +3,14 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Reflection.Emit;
 using ABI_RC.Core.InteractionSystem;
+using ABI_RC.Core.Networking;
 using ABI_RC.Core.Player;
 using cohtml;
+using DarkRift.Client;
 using HarmonyLib;
 using MelonLoader;
+using OpCodes = System.Reflection.Emit.OpCodes;
 
 namespace BTKUILib
 {
@@ -24,6 +26,7 @@ namespace BTKUILib
             ApplyPatches(typeof(CVRPlayerManagerJoin));
             ApplyPatches(typeof(CVRPlayerEntityLeave));
             ApplyPatches(typeof(ViewManagerPatches));
+            ApplyPatches(typeof(NetworkManagerPatches));
             
             BTKUILib.Log.Msg("Applied patches!");
         }
@@ -133,6 +136,24 @@ namespace BTKUILib
                 .InstructionEnumeration();
             
             return code;
+        }
+    }
+    
+    [HarmonyPatch(typeof(NetworkManager))]
+    class NetworkManagerPatches
+    {
+        [HarmonyPatch("OnGameNetworkConnectionClosed")]
+        [HarmonyPostfix]
+        static void OnGameNetworkClosed(object __0, DisconnectedEventArgs __1)
+        {
+            try
+            {
+                QuickMenuAPI.OnWorldLeave?.Invoke();
+            }
+            catch (Exception e)
+            {
+                BTKUILib.Log.Error(e);
+            }
         }
     }
 

@@ -29,10 +29,14 @@ namespace BTKUILib
         /// </summary>
         public static Action<CVRPlayerEntity> UserJoin;
         /// <summary>
+        /// Called when the user is disconnected from a CVR instance
+        /// </summary>
+        public static Action OnWorldLeave;
+        
+        /// <summary>
         /// Called when a user is selected in the quick menu, passes the username and user ID
         /// </summary>
         public static Action<string, string> OnPlayerSelected;
-        
         /// <summary>
         /// Called when a page change occurs, passes the new target page and the previous page
         /// </summary>

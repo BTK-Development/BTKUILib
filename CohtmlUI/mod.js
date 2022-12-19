@@ -207,6 +207,7 @@ cvr.menu.prototype.BTKUI = {
         engine.on("btkDeleteElement", this.btkDeleteElement);
         engine.on("btkUpdateIcon", this.btkUpdateIcon);
         engine.on("btkUpdateTooltip", this.btkUpdateTooltip);
+        engine.on("btkLeaveWorld", this.btkLeaveWorld);
     },
 
     init: function(menu){
@@ -265,6 +266,10 @@ cvr.menu.prototype.BTKUI = {
         if(element != null){
             element.parentElement.removeChild(element);
         }
+    },
+
+    btkLeaveWorld: function(){
+        cvr("#btkUI-PlayerListContent").clear();
     },
 
     btkCreateSlider: function(parent, sliderName, sliderID, currentValue, minValue, maxValue, tooltipText, additionalClasses){
