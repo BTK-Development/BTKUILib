@@ -12,6 +12,8 @@
     <a href="https://github.com/github_username/BTKUILib/issues">Report Bug</a>
     ·
     <a href="https://github.com/github_username/BTKUILib/issues">Request Feature</a>
+    .
+    <a href="https://discord.gg/z3wAVGmFQP">Join the Discord</a>
   </p>
 </div>
 
