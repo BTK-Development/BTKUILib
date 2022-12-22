@@ -13,6 +13,9 @@ cvr.menu.prototype.BTKUI = {
     isDraggingBTK: false,
     selectedPlayerIDBTK: "",
     selectedPlayerNameBTK: "",
+    btkAlertToasts: [],
+    btkAlertShown: false,
+    btkShowAlertFunc: {},
 
     info: function(){
         return {
@@ -54,6 +57,9 @@ cvr.menu.prototype.BTKUI = {
         selectedPlayerIDBTK = "";
         selectedPlayerNameBTK = "";
         changeTabBTK = this.btkChangeTab;
+        btkAlertToasts = [];
+        btkAlertShown = false;
+        btkShowAlertFunc = this.btkShowAlert;
 
         menu.templates["btkUI-btn"] = {c: "btkUI-btn hide", s: [{c: "icon"}], x: "btkUI-pushPage", a:{"id" : "btkUI-UserMenu", "data-page": "btkUI-PlayerList"}};
         menu.templates["btkUI-shared"] = {c: "btkUI-shared hide", s:[
@@ -83,7 +89,8 @@ cvr.menu.prototype.BTKUI = {
                                     ], a:{"id":"btkUI-Tab-CVRMainQM", "tabTarget": "CVRMainQM"}, x: "btkUI-TabChange"},
                             ]}
                     ]},
-                {c: "container-tooltip hide", s:[{c:"content", h:"tooltip info", a:{"id": "btkUI-Tooltip"}}], a:{"id": "btkUI-TooltipContainer"}}
+                {c: "container-tooltip hide", s:[{c:"content", h:"tooltip info", a:{"id": "btkUI-Tooltip"}}], a:{"id": "btkUI-TooltipContainer"}},
+                {c: "container-alertToast hide", s:[{c:"content", h:"toasty!", a:{"id": "btkUI-AlertToast"}}], a:{"id": "btkUI-AlertToastContainer"}}
             ], a: {"id": "btkUI-SharedRoot"}};
         menu.templates["btkUI-menu"] = {c: "btkUI menu-category hide", s: [
                 {c: "container container-main", s:[
@@ -208,6 +215,7 @@ cvr.menu.prototype.BTKUI = {
         engine.on("btkUpdateIcon", this.btkUpdateIcon);
         engine.on("btkUpdateTooltip", this.btkUpdateTooltip);
         engine.on("btkLeaveWorld", this.btkLeaveWorld);
+        engine.on("btkAlertToast", this.btkShowAlert);
     },
 
     init: function(menu){
@@ -708,6 +716,26 @@ cvr.menu.prototype.BTKUI = {
         }
 
         element.setAttribute("data-tooltip", tooltipText);
+    },
+
+    btkShowAlert: function (message, delay = 5){
+        if(btkAlertShown){
+            btkAlertToasts.push({"Message": message, "Delay": delay});
+            return;
+        }
+
+        cvr("#btkUI-AlertToast").innerHTML(message);
+        cvr("#btkUI-AlertToastContainer").show();
+        btkAlertShown = true;
+
+        setTimeout(() => {
+            cvr("#btkUI-AlertToastContainer").hide();
+            btkAlertShown = false;
+            if(btkAlertToasts.length > 0){
+                let alert = btkAlertToasts.shift();
+                btkShowAlertFunc(alert.Message, alert.Delay);
+            }
+        }, delay*1000);
     },
 
     actions: {

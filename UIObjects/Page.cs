@@ -87,6 +87,7 @@ namespace BTKUILib.UIObjects
         internal Page(string elementID)
         {
             Protected = true;
+            ModName = "BTKUILib";
             UserInterface.RootPages.Add(this);
             ElementID = elementID;
         }
@@ -109,6 +110,26 @@ namespace BTKUILib.UIObjects
         public Category AddCategory(string categoryName)
         {
             var category = new Category(categoryName, this);
+            PageElements.Add(category);
+
+            if (UIUtils.IsQMReady()) 
+                category.GenerateCohtml();
+
+            return category;
+        }
+        
+        /// <summary>
+        /// Add a new category to this page, for use on Protected pages only
+        /// </summary>
+        /// <param name="categoryName">Name of the category, displayed at the top</param>
+        /// <param name="modName">Name of the mod creating the category, should match other usages</param>
+        /// <returns>A newly created category</returns>
+        public Category AddCategory(string categoryName, string modName)
+        {
+            if(!Protected)
+                BTKUILib.Log.Warning("You should not be using AddCategory(categoryName, modName) on your created pages! This is only intended for special protected pages! (PlayerSelectPage and Misc page)");
+            
+            var category = new Category(categoryName, this, true, modName);
             PageElements.Add(category);
 
             if (UIUtils.IsQMReady()) 

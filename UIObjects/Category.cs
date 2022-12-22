@@ -23,17 +23,21 @@ namespace BTKUILib.UIObjects
             }
         }
 
+        internal string ModName => _modName ?? LinkedPage.ModName;
+
         internal readonly Page LinkedPage;
         internal List<QMUIElement> CategoryElements = new();
 
         private string _categoryName;
+        private readonly string _modName;
         private bool _showHeader = false;
 
-        internal Category(string categoryName, Page page, bool showHeader = true)
+        internal Category(string categoryName, Page page, bool showHeader = true, string modName = null)
         {
             _categoryName = categoryName;
             LinkedPage = page;
             _showHeader = showHeader;
+            _modName = modName;
             
             ElementID = "btkUI-Row-" + UUID;
         }

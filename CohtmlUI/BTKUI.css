@@ -78,6 +78,21 @@
   position: absolute;
   font-size: 36px;
 }
+#quickmenu-wrapper .container-alertToast {
+  position: absolute;
+  width: 1234px;
+  height: 136px;
+  background: #4f4f4f;
+  border-radius: 10px;
+  top: 100px;
+  z-index: 2;
+}
+#quickmenu-wrapper .container-alertToast .content {
+  margin: 20px;
+  text-align: center;
+  position: absolute;
+  font-size: 36px;
+}
 #quickmenu-wrapper .btk-popup-container {
   width: 800px;
   height: 800px;

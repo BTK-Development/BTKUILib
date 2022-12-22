@@ -84,7 +84,7 @@ public class Button : QMInteractable
     internal override void GenerateCohtml()
     {
         if(!IsGenerated)
-            CVR_MenuManager.Instance.quickMenu.View.TriggerEvent("btkCreateButton", _category.ElementID, _buttonText, _buttonIcon, _buttonTooltip, UUID, _category.LinkedPage.ModName);
+            CVR_MenuManager.Instance.quickMenu.View.TriggerEvent("btkCreateButton", _category.ElementID, _buttonText, _buttonIcon, _buttonTooltip, UUID, _category.ModName);
 
         IsGenerated = true;
     }

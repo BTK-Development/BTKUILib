@@ -1,5 +1,6 @@
 @wrapper-background: transparent;
 @element-background: #292929;
+@element-backgroundAlert: #4f4f4f;
 @element-hover: #525252;
 @color-confirm: #37BD3C;
 @color-deny: #C41F1F;
@@ -114,6 +115,23 @@
     top: 1470px;
     background: @element-background;
     border-radius: 10px;
+
+    .content {
+      margin: 20px;
+      text-align: center;
+      position: absolute;
+      font-size: @font-size-big;
+    }
+  }
+
+  .container-alertToast {
+    position: absolute;
+    width: 1234px;
+    height: 136px;
+    background: @element-backgroundAlert;
+    border-radius: 10px;
+    top: 100px;
+    z-index: 2;
 
     .content {
       margin: 20px;

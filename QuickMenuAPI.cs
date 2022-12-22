@@ -191,6 +191,8 @@ namespace BTKUILib
         /// <param name="multiSelection">Generated and populated MultiSelection object to populate the multiselection page</param>
         public static void OpenMultiSelect(MultiSelection multiSelection)
         {
+            if (!UIUtils.IsQMReady()) return;
+            
             UserInterface.Instance.SelectedMultiSelect = multiSelection;
             CVR_MenuManager.Instance.quickMenu.View.TriggerEvent("btkOpenMultiSelect", multiSelection.Name, multiSelection.Options, multiSelection.SelectedOption);
         }
@@ -202,9 +204,23 @@ namespace BTKUILib
         /// <param name="callback">Action to be called when keyboard text is submitted</param>
         public static void OpenKeyboard(string currentValue, Action<string> callback)
         {
+            if (!UIUtils.IsQMReady()) return;
+            
             OnKeyboardSubmitted = callback;
             TimeSinceKeyboardOpen = DateTime.Now;
             ViewManager.Instance.openMenuKeyboard(currentValue);
+        }
+
+        /// <summary>
+        /// Shows an toast alert on the quick menu, stays up for set delay
+        /// </summary>
+        /// <param name="message">Message to be displayed on the toast</param>
+        /// <param name="delay">Delay in seconds before toast is hidden</param>
+        public static void ShowAlertToast(string message, int delay = 5)
+        {
+            if (!UIUtils.IsQMReady()) return;
+            
+            CVR_MenuManager.Instance.quickMenu.View.TriggerEvent("btkAlertToast", message, delay);
         }
         
         #endregion
