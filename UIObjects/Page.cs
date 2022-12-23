@@ -157,6 +157,27 @@ namespace BTKUILib.UIObjects
 
             return slider;
         }
+        
+        /// <summary>
+        /// Create a slider on the page
+        /// </summary>
+        /// <param name="sliderName">Name of the slider, displayed above the slider</param>
+        /// <param name="sliderTooltip">Tooltip displayed when hovering on the slider</param>
+        /// <param name="initialValue">Initial value of the slider</param>
+        /// <param name="minValue">Minimum value that the slider can slide to</param>
+        /// <param name="maxValue">Maximum value the slider can slide to</param>
+        /// <param name="decimalPlaces">Set the number of decimal places displayed on the slider</param>
+        /// <returns></returns>
+        public SliderFloat AddSlider(string sliderName, string sliderTooltip, float initialValue, float minValue, float maxValue, int decimalPlaces)
+        {
+            var slider = new SliderFloat(this, sliderName, sliderTooltip, initialValue, minValue, maxValue, decimalPlaces);
+            PageElements.Add(slider);
+            
+            if(UIUtils.IsQMReady())
+                slider.GenerateCohtml();
+
+            return slider;
+        }
 
         /// <inheritdoc />
         public override void Delete()

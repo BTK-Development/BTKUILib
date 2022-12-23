@@ -1,6 +1,6 @@
 @wrapper-background: transparent;
 @element-background: #292929;
-@element-backgroundAlert: #4f4f4f;
+@element-backgroundAlert: #454545;
 @element-hover: #525252;
 @color-confirm: #37BD3C;
 @color-deny: #C41F1F;
@@ -112,7 +112,7 @@
     position: absolute;
     width: 1234px;
     height: 136px;
-    top: 1470px;
+    top: 1570px;
     background: @element-background;
     border-radius: 10px;
 
@@ -129,9 +129,11 @@
     width: 1234px;
     height: 136px;
     background: @element-backgroundAlert;
+    border: 2px solid #C41F1F;
     border-radius: 10px;
     top: 100px;
     z-index: 2;
+    box-shadow: 20px 20px 100px black;
 
     .content {
       margin: 20px;

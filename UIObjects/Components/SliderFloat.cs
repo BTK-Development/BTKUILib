@@ -60,6 +60,16 @@ namespace BTKUILib.UIObjects.Components
                 UpdateSlider();
             }
         }
+        
+        public int DecimalPlaces
+        {
+            get => _decimalPlaces;
+            set
+            {
+                _decimalPlaces = value;
+                UpdateSlider();
+            }
+        }
 
         /// <summary>
         /// Get the current value of the slider
@@ -73,7 +83,7 @@ namespace BTKUILib.UIObjects.Components
                 OnValueUpdated?.Invoke(value);
             }
         }
-        
+
         /// <summary>
         /// Action to listen for changes of the value for the slider
         /// </summary>
@@ -84,9 +94,10 @@ namespace BTKUILib.UIObjects.Components
         private string _sliderTooltip;
         private float _minValue;
         private float _maxValue;
+        private int _decimalPlaces;
         private Page _page;
 
-        internal SliderFloat(Page page, string sliderName, string sliderTooltip, float initalValue, float minValue = 0f, float maxValue = 10f)
+        internal SliderFloat(Page page, string sliderName, string sliderTooltip, float initalValue, float minValue = 0f, float maxValue = 10f, int decimalPlaces = 2)
         {
             _sliderValue = initalValue;
             _sliderName = sliderName;
@@ -94,6 +105,7 @@ namespace BTKUILib.UIObjects.Components
             _minValue = minValue;
             _maxValue = maxValue;
             _page = page;
+            _decimalPlaces = decimalPlaces;
             
             UserInterface.Sliders.Add(UUID, this);
             
@@ -123,7 +135,7 @@ namespace BTKUILib.UIObjects.Components
         internal override void GenerateCohtml()
         {
             if(!IsGenerated)
-                CVR_MenuManager.Instance.quickMenu.View.TriggerEvent("btkCreateSlider", _page.ElementID, _sliderName, UUID, _sliderValue, _minValue, _maxValue, _sliderTooltip);
+                CVR_MenuManager.Instance.quickMenu.View.TriggerEvent("btkCreateSlider", _page.ElementID, _sliderName, UUID, _sliderValue, _minValue, _maxValue, _sliderTooltip, _decimalPlaces);
 
             IsGenerated = true;
         }
@@ -132,7 +144,7 @@ namespace BTKUILib.UIObjects.Components
         {
             if (!UIUtils.IsQMReady()) return;
             
-            CVR_MenuManager.Instance.quickMenu.View.TriggerEvent("btkSliderUpdateSettings", UUID, _sliderName, _sliderTooltip, _minValue, _maxValue);
+            CVR_MenuManager.Instance.quickMenu.View.TriggerEvent("btkSliderUpdateSettings", UUID, _sliderName, _sliderTooltip, _minValue, _maxValue, _decimalPlaces);
             CVR_MenuManager.Instance.quickMenu.View.TriggerEvent("btkSliderSetValue", UUID, SliderValue);
         }
     }

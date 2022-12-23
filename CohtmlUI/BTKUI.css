@@ -68,7 +68,7 @@
   position: absolute;
   width: 1234px;
   height: 136px;
-  top: 1470px;
+  top: 1570px;
   background: #292929;
   border-radius: 10px;
 }
@@ -82,10 +82,12 @@
   position: absolute;
   width: 1234px;
   height: 136px;
-  background: #4f4f4f;
+  background: #454545;
+  border: 2px solid #C41F1F;
   border-radius: 10px;
   top: 100px;
   z-index: 2;
+  box-shadow: 20px 20px 100px black;
 }
 #quickmenu-wrapper .container-alertToast .content {
   margin: 20px;

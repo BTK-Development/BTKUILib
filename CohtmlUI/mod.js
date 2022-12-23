@@ -161,7 +161,7 @@ cvr.menu.prototype.BTKUI = {
             ], a:{"id":"btkUI-Root"}};
 
         menu.templates["btkUIRowContent"] = {c:"row justify-content-start", a:{"id": "btkUI-Row-[UUID]"}};
-        menu.templates["btkSlider"] = {c:"", s:[{c:"col-12", s:[{c:"text", h:"[slider-name] - [current-value]", a:{"id": "btkUI-SliderTitle-[slider-id]", "data-title": "[slider-name]"}}]}, {c: "col-12", s:[{c:"slider", s:[{c:"sliderBar", s:[{c:"slider-knob", a:{"id": "btkUI-SliderKnob-[slider-id]"}}], a:{"id": "btkUI-SliderBar-[slider-id]"}}], a:{"id":"btkUI-Slider-[slider-id]", "data-slider-id": "[slider-id]", "data-slider-value": "[current-value]", "data-min": "[min-value]", "data-max": "[max-value]"}}], a:{"id":"btkUI-Slider-[slider-id]-Tooltip", "data-tooltip": "[tooltip-text]"}}]};
+        menu.templates["btkSlider"] = {c:"", s:[{c:"col-12", s:[{c:"text", h:"[slider-name] - [current-value]", a:{"id": "btkUI-SliderTitle-[slider-id]", "data-title": "[slider-name]"}}]}, {c: "col-12", s:[{c:"slider", s:[{c:"sliderBar", s:[{c:"slider-knob", a:{"id": "btkUI-SliderKnob-[slider-id]"}}], a:{"id": "btkUI-SliderBar-[slider-id]"}}], a:{"id":"btkUI-Slider-[slider-id]", "data-slider-id": "[slider-id]", "data-slider-value": "[current-value]", "data-min": "[min-value]", "data-max": "[max-value]", "data-rounding": "[decimal-point]"}}], a:{"id":"btkUI-Slider-[slider-id]-Tooltip", "data-tooltip": "[tooltip-text]"}}]};
         menu.templates["btkToggle"] = {c:"col-3", a:{"id": "btkUI-Toggle-[toggle-id]-Root"}, s:[{c: "toggle", s:[{c:"row", s:[{c:"col align-content-start", s:[{c:"enable circle", a:{"id": "btkUI-toggle-enable"}}]}, {c:"col align-content-end", s:[{c:"disable circle active", a:{"id": "btkUI-toggle-disable"}}]}]},{c:"text-sm", h:"[toggle-name]", a:{"id": "btkUI-Toggle-[toggle-id]-Text"}}], x: "btkUI-Toggle", a:{"id": "btkUI-Toggle-[toggle-id]", "data-toggle": "[toggle-id]", "data-toggleState": "false", "data-tooltip": "[tooltip-data]"}}]};
         menu.templates["btkButton"] = {c:"col-3", a:{"id": "btkUI-Button-[UUID]"}, s:[{c: "button", s:[{c:"icon", a:{"id": "btkUI-Button-[UUID]-Image"}}, {c:"text", h:"[button-text]", a:{"id": "btkUI-Button-[UUID]-Text"}}], x: "btkUI-ButtonAction", a:{"id": "btkUI-Button-[UUID]-Tooltip","data-tooltip": "[button-tooltip]", "data-action": "[button-action]"}}]};
         menu.templates["btkMultiSelectOption"] = {c:"col-12", s: [{c:"dropdown-option", s: [{c:"selection-icon"}, {c:"option-text", h: "[option-text]"}], a: {"id": "btkUI-DropdownOption-[option-index]", "data-index": "[option-index]"}, x: "btkUI-DropdownSelect"}]}
@@ -280,7 +280,7 @@ cvr.menu.prototype.BTKUI = {
         cvr("#btkUI-PlayerListContent").clear();
     },
 
-    btkCreateSlider: function(parent, sliderName, sliderID, currentValue, minValue, maxValue, tooltipText, additionalClasses){
+    btkCreateSlider: function(parent, sliderName, sliderID, currentValue, minValue, maxValue, tooltipText, decimalPoint, additionalClasses){
         let parentElement = cvr("#" + parent + "-Content");
 
         if(parentElement === null){
@@ -291,10 +291,11 @@ cvr.menu.prototype.BTKUI = {
         let slider = cvr.render(uiRefBTK.templates["btkSlider"], {
             "[slider-name]": sliderName,
             "[slider-id]": sliderID,
-            "[current-value]": currentValue.toFixed(2),
+            "[current-value]": currentValue.toFixed(decimalPoint),
             "[min-value]": minValue,
             "[max-value]": maxValue,
             "[tooltip-text]": tooltipText,
+            "[decimal-point]": decimalPoint
         }, uiRefBTK.templates, uiRefBTK.actions);
 
         if(additionalClasses != null) {
@@ -355,9 +356,10 @@ cvr.menu.prototype.BTKUI = {
         //Update the slider value
         let sliderMin = parseInt(currentDraggedSliderBTK.getAttribute("data-min"));
         let sliderMax = parseInt(currentDraggedSliderBTK.getAttribute("data-max"));
+        let decimalPoint = parseInt(currentDraggedSliderBTK.getAttribute("data-rounding"));
 
         let newValue = (sliderMax - sliderMin) * (current) / (max) + sliderMin;
-        newValue = newValue.toFixed(2);
+        newValue = newValue.toFixed(decimalPoint);
         currentDraggedSliderBTK.setAttribute("data-slider-value", newValue);
 
         let sliderID = currentDraggedSliderBTK.getAttribute("data-slider-id");
@@ -381,12 +383,13 @@ cvr.menu.prototype.BTKUI = {
 
         let sliderMin = parseInt(slider.getAttribute("data-min"));
         let sliderMax = parseInt(slider.getAttribute("data-max"));
+        let decimalPoint = parseInt(currentDraggedSliderBTK.getAttribute("data-rounding"));
 
         slider.setAttribute("data-slider-value", value);
 
         let sliderTitle = document.getElementById("btkUI-SliderTitle-" + sliderID);
         if(!Number.isNaN(value))
-            sliderTitle.innerHTML = sliderTitle.getAttribute("data-title") + " - " + value.toFixed(2);
+            sliderTitle.innerHTML = sliderTitle.getAttribute("data-title") + " - " + value.toFixed(decimalPoint);
         else
             sliderTitle.innerHTML = sliderTitle.getAttribute("data-title") + " - " + value;
 
@@ -397,7 +400,7 @@ cvr.menu.prototype.BTKUI = {
         sliderKnob.style.left = (value / slider0Max)*max + 'px';
     },
 
-    btkSliderUpdateSettings: function(sliderID, sliderName, sliderTooltip, minValue, maxValue){
+    btkSliderUpdateSettings: function(sliderID, sliderName, sliderTooltip, minValue, maxValue, decimalPoint){
           let sliderText = document.getElementById("btkUI-SliderTitle-" + sliderID);
           let sliderData = document.getElementById("btkUI-Slider-" + sliderID);
           let sliderTT = document.getElementById("btkUI-Slider-" + sliderID + "-Tooltip");
@@ -406,11 +409,12 @@ cvr.menu.prototype.BTKUI = {
           sliderData.setAttribute("data-min", minValue);
           sliderData.setAttribute("data-max", maxValue);
           sliderTT.setAttribute("data-tooltip", sliderTooltip);
+          sliderData.setAttribute("data-rounding", decimalPoint);
 
           let value = Number(sliderData.getAttribute("data-slider-value"));
 
           if(!Number.isNaN(value))
-            sliderText.innerHTML = sliderName + " - " + value.toFixed(2);
+            sliderText.innerHTML = sliderName + " - " + value.toFixed(decimalPoint);
     },
 
     btkShowConfirmationBox: function(title, content, okText, noText){
@@ -517,6 +521,12 @@ cvr.menu.prototype.BTKUI = {
         if(buttonIcon !== null && buttonIcon.length > 0) {
             let button = document.getElementById("btkUI-Button-" + buttonUUID + "-Image");
             button.style.backgroundImage = "url('mods/BTKUI/images/" + modName + "/" + buttonIcon + ".png')";
+            button.style.backgroundRepeat = "no-repeat";
+            button.style.backgroundSize = "contain";
+        }
+        else {
+            let button = document.getElementById("btkUI-Button-" + buttonUUID + "-Image");
+            button.style.backgroundImage = "url('mods/BTKUI/images/Placeholder.png')";
             button.style.backgroundRepeat = "no-repeat";
             button.style.backgroundSize = "contain";
         }
@@ -642,11 +652,15 @@ cvr.menu.prototype.BTKUI = {
             "[TabName]": modName
         }, uiRefBTK.templates, uiRefBTK.actions));
 
-        console.log(tabIcon)
-
         if(tabIcon !== null && tabIcon.length > 0) {
             let tab = document.getElementById("btkUI-Tab-" + modName + "-Image");
             tab.style.backgroundImage = "url('mods/BTKUI/images/" + modName + "/" + tabIcon + ".png')";
+            tab.style.backgroundRepeat = "no-repeat";
+            tab.style.backgroundSize = "contain";
+        }
+        else {
+            let tab = document.getElementById("btkUI-Tab-" + modName + "-Image");
+            tab.style.backgroundImage = "url('mods/BTKUI/images/Placeholder.png')";
             tab.style.backgroundRepeat = "no-repeat";
             tab.style.backgroundSize = "contain";
         }
@@ -700,11 +714,15 @@ cvr.menu.prototype.BTKUI = {
             return;
         }
 
-        if(icon === null || icon.length <= 0) return;
-
-        element.style.backgroundImage = "url('mods/BTKUI/images/" + modName + "/" + icon + ".png')";
-        element.style.backgroundRepeat = "no-repeat";
-        element.style.backgroundSize = "contain";
+        if (icon !== null && icon.length > 0) {
+            element.style.backgroundImage = "url('mods/BTKUI/images/" + modName + "/" + icon + ".png')";
+            element.style.backgroundRepeat = "no-repeat";
+            element.style.backgroundSize = "contain";
+        } else {
+            element.style.backgroundImage = "url('mods/BTKUI/images/Placeholder.png')";
+            element.style.backgroundRepeat = "no-repeat";
+            element.style.backgroundSize = "contain";
+        }
     },
 
     btkUpdateTooltip: function (elementID, tooltipText){
