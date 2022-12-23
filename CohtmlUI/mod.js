@@ -383,7 +383,7 @@ cvr.menu.prototype.BTKUI = {
 
         let sliderMin = parseInt(slider.getAttribute("data-min"));
         let sliderMax = parseInt(slider.getAttribute("data-max"));
-        let decimalPoint = parseInt(currentDraggedSliderBTK.getAttribute("data-rounding"));
+        let decimalPoint = parseInt(slider.getAttribute("data-rounding"));
 
         slider.setAttribute("data-slider-value", value);
 
