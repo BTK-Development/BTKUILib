@@ -61,6 +61,9 @@ namespace BTKUILib.UIObjects.Components
             }
         }
         
+        /// <summary>
+        /// Get or set the current decimal places displayed on a slider
+        /// </summary>
         public int DecimalPlaces
         {
             get => _decimalPlaces;
