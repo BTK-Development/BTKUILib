@@ -6,7 +6,7 @@
   <p align="center">
     Welcome to the BTKUILib for ChilloutVR
     <br />
-    Docs coming soon!
+    <a href="https://github.com/BTK-Development/BTKUILib/wiki">Documentation</a>
     <br />
     <br />
     <a href="https://github.com/github_username/BTKUILib/issues">Report Bug</a>
