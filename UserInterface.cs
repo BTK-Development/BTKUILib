@@ -72,6 +72,16 @@ namespace BTKUILib
             BTKUILib.Instance.GenerateMlPrefsTab();
         }
 
+        internal void RegisterRootPage(Page rootPage)
+        {
+            RootPages.Add(rootPage);
+
+            if (!UIUtils.IsQMReady()) return;
+            
+            BTKUILib.Log.Msg($"Creating root page | Name: {rootPage.PageName} | ModName: {rootPage.ModName} | ElementID: {rootPage.ElementID}");
+            rootPage.GenerateCohtml();
+        }
+
         private void UserLeave(CVRPlayerEntity obj)
         {
             CVR_MenuManager.Instance.quickMenu.View.TriggerEvent("btkRemovePlayer", obj.Uuid);

@@ -65,10 +65,7 @@ namespace BTKUILib.UIObjects
             RootPage = rootPage;
             _tabIcon = tabIcon;
             _category = category;
-
-            if (rootPage) 
-                UserInterface.RootPages.Add(this);
-
+            
             if(!rootPage)
             {
                 ElementID = $"btkUI-{UIUtils.GetCleanString(modName)}-{UIUtils.GetCleanString(pageName)}";
@@ -78,6 +75,9 @@ namespace BTKUILib.UIObjects
                 ElementID = $"btkUI-{UIUtils.GetCleanString(modName)}-MainPage";
                 _tabID = $"btkUI-Tab-{UIUtils.GetCleanString(modName)}";
             }
+            
+            if (rootPage) 
+                UserInterface.Instance.RegisterRootPage(this);
         }
 
         /// <summary>
