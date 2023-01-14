@@ -52,6 +52,14 @@ namespace BTKUILib.UIObjects
             CVR_MenuManager.Instance.quickMenu.View.TriggerEvent("btkDeleteElement", ElementID);
         }
 
+        internal virtual void DeleteInternal()
+        {
+            UserInterface.QMElements.Remove(this);
+
+            if (!UIUtils.IsQMReady()) return;
+            CVR_MenuManager.Instance.quickMenu.View.TriggerEvent("btkDeleteElement", ElementID);
+        }
+
         /// <summary>
         /// Used to generate the cohtml side of this element, expected to be overriden
         /// </summary>

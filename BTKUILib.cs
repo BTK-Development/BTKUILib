@@ -12,7 +12,7 @@ namespace BTKUILib
         public const string Name = "BTKUILib";
         public const string Author = "BTK Development Team";
         public const string Company = "BTK Development";
-        public const string Version = "1.0.0";
+        public const string Version = "1.0.1";
     }
     
     internal class BTKUILib : MelonMod
@@ -42,7 +42,7 @@ namespace BTKUILib
             {
                 if (!b1 && _mlPrefsPage != null)
                 {
-                    _mlPrefsPage.Delete();
+                    _mlPrefsPage.DeleteInternal();
                     _mlPrefsPage = null;
                 }
                 else

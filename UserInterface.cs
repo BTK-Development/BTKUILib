@@ -94,7 +94,7 @@ namespace BTKUILib
         
         private void OnWorldLeave()
         {
-            
+            CVR_MenuManager.Instance.quickMenu.View.TriggerEvent("btkLeaveWorld");
         }
 
         #region Cohtml Event Functions

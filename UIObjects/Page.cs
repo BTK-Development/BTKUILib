@@ -197,6 +197,21 @@ namespace BTKUILib.UIObjects
                 _category.CategoryElements.Remove(this);
         }
 
+        internal override void DeleteInternal()
+        {
+            base.DeleteInternal();
+            
+            if (RootPage)
+            {
+                UserInterface.RootPages.Remove(this);
+                CVR_MenuManager.Instance.quickMenu.View.TriggerEvent("btkDeleteElement", _tabID);
+            }
+
+            //Remove this page from the category list
+            if(_category != null && _category.CategoryElements.Contains(this))
+                _category.CategoryElements.Remove(this);
+        }
+        
         internal override void GenerateCohtml()
         {
             if(!IsGenerated)
