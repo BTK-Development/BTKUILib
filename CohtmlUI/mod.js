@@ -90,7 +90,7 @@ cvr.menu.prototype.BTKUI = {
                             ]}
                     ]},
                 {c: "container-tooltip hide", s:[{c:"content", h:"tooltip info", a:{"id": "btkUI-Tooltip"}}], a:{"id": "btkUI-TooltipContainer"}},
-                {c: "container-alertToast hide", s:[{c:"content", h:"toasty!", a:{"id": "btkUI-AlertToast"}}], a:{"id": "btkUI-AlertToastContainer"}}
+                {c: "container-alertToast hide", s:[{c:"content", h:"toasty!", a:{"id": "btkUI-AlertToast"}}], a:{"id": "btkUI-AlertToastContainer"}, x:"btkUI-ToastDismiss"}
             ], a: {"id": "btkUI-SharedRoot"}};
         menu.templates["btkUI-menu"] = {c: "btkUI menu-category hide", s: [
                 {c: "container container-main", s:[
@@ -191,6 +191,7 @@ cvr.menu.prototype.BTKUI = {
         uiRefBTK.actions["btkUI-NumSubmit"] = this.actions.btkNumSubmit;
         uiRefBTK.actions["btkUI-TabChange"] = this.actions.btkTabChange;
         uiRefBTK.actions["btkUI-SelectPlayer"] = this.actions.selectPlayer;
+        uiRefBTK.actions["btkUI-ToastDismiss"] = this.actions.btkToastDismiss;
 
         engine.on("btkModInit", this.btkUILibInit);
         engine.on("btkCreateToggle", this.btkCreateToggle);
@@ -951,5 +952,9 @@ cvr.menu.prototype.BTKUI = {
             engine.call("btkUI-PopupNoticeOK");
             cvr("#btkUI-PopupNotice").hide();
         },
+        btkToastDismiss: function (){
+            uiRefBTK.core.playSoundCore("Click");
+            cvr("#btkUI-AlertToastContainer").hide();
+        }
     }
 }

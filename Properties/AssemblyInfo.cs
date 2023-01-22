@@ -33,7 +33,7 @@ using MelonLoader;
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
 [assembly: AssemblyVersion("1.1.0.0")]
-[assembly: AssemblyFileVersion("1.0.2.0")]
+[assembly: AssemblyFileVersion("1.1.0.0")]
 [assembly: MelonInfo(typeof(BTKUILib.BTKUILib), BTKUILib.BuildInfo.Name, BTKUILib.BuildInfo.Version, BTKUILib.BuildInfo.Author)]
 [assembly: MelonGame("Alpha Blend Interactive", "ChilloutVR")]
 [assembly: MelonPriority(-10)]
