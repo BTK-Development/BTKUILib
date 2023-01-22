@@ -38,10 +38,17 @@ namespace BTKUILib.UIObjects
             }
         }
 
+        public Button SubpageButton
+        {
+            get => _subpageButton;
+            internal set => _subpageButton = value;
+        }
+
         internal bool RootPage;
         internal string PageName = "MainPage";
         internal readonly string ModName;
         internal List<QMUIElement> PageElements = new();
+        private Button _subpageButton;
 
         private string _menuSubtitle;
         private string _tabIcon;
@@ -195,6 +202,14 @@ namespace BTKUILib.UIObjects
             //Remove this page from the category list
             if(_category != null && _category.CategoryElements.Contains(this))
                 _category.CategoryElements.Remove(this);
+        }
+        
+        /// <summary>
+        /// Deletes all children of this category
+        /// </summary>
+        public void ClearChildren()
+        {
+            CVR_MenuManager.Instance.quickMenu.View.TriggerEvent("btkClearChildren", ElementID + "-Content");
         }
 
         internal override void DeleteInternal()

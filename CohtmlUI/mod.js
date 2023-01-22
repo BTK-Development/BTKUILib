@@ -216,6 +216,7 @@ cvr.menu.prototype.BTKUI = {
         engine.on("btkUpdateTooltip", this.btkUpdateTooltip);
         engine.on("btkLeaveWorld", this.btkLeaveWorld);
         engine.on("btkAlertToast", this.btkShowAlert);
+        engine.on("btkClearChildren", this.btkClearChildren);
     },
 
     init: function(menu){
@@ -756,6 +757,13 @@ cvr.menu.prototype.BTKUI = {
         }, delay*1000);
     },
 
+    btkClearChildren: function(targetID){
+        let target = cvr("#" + targetID);
+        if(target === null) return;
+
+        target.clear();
+    },
+
     actions: {
         btkOpen: function(){
             uiRefBTK.core.playSoundCore("Click");
@@ -907,9 +915,9 @@ cvr.menu.prototype.BTKUI = {
             engine.call("btkUI-DropdownSelected", index);
         },
         selectPlayer: function(e){
-            uiRef.core.playSoundCore("Click");
+            uiRefBTK.core.playSoundCore("Click");
 
-            if(currentPage === "btkUI-PlayerSelectPage")
+            if(currentPageBTK === "btkUI-PlayerSelectPage")
                 return;
 
             let playerID = e.currentTarget.getAttribute("data-id");

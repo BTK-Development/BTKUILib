@@ -85,7 +85,7 @@ namespace BTKUILib.UIObjects
         /// <param name="pageIcon">Icon to be used on the button</param>
         /// <param name="pageTooltip">Tooltip to be displayed when hovering on the button</param>
         /// <param name="modName">Mod name, this should be the same as your root page</param>
-        /// <returns>Newly created page object</returns>
+        /// <returns>Newly created page object with SubpageButton set to the created button</returns>
         public Page AddPage(string pageName, string pageIcon, string pageTooltip, string modName)
         {
             var page = new Page(modName, pageName);
@@ -104,15 +104,28 @@ namespace BTKUILib.UIObjects
                 pageButton.GenerateCohtml();
             }
 
+            page.SubpageButton = pageButton;
+
             return page;
         }
 
         /// <inheritdoc />
         public override void Delete()
         {
+            //Delete the row header with the row
+            CVR_MenuManager.Instance.quickMenu.View.TriggerEvent("btkDeleteElement", ElementID + "-HeaderRoot");
+            
             base.Delete();
             if (Protected) return;
             LinkedPage.PageElements.Remove(this);
+        }
+
+        /// <summary>
+        /// Deletes all children of this category
+        /// </summary>
+        public void ClearChildren()
+        {
+            CVR_MenuManager.Instance.quickMenu.View.TriggerEvent("btkClearChildren", ElementID);
         }
 
         internal override void GenerateCohtml()

@@ -29,6 +29,11 @@ namespace BTKUILib
         /// </summary>
         public static Action<CVRPlayerEntity> UserJoin;
         /// <summary>
+        /// Fires when a tab change occurs, this includes when the tab is already focused.
+        /// First parameter is the target tab, second is the last tab.
+        /// </summary>
+        public static Action<string, string> OnTabChange;
+        /// <summary>
         /// Called when the user is disconnected from a CVR instance
         /// </summary>
         public static Action OnWorldLeave;
@@ -111,6 +116,16 @@ namespace BTKUILib
         #endregion
         
         #region Utility Functions
+
+        /// <summary>
+        /// Get the MelonLoader prefs tab page for a specific mod, fetched by identifier
+        /// </summary>
+        /// <param name="prefsIdentifier">Identifier used for the mods MelonPreferences (MelonPreferences_Category.Identifier)</param>
+        /// <returns>The created ML prefs page containing the SubpageButton element</returns>
+        public static Page GetMLPrefsPageByIdentifier(string prefsIdentifier)
+        {
+            return !BTKUILib.Instance.MLPrefsPages.ContainsKey(prefsIdentifier) ? null : BTKUILib.Instance.MLPrefsPages[prefsIdentifier];
+        }
 
         /// <summary>
         /// Prepares icons for usage by dropping them in the correct folder

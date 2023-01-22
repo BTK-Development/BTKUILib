@@ -22,8 +22,9 @@ namespace BTKUILib
         internal static List<QMUIElement> QMElements = new();
         internal static Dictionary<string, SliderFloat> Sliders = new();
         internal static Dictionary<string, QMInteractable> Interactables = new();
-        
         internal MultiSelection SelectedMultiSelect;
+
+        private string _lastTab = "CVRMainQM";
 
         internal void SetupUI()
         {
@@ -111,10 +112,11 @@ namespace BTKUILib
             if (tabTarget == "CVRMainQM")
             {
                 CVR_MenuManager.Instance.quickMenu.View.TriggerEvent("btkChangeTab", tabTarget, "CVR", "", "");
+                QuickMenuAPI.OnTabChange?.Invoke(tabTarget, _lastTab);
+                _lastTab = tabTarget;
                 return;
             }
-                
-            
+
             var root = RootPages.FirstOrDefault(x => x.ElementID == tabTarget);
 
             if (root == null)
@@ -124,6 +126,8 @@ namespace BTKUILib
             }
             
             CVR_MenuManager.Instance.quickMenu.View.TriggerEvent("btkChangeTab", tabTarget, root.ModName, root.MenuTitle, root.MenuSubtitle);
+            QuickMenuAPI.OnTabChange?.Invoke(tabTarget, _lastTab);
+            _lastTab = tabTarget;
         }
 
         private void OnRootCreated(string elementID, string uuid)

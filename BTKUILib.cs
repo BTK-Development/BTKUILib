@@ -12,7 +12,7 @@ namespace BTKUILib
         public const string Name = "BTKUILib";
         public const string Author = "BTK Development Team";
         public const string Company = "BTK Development";
-        public const string Version = "1.0.1";
+        public const string Version = "1.1.0";
     }
     
     internal class BTKUILib : MelonMod
@@ -22,6 +22,7 @@ namespace BTKUILib
 
         internal UserInterface UI;
         internal Queue<Action> MainThreadQueue = new();
+        internal Dictionary<string, Page> MLPrefsPages = new();
 
         private MelonPreferences_Entry<bool> _displayPrefsTab;
 
@@ -76,6 +77,7 @@ namespace BTKUILib
             foreach (var category in MelonPreferences.Categories)
             {
                 var page = prefCat.AddPage(category.DisplayName, "Star", $"Opens the preferences category for {category.DisplayName}", "MelonLoader");
+                MLPrefsPages.Add(category.Identifier, page);
                 var pageCat = page.AddCategory("Preferences");
 
                 foreach (var pref in category.Entries)
