@@ -1,3 +1,4 @@
+@import "bootstrap-grid.min.css";
 #quickmenu-wrapper .btkUI-btn {
   background-color: rgba(41, 41, 41, 0);
   width: 150px;
@@ -31,12 +32,40 @@
 }
 #quickmenu-wrapper .game-rules {
   z-index: 1;
+  margin-top: 10px;
 }
 #quickmenu-wrapper .container-tabs {
   position: absolute;
-  width: 1234px;
+  width: 1440px;
   height: auto;
-  top: 1570px;
+  top: 1560px;
+  max-width: 1440px;
+  margin-right: 10px;
+}
+#quickmenu-wrapper .container-tabs .scroll-bg {
+  margin-left: 10px;
+  height: 5px;
+  background-color: #4A4A4A;
+  width: 100%;
+  border-radius: 10px;
+  position: absolute;
+  left: 182px;
+  top: -5px;
+}
+#quickmenu-wrapper .container-tabs .scroll-overlay {
+  height: 5px;
+  background-color: #1664BE;
+  border-radius: 10px;
+  width: 50%;
+}
+#quickmenu-wrapper .container-tabs .btkUI-TabScroll {
+  flex-wrap: nowrap;
+  overflow-x: hidden;
+  overflow-y: hidden;
+  white-space: nowrap;
+  margin-left: 10px;
+  margin-right: 10px;
+  width: 100%;
 }
 #quickmenu-wrapper .container-tabs .tab {
   height: 160px;

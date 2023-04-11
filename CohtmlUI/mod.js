@@ -11,6 +11,9 @@ cvr.menu.prototype.BTKUI = {
     updateTitle: {},
     currentMod: "",
     isDraggingBTK: false,
+    isDraggingTabRootBTK: false,
+    tabRootLastDragNumBTK: {},
+    selectedTabRootBTK: {},
     selectedPlayerIDBTK: "",
     selectedPlayerNameBTK: "",
     btkAlertToasts: [],
@@ -50,7 +53,10 @@ cvr.menu.prototype.BTKUI = {
         currentDraggedSliderBTK = {};
         currentSliderBarBTK = {};
         currentSliderKnobBTK = {};
+        selectedTabRootBTK = {};
+        tabRootLastDragNumBTK = {};
         isDraggingBTK = false;
+        isDraggingTabRootBTK = false;
         setSliderFunctionBTK = this.btkSliderSetValue;
         pushPageBTK = this.btkPushPage;
         updateTitle = this.btkUpdateTitle;
@@ -61,8 +67,8 @@ cvr.menu.prototype.BTKUI = {
         btkAlertShown = false;
         btkShowAlertFunc = this.btkShowAlert;
 
-        menu.templates["btkUI-btn"] = {c: "btkUI-btn hide", s: [{c: "icon"}], x: "btkUI-pushPage", a:{"id" : "btkUI-UserMenu", "data-page": "btkUI-PlayerList"}};
-        menu.templates["btkUI-shared"] = {c: "btkUI-shared hide", s:[
+        menu.templates["btkUI-btn"] = {c: "btkUI-btn", s: [{c: "icon"}], x: "btkUI-pushPage", a:{"id" : "btkUI-UserMenu", "data-page": "btkUI-PlayerList"}};
+        menu.templates["btkUI-shared"] = {c: "btkUI-shared", s:[
                 {c: "container btk-popup-container hide", a: {"id": "btkUI-PopupConfirm"}, s:[
                         {c: "row", s: [
                                 {c: "col align-self-center", s: [{c: "header", h: "Notice", a: {"id": "btkUI-PopupConfirmHeader"}}]}
@@ -83,10 +89,15 @@ cvr.menu.prototype.BTKUI = {
                             ]},
                     ]},
                 {c: "container container-tabs", s:[
-                        {c:"row justify-content-md-center", a: {"id": "btkUI-TabRoot"}, s:[
-                                {c: "col-md-2 tab selected", s:[
+                        {c:"row", s:[
+                                {c: "col-md-2 justify-content-md-left tab selected", s:[
                                         {c: "tab-content", a:{"id":"btkUI-Tab-CVRQM-Icon"}}
                                     ], a:{"id":"btkUI-Tab-CVRMainQM", "tabTarget": "CVRMainQM"}, x: "btkUI-TabChange"},
+                                {c: "col-md justify-content-md-center", s:[
+                                        {c:"scroll-bg", s:[{c:"scroll-overlay", a: {"id": "btkUI-TabScroll-Indicator"}}]},
+                                        {c:"row btkUI-TabScroll", a: {"id": "btkUI-TabRoot"}, s: [
+                                        ]},
+                                    ]}
                             ]}
                     ]},
                 {c: "container-tooltip hide", s:[{c:"content", h:"tooltip info", a:{"id": "btkUI-Tooltip"}}], a:{"id": "btkUI-TooltipContainer"}},
@@ -227,6 +238,13 @@ cvr.menu.prototype.BTKUI = {
         document.addEventListener('mousemove', this.btkSliderMouseMove);
         document.addEventListener("mouseup", this.btkSliderMouseUp);
         document.addEventListener('mousedown', this.btkSliderMouseDown);
+
+        console.log("btkUI setup scrollable tab bar");
+
+        let tabRoot = document.getElementById("btkUI-TabRoot");
+        tabRoot.addEventListener('mousedown', this.btkTabRootMouseDown);
+        document.addEventListener("mousemove", this.btkTabRootMouseMove);
+        document.addEventListener('mouseup', this.btkTabRootMouseUp);
     },
 
     btkOnHover: function (e){
@@ -310,6 +328,57 @@ cvr.menu.prototype.BTKUI = {
 
         //Set the slider value using our function
         setSliderFunctionBTK(sliderID, currentValue);
+    },
+
+    btkTabRootMouseDown: function(e){
+        let targetElement = e.target;
+
+        if(targetElement != null) {
+            while (targetElement != null) {
+                if(targetElement.id !== "btkUI-TabRoot") {
+                    targetElement = targetElement.parentElement;
+                    continue;
+                }
+
+                break;
+            }
+        }
+
+        isDraggingTabRootBTK = true;
+        selectedTabRootBTK = targetElement;
+        tabRootLastDragNumBTK = e.screenX;
+    },
+
+    btkTabRootMouseUp: function (e){
+        if(selectedTabRootBTK === null && !isDraggingTabRootBTK)
+            return;
+
+        isDraggingTabRootBTK = false;
+        selectedTabRootBTK = null;
+    },
+
+    btkTabRootMouseMove: function(e){
+        if(!isDraggingTabRootBTK)
+            return;
+        if(selectedTabRootBTK === null)
+            return;
+
+        selectedTabRootBTK.scrollLeft += tabRootLastDragNumBTK - e.screenX;
+        tabRootLastDragNumBTK = e.screenX;
+
+        let scrollInd = document.getElementById("btkUI-TabScroll-Indicator");
+        let scrollPercent = (selectedTabRootBTK.scrollLeft / (selectedTabRootBTK.scrollWidth-selectedTabRootBTK.getBoundingClientRect().width))*100;
+
+        console.log("Scroll! " + scrollPercent + " - scrollLeft: " + selectedTabRootBTK.scrollLeft + " - scrollWidth:" + selectedTabRootBTK.scrollWidth);
+
+        if(scrollPercent < 99)
+            scrollInd.style.width = scrollPercent + "%";
+        else
+            scrollInd.style.width = "100%";
+
+        if(scrollPercent < 1){
+            scrollInd.style.width = "1%";
+        }
     },
 
     btkSliderMouseDown: function(e){
@@ -666,6 +735,12 @@ cvr.menu.prototype.BTKUI = {
             tab.style.backgroundRepeat = "no-repeat";
             tab.style.backgroundSize = "contain";
         }
+
+        let tabRoot = document.getElementById("btkUI-TabRoot");
+        tabRoot.scrollLeft = 0;
+
+        let scrollInd = document.getElementById("btkUI-TabScroll-Indicator");
+        scrollInd.style.width = "1%";
 
         cvr("#btkUI-Root").appendChild(cvr.render(uiRefBTK.templates["btkUIRootPage"], {
             "[ModName]": modName

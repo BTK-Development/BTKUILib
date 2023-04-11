@@ -23,6 +23,7 @@
 
 @container-border-radius: 10px;
 @button-border-radius: 10px;
+@import "bootstrap-grid.min.css";
 
 .setIcon(@width, @row, @col){
   background-size: @width * 10;
@@ -69,13 +70,44 @@
 
   .game-rules {
     z-index: 1;
+    margin-top: 10px;
   }
 
   .container-tabs {
     position: absolute;
-    width: 1234px;
+    width: 1440px;
     height: auto;
-    top: 1570px;
+    top: 1560px;
+    max-width: 1440px;
+    margin-right: 10px;
+
+    .scroll-bg{
+      margin-left: 10px;
+      height: 5px;
+      background-color: #4A4A4A;
+      width: 100%;
+      border-radius: 10px;
+      position: absolute;
+      left: 182px;
+      top: -5px;
+    }
+
+    .scroll-overlay{
+      height: 5px;
+      background-color: @color-btn-primary;
+      border-radius: 10px;
+      width: 50%;
+    }
+
+    .btkUI-TabScroll{
+      flex-wrap: nowrap;
+      overflow-x: hidden;
+      overflow-y: hidden;
+      white-space: nowrap;
+      margin-left: 10px;
+      margin-right: 10px;
+      width: 100%;
+    }
 
     .tab {
       height: 160px;
