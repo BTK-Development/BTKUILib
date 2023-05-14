@@ -74,6 +74,9 @@ namespace BTKUILib.UIObjects.Components
             }
         }
 
+        /// <summary>
+        /// Sets the default value a slider can be reset to
+        /// </summary>
         public float DefaultValue
         {
             get => _defaultValue;
@@ -84,6 +87,9 @@ namespace BTKUILib.UIObjects.Components
             }
         }
 
+        /// <summary>
+        /// Sets if a slider is allowed to be reset
+        /// </summary>
         public bool AllowDefaultReset
         {
             get => _allowDefaultReset;
