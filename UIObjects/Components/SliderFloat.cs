@@ -74,6 +74,26 @@ namespace BTKUILib.UIObjects.Components
             }
         }
 
+        public float DefaultValue
+        {
+            get => _defaultValue;
+            set
+            {
+                _defaultValue = value;
+                UpdateSlider();
+            }
+        }
+
+        public bool AllowDefaultReset
+        {
+            get => _allowDefaultReset;
+            set
+            {
+                _allowDefaultReset = value;
+                UpdateSlider();
+            }
+        }
+
         /// <summary>
         /// Get the current value of the slider
         /// </summary>
@@ -98,9 +118,11 @@ namespace BTKUILib.UIObjects.Components
         private float _minValue;
         private float _maxValue;
         private int _decimalPlaces;
+        private float _defaultValue;
+        private bool _allowDefaultReset;
         private Page _page;
 
-        internal SliderFloat(Page page, string sliderName, string sliderTooltip, float initalValue, float minValue = 0f, float maxValue = 10f, int decimalPlaces = 2)
+        internal SliderFloat(Page page, string sliderName, string sliderTooltip, float initalValue, float minValue = 0f, float maxValue = 10f, int decimalPlaces = 2, float defaultValue = 0f, bool allowDefaultReset = false)
         {
             _sliderValue = initalValue;
             _sliderName = sliderName;
@@ -109,6 +131,8 @@ namespace BTKUILib.UIObjects.Components
             _maxValue = maxValue;
             _page = page;
             _decimalPlaces = decimalPlaces;
+            _defaultValue = defaultValue;
+            _allowDefaultReset = allowDefaultReset;
             
             UserInterface.Sliders.Add(UUID, this);
             
@@ -137,8 +161,21 @@ namespace BTKUILib.UIObjects.Components
 
         internal override void GenerateCohtml()
         {
-            if(!IsGenerated)
-                CVR_MenuManager.Instance.quickMenu.View.TriggerEvent("btkCreateSlider", _page.ElementID, _sliderName, UUID, _sliderValue, _minValue, _maxValue, _sliderTooltip, _decimalPlaces);
+            if (!IsGenerated)
+            {
+                var settings = new SliderSettings
+                {
+                    SliderName = _sliderName,
+                    SliderTooltip = _sliderTooltip,
+                    MinValue = _minValue,
+                    MaxValue = _maxValue,
+                    DecimalPlaces = _decimalPlaces,
+                    DefaultValue = _defaultValue,
+                    AllowDefaultReset = _allowDefaultReset
+                };
+                
+                CVR_MenuManager.Instance.quickMenu.View.TriggerEvent("btkCreateSlider", _page.ElementID, UUID, _sliderValue, settings);
+            }
 
             IsGenerated = true;
         }
@@ -146,9 +183,31 @@ namespace BTKUILib.UIObjects.Components
         private void UpdateSlider()
         {
             if (!UIUtils.IsQMReady()) return;
-            
-            CVR_MenuManager.Instance.quickMenu.View.TriggerEvent("btkSliderUpdateSettings", UUID, _sliderName, _sliderTooltip, _minValue, _maxValue, _decimalPlaces);
+
+            var settings = new SliderSettings
+            {
+                SliderName = _sliderName,
+                SliderTooltip = _sliderTooltip,
+                MinValue = _minValue,
+                MaxValue = _maxValue,
+                DecimalPlaces = _decimalPlaces,
+                DefaultValue = _defaultValue,
+                AllowDefaultReset = _allowDefaultReset
+            };
+
+            CVR_MenuManager.Instance.quickMenu.View.TriggerEvent("btkSliderUpdateSettings", UUID, settings);
             CVR_MenuManager.Instance.quickMenu.View.TriggerEvent("btkSliderSetValue", UUID, SliderValue);
         }
+    }
+
+    struct SliderSettings
+    {
+        public string SliderName;
+        public string SliderTooltip;
+        public float MinValue;
+        public float MaxValue;
+        public float DecimalPlaces;
+        public float DefaultValue;
+        public bool AllowDefaultReset;
     }
 }

@@ -2,6 +2,7 @@
 using ABI_RC.Core.InteractionSystem;
 using BTKUILib.UIObjects.Components;
 using cohtml;
+using UnityEngine;
 
 namespace BTKUILib.UIObjects
 {
@@ -41,7 +42,7 @@ namespace BTKUILib.UIObjects
             
             ElementID = "btkUI-Row-" + UUID;
         }
-
+        
         /// <summary>
         /// Creates a simple button
         /// </summary>
@@ -51,7 +52,20 @@ namespace BTKUILib.UIObjects
         /// <returns></returns>
         public Button AddButton(string buttonText, string buttonIcon, string buttonTooltip)
         {
-            var button = new Button(buttonText, buttonIcon, buttonTooltip, this);
+            return AddButton(buttonText, buttonIcon, buttonTooltip, ButtonStyle.TextWithIcon);
+        }
+
+        /// <summary>
+        /// Creates a simple button
+        /// </summary>
+        /// <param name="buttonText">Text to be displayed on the button</param>
+        /// <param name="buttonIcon">Icon for the button</param>
+        /// <param name="buttonTooltip">Tooltip to be displayed when hovering on the button</param>
+        /// <param name="style">Sets the button style, this cannot be changed after creation!</param>
+        /// <returns></returns>
+        public Button AddButton(string buttonText, string buttonIcon, string buttonTooltip, ButtonStyle style)
+        {
+            var button = new Button(buttonText, buttonIcon, buttonTooltip, this, style);
             CategoryElements.Add(button);
             
             if(UIUtils.IsQMReady())
@@ -90,6 +104,11 @@ namespace BTKUILib.UIObjects
         {
             var page = new Page(modName, pageName);
             CategoryElements.Add(page);
+
+            if (modName == "BTKUILib" && LinkedPage.ElementID == "btkUI-PlayerSelectPage")
+            {
+                page.InPlayerlist = true;
+            }
 
             var pageButton = new Button(pageName, pageIcon, pageTooltip, this);
             CategoryElements.Add(pageButton);

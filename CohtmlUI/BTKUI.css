@@ -275,6 +275,61 @@
   margin: 100px 29px 16px;
   font-size: 36px;
 }
+.btkUI .container-controls-playerlist {
+  position: absolute;
+  width: 1234px;
+  height: 1442px;
+  background: #292929;
+  border-radius: 10px;
+}
+.btkUI .container-controls-playerlist .header {
+  font-size: 48px;
+  margin-left: 29px;
+  margin-top: 16px;
+}
+.btkUI .container-controls-playerlist .header-category {
+  font-size: 48px;
+  margin-left: 29px;
+  margin-top: 16px;
+  margin-bottom: 16px;
+}
+.btkUI .container-controls-playerlist .user-count {
+  font-size: 36px;
+}
+.btkUI .container-controls-playerlist .icon-back {
+  background: url("images/Arrow Left.png");
+  background-size: cover;
+  background-repeat: no-repeat;
+  height: 100px;
+  width: 100px;
+}
+.btkUI .container-controls-playerlist .icon-close {
+  background: url("images/BTK-Close.png");
+  background-size: cover;
+  background-repeat: no-repeat;
+  height: 100px;
+  width: 100px;
+}
+.btkUI .container-controls-playerlist .category-row {
+  margin-top: 10px;
+  margin-bottom: 10px;
+  display: flex;
+  flex-direction: row;
+}
+.btkUI .container-controls-playerlist .scroll-view {
+  bottom: 16px;
+  left: 29px;
+  right: 29px;
+  position: absolute;
+}
+.btkUI .container-controls-playerlist .content {
+  margin: 16px 29px;
+  font-size: 36px;
+}
+.btkUI .container-controls-playerlist .content-subpage {
+  margin: 100px 29px 16px;
+  font-size: 36px;
+}
 .btkUI .dropdown-option {
   width: 100%;
   height: 100px;
@@ -302,12 +357,41 @@
   font-size: 36px;
   display: inline;
 }
-.btkUI .slider {
+.btkUI .slider-root .resetButton {
+  border: 3px solid #D2D2D2;
+  border-radius: 10px;
+  background: transparent;
+  padding: 3px;
+  width: 120px;
+  height: 54px;
+  color: #D2D2D2;
+  font-size: 24px;
+  align-content: center;
+}
+.btkUI .slider-root .resetButton:hover {
+  filter: brightness(75%);
+}
+.btkUI .slider-root .resetButton:active {
+  border: 3px solid #1664BE;
+}
+.btkUI .slider-root .resetButton .text {
+  text-align: center;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+  height: 100%;
+  overflow-wrap: break-word;
+  font-size: 34px;
+}
+.btkUI .slider-root .text-title {
+  padding: 5px;
+}
+.btkUI .slider-root .slider {
   width: 90%;
   height: 75px;
   margin-bottom: 30px;
 }
-.btkUI .slider .sliderBar {
+.btkUI .slider-root .slider .sliderBar {
   top: 35px;
   position: relative;
   margin-left: auto;
@@ -316,7 +400,7 @@
   border: 3px solid #FFFFFF;
   border-radius: 10px;
 }
-.btkUI .slider .slider-knob {
+.btkUI .slider-root .slider .slider-knob {
   height: 100px;
   width: 100px;
   position: relative;
@@ -326,7 +410,7 @@
   border-radius: 90px;
   display: inline-block;
 }
-.btkUI .slider .slider-knob:hover {
+.btkUI .slider-root .slider .slider-knob:hover {
   filter: brightness(75%);
 }
 .btkUI .toggle {
@@ -358,7 +442,7 @@
   margin-left: auto;
   margin-right: auto;
   display: inline;
-  font-size: 28px;
+  font-size: 32px;
 }
 .btkUI .toggle .enable {
   background: url("images/Checkmark.png");
@@ -415,10 +499,12 @@
   text-align: center;
   margin-left: auto;
   margin-right: auto;
-  display: inline;
   overflow: hidden;
   text-overflow: ellipsis;
   max-width: 100%;
+  height: 85px;
+  overflow-wrap: break-word;
+  font-size: 32px;
 }
 .btkUI .button .icon {
   background: url("images/BTK-Close.png");
@@ -428,7 +514,7 @@
   width: 150px;
   margin-left: 45px;
 }
-.btkUI .button-user {
+.btkUI .button-fullImage {
   border: 3px solid #D2D2D2;
   border-radius: 10px;
   background: transparent;
@@ -440,25 +526,57 @@
   margin-top: 10px;
   margin-bottom: 10px;
   align-content: center;
-  background: url("images/BTK-Close.png");
+  background: url("images/Placeholder.png");
   background-size: cover;
   background-repeat: no-repeat;
 }
-.btkUI .button-user:hover {
+.btkUI .button-fullImage:hover {
   filter: brightness(75%);
 }
-.btkUI .button-user:active {
+.btkUI .button-fullImage:active {
   border: 3px solid #1664BE;
 }
-.btkUI .button-user .text {
+.btkUI .button-fullImage .text {
   text-align: center;
   margin-left: auto;
   margin-right: auto;
-  display: inline;
   overflow: hidden;
   text-overflow: ellipsis;
   max-width: 100%;
+  max-height: 100%;
   text-shadow: #000 0 0 10px;
+  overflow-wrap: break-word;
+  font-size: 32px;
+}
+.btkUI .button-textOnly {
+  border: 3px solid #D2D2D2;
+  border-radius: 10px;
+  background: transparent;
+  padding: 3px;
+  width: 250px;
+  height: 250px;
+  color: #D2D2D2;
+  font-size: 36px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  align-content: center;
+}
+.btkUI .button-textOnly:hover {
+  filter: brightness(75%);
+}
+.btkUI .button-textOnly:active {
+  border: 3px solid #1664BE;
+}
+.btkUI .button-textOnly .text {
+  text-align: center;
+  margin-left: auto;
+  margin-right: auto;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+  max-height: 100%;
+  overflow-wrap: break-word;
+  font-size: 32px;
 }
 .btkUI .int-button {
   border: 2px solid #D2D2D2;

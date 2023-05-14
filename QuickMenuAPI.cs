@@ -143,8 +143,6 @@ namespace BTKUILib
                 Directory.CreateDirectory(directory);
             
             var path = $"{directory}\\{iconName}.png";
-            
-            if (File.Exists(path)) return;
 
             using var tempStream = new MemoryStream((int)resourceStream.Length);
             resourceStream.CopyTo(tempStream);

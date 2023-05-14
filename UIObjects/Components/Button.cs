@@ -58,13 +58,15 @@ namespace BTKUILib.UIObjects.Components
         private string _buttonIcon;
         private string _buttonTooltip;
         private Category _category;
+        private readonly ButtonStyle _style;
 
-        internal Button(string buttonText, string buttonIcon, string buttonTooltip, Category category)
+        internal Button(string buttonText, string buttonIcon, string buttonTooltip, Category category, ButtonStyle style = ButtonStyle.TextWithIcon)
         {
             _buttonIcon = buttonIcon;
             _buttonText = buttonText;
             _buttonTooltip = buttonTooltip;
             _category = category;
+            _style = style;
 
             ElementID = "btkUI-Button-" + UUID;
         }
@@ -85,7 +87,7 @@ namespace BTKUILib.UIObjects.Components
         internal override void GenerateCohtml()
         {
             if (!IsGenerated)
-                CVR_MenuManager.Instance.quickMenu.View.TriggerEvent("btkCreateButton", _category.ElementID, _buttonText, _buttonIcon, _buttonTooltip, UUID, _category.ModName);
+                CVR_MenuManager.Instance.quickMenu.View.TriggerEvent("btkCreateButton", _category.ElementID, _buttonText, _buttonIcon, _buttonTooltip, UUID, _category.ModName, (int)_style);
 
             IsGenerated = true;
         }
@@ -98,9 +100,29 @@ namespace BTKUILib.UIObjects.Components
                 return;
             }
 
-            CVR_MenuManager.Instance.quickMenu.View.TriggerEvent("btkUpdateIcon", ElementID, _buttonIcon);
+            if(_style != ButtonStyle.TextOnly)
+                CVR_MenuManager.Instance.quickMenu.View.TriggerEvent("btkUpdateIcon", ElementID, _category.ModName, _buttonIcon, _style == ButtonStyle.TextWithIcon ? "Image" : "Tooltip");
             CVR_MenuManager.Instance.quickMenu.View.TriggerEvent("btkUpdateTooltip", $"{ElementID}-Tooltip", _buttonTooltip);
             CVR_MenuManager.Instance.quickMenu.View.TriggerEvent("btkUpdateText", $"{ElementID}-Text", _buttonText);
         }
+    }
+
+    /// <summary>
+    /// Configures the visual style of a button with UILib
+    /// </summary>
+    public enum ButtonStyle
+    {
+        /// <summary>
+        /// Default button with an icon on top and text at the bottom
+        /// </summary>
+        TextWithIcon,
+        /// <summary>
+        /// Button without an icon and with text that can fill the entire thing
+        /// </summary>
+        TextOnly,
+        /// <summary>
+        /// Button with an icon behind the text, icon can fill entire button as well as text
+        /// </summary>
+        FullSizeImage
     }
 }
