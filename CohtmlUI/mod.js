@@ -626,8 +626,6 @@ cvr.menu.prototype.BTKUI = {
                 break;
         }
 
-        console.log("Create button called with style " + style + "(" + buttonStyle + ")");
-
         cvr("#" + parent).appendChild(cvr.render(uiRefBTK.templates[style], {
             "[button-text]": buttonName,
             "[button-tooltip]": tooltip,
@@ -635,32 +633,31 @@ cvr.menu.prototype.BTKUI = {
             "[UUID]": buttonUUID,
         }, uiRefBTK.templates, uiRefBTK.actions));
 
-        if(buttonStyle === 0) {
-            if (buttonIcon !== null && typeof buttonIcon === "string" && buttonIcon.length > 0) {
-                let button = document.getElementById("btkUI-Button-" + buttonUUID + "-Image");
-                button.style.backgroundImage = "url('mods/BTKUI/images/" + modName + "/" + buttonIcon + ".png')";
-                button.style.backgroundRepeat = "no-repeat";
-                button.style.backgroundSize = "contain";
+        let buttonBgImage = "url('mods/BTKUI/images/Placeholder.png')";
+
+        if(buttonIcon !== null && typeof buttonIcon === "string" && buttonIcon.length > 0){
+            //Check if it's a URL that we allow
+            if(buttonIcon.startsWith("http")){
+                if(buttonIcon.startsWith("https://files.abidata.io")){
+                    buttonBgImage = "url('" + encodeURIComponent(buttonIcon) + "')";
+                }
             } else {
-                let button = document.getElementById("btkUI-Button-" + buttonUUID + "-Image");
-                button.style.backgroundImage = "url('mods/BTKUI/images/Placeholder.png')";
-                button.style.backgroundRepeat = "no-repeat";
-                button.style.backgroundSize = "contain";
+                buttonBgImage = "url('mods/BTKUI/images/" + modName + "/" + buttonIcon + ".png')";
             }
         }
 
+        if(buttonStyle === 0) {
+            let button = document.getElementById("btkUI-Button-" + buttonUUID + "-Image");
+            button.style.backgroundImage = buttonBgImage;
+            button.style.backgroundRepeat = "no-repeat";
+            button.style.backgroundSize = "contain";
+        }
+
         if(buttonStyle === 2){
-            if (buttonIcon !== null&& typeof buttonIcon === "string" && buttonIcon.length > 0) {
-                let button = document.getElementById("btkUI-Button-" + buttonUUID + "-Tooltip");
-                button.style.backgroundImage = "url('mods/BTKUI/images/" + modName + "/" + buttonIcon + ".png')";
-                button.style.backgroundRepeat = "no-repeat";
-                button.style.backgroundSize = "cover";
-            } else {
-                let button = document.getElementById("btkUI-Button-" + buttonUUID + "-Tooltip");
-                button.style.backgroundImage = "url('mods/BTKUI/images/Placeholder.png')";
-                button.style.backgroundRepeat = "no-repeat";
-                button.style.backgroundSize = "cover";
-            }
+            let button = document.getElementById("btkUI-Button-" + buttonUUID + "-Tooltip");
+            button.style.backgroundImage = buttonBgImage;
+            button.style.backgroundRepeat = "no-repeat";
+            button.style.backgroundSize = "cover";
         }
     },
     btkOpenMultiSelect: function(name, options, selectedIndex){
@@ -693,9 +690,9 @@ cvr.menu.prototype.BTKUI = {
     },
     btkOpenNumberInput: function(name, number) {
         let display = document.getElementById("btkUI-numDisplay");
-        let data = number;
+        let data = parseFloat(number);
         display.setAttribute("data-display", data);
-        display.innerHTML = data;
+        display.innerHTML = data.toFixed(3);
 
         cvr("#btkUI-NumberInputHeader").innerHTML("Editing: " + name);
 
@@ -857,15 +854,22 @@ cvr.menu.prototype.BTKUI = {
             return;
         }
 
-        if (icon !== null && typeof icon === "string" && icon.length > 0) {
-            element.style.backgroundImage = "url('mods/BTKUI/images/" + modName + "/" + icon + ".png')";
-            element.style.backgroundRepeat = "no-repeat";
-            element.style.backgroundSize = "contain";
-        } else {
-            element.style.backgroundImage = "url('mods/BTKUI/images/Placeholder.png')";
-            element.style.backgroundRepeat = "no-repeat";
-            element.style.backgroundSize = "contain";
+        let buttonBgImage = "url('mods/BTKUI/images/Placeholder.png')";
+
+        if(icon !== null && typeof icon === "string" && icon.length > 0){
+            //Check if it's a URL that we allow
+            if(icon.startsWith("http")){
+                if(icon.startsWith("https://files.abidata.io")){
+                    buttonBgImage = "url('" + encodeURIComponent(icon) + "')";
+                }
+            } else {
+                buttonBgImage = "url('mods/BTKUI/images/" + modName + "/" + icon + ".png')";
+            }
         }
+
+        element.style.backgroundImage = buttonBgImage;
+        element.style.backgroundRepeat = "no-repeat";
+        element.style.backgroundSize = "contain";
     },
 
     btkUpdateTooltip: function (elementID, tooltipText){

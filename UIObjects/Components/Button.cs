@@ -25,6 +25,7 @@ namespace BTKUILib.UIObjects.Components
 
         /// <summary>
         /// Get or set the button icon, will update on the fly
+        /// Can take a URL, this is limited to images hosted on https://files.abidata.io/
         /// </summary>
         public string ButtonIcon
         {

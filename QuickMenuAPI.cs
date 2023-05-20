@@ -149,7 +149,20 @@ namespace BTKUILib
             
             File.WriteAllBytes(path, tempStream.ToArray());
         }
-        
+
+        /// <summary>
+        /// Check if an icon was prepared already
+        /// </summary>
+        /// <param name="modName">Your mod name, this should be the same as your pages</param>
+        /// <param name="iconName">Name of the icon you're checking for</param>
+        /// <returns></returns>
+        public static bool DoesIconExist(string modName, string iconName)
+        {
+            var directory = $"ChilloutVR_Data\\StreamingAssets\\Cohtml\\UIResources\\GameUI\\mods\\BTKUI\\images\\{modName}";
+
+            return Directory.Exists(directory) && File.Exists($"{directory}\\{iconName}.png");
+        }
+
         /// <summary>
         /// Shows a yes/no confirmation dialog with actions
         /// </summary>
