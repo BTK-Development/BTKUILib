@@ -79,7 +79,7 @@ namespace BTKUILib.UIObjects.Components
             UserInterface.QMElements.Remove(this);
 
             if (!UIUtils.IsQMReady()) return;
-            CVR_MenuManager.Instance.quickMenu.View.TriggerEvent("btkDeleteElement", $"{ElementID}-Root");
+            UIUtils.GetQMInternalView().TriggerEvent("btkDeleteElement", $"{ElementID}-Root");
         }
 
         internal override void OnInteraction(bool? toggle = null)
@@ -97,7 +97,7 @@ namespace BTKUILib.UIObjects.Components
         internal override void GenerateCohtml()
         {
             if(!IsGenerated)
-                CVR_MenuManager.Instance.quickMenu.View.TriggerEvent("btkCreateToggle", _category.ElementID, _toggleName, UUID, _toggleTooltip, _toggleValue);
+                UIUtils.GetQMInternalView().TriggerEvent("btkCreateToggle", _category.ElementID, _toggleName, UUID, _toggleTooltip, _toggleValue);
 
             IsGenerated = true;
         }
@@ -112,9 +112,9 @@ namespace BTKUILib.UIObjects.Components
 
             if (!UIUtils.IsQMReady()) return;
             
-            CVR_MenuManager.Instance.quickMenu.View.TriggerEvent("btkSetToggleState", ElementID, _toggleValue);
-            CVR_MenuManager.Instance.quickMenu.View.TriggerEvent("btkUpdateTooltip", $"{ElementID}-Tooltip", _toggleTooltip);
-            CVR_MenuManager.Instance.quickMenu.View.TriggerEvent("btkUpdateText", $"{ElementID}-Text", _toggleName);
+            UIUtils.GetQMInternalView().TriggerEvent("btkSetToggleState", ElementID, _toggleValue);
+            UIUtils.GetQMInternalView().TriggerEvent("btkUpdateTooltip", $"{ElementID}-Tooltip", _toggleTooltip);
+            UIUtils.GetQMInternalView().TriggerEvent("btkUpdateText", $"{ElementID}-Text", _toggleName);
         }
     }
 }

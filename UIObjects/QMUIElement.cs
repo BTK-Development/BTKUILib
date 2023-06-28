@@ -49,7 +49,7 @@ namespace BTKUILib.UIObjects
             UserInterface.QMElements.Remove(this);
 
             if (!UIUtils.IsQMReady()) return;
-            CVR_MenuManager.Instance.quickMenu.View.TriggerEvent("btkDeleteElement", ElementID);
+            UIUtils.GetQMInternalView().TriggerEvent("btkDeleteElement", ElementID);
         }
 
         internal virtual void DeleteInternal()
@@ -57,7 +57,7 @@ namespace BTKUILib.UIObjects
             UserInterface.QMElements.Remove(this);
 
             if (!UIUtils.IsQMReady()) return;
-            CVR_MenuManager.Instance.quickMenu.View.TriggerEvent("btkDeleteElement", ElementID);
+            UIUtils.GetQMInternalView().TriggerEvent("btkDeleteElement", ElementID);
         }
 
         /// <summary>

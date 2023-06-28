@@ -10,6 +10,7 @@ namespace BTKUILib
     internal class Patches
     {
         private static HarmonyLib.Harmony _modInstance;
+        private static bool _firstOnLoadComplete;
         
         internal static void Initialize(HarmonyLib.Harmony modInstance)
         {
@@ -29,31 +30,38 @@ namespace BTKUILib
                     BTKUILib.Log.Error(e);
                 }
             });
+            
+            CVRGameEventSystem.World.OnLoad.AddListener((message) =>
+            {
+                if (_firstOnLoadComplete) return;
 
-            CVRPlayerManager.Instance.OnPlayerEntityCreated += entity =>
-            {
-                try
+                _firstOnLoadComplete = true;
+                
+                CVRPlayerManager.Instance.OnPlayerEntityCreated += entity =>
                 {
-                    QuickMenuAPI.UserJoin?.Invoke(entity);                
-                }
-                catch (Exception e)
-                {
-                    BTKUILib.Log.Error(e);
-                }
-            };
+                    try
+                    {
+                        QuickMenuAPI.UserJoin?.Invoke(entity);                
+                    }
+                    catch (Exception e)
+                    {
+                        BTKUILib.Log.Error(e);
+                    }
+                };
             
-            CVRPlayerManager.Instance.OnPlayerEntityRecycled += entity =>
-            {
-                try
+                CVRPlayerManager.Instance.OnPlayerEntityRecycled += entity =>
                 {
-                    QuickMenuAPI.UserLeave?.Invoke(entity);                
-                }
-                catch (Exception e)
-                {
-                    BTKUILib.Log.Error(e);
-                }
-            }; 
-            
+                    try
+                    {
+                        QuickMenuAPI.UserLeave?.Invoke(entity);                
+                    }
+                    catch (Exception e)
+                    {
+                        BTKUILib.Log.Error(e);
+                    }
+                }; 
+            });
+
             BTKUILib.Log.Msg("Applied patches!");
         }
         

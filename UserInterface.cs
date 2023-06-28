@@ -60,7 +60,7 @@ namespace BTKUILib
             CVR_MenuManager.Instance.quickMenu.View.BindCall("btkUI-TabChange", new Action<string>(OnTabChange));
             CVR_MenuManager.Instance.quickMenu.View.BindCall("btkUI-SelectedPlayer", new Action<string, string>(OnSelectedPlayer));
             
-            CVR_MenuManager.Instance.quickMenu.View.TriggerEvent("btkModInit");
+            UIUtils.GetQMInternalView().TriggerEvent("btkModInit");
             
             //Begin creating the UI elements!
             foreach (var root in RootPages)
@@ -85,17 +85,17 @@ namespace BTKUILib
 
         private void UserLeave(CVRPlayerEntity obj)
         {
-            CVR_MenuManager.Instance.quickMenu.View.TriggerEvent("btkRemovePlayer", obj.Uuid, CVRPlayerManager.Instance.NetworkPlayers.Count);
+            UIUtils.GetQMInternalView().TriggerEvent("btkRemovePlayer", obj.Uuid, CVRPlayerManager.Instance.NetworkPlayers.Count);
         }
 
         private void UserJoin(CVRPlayerEntity obj)
         {
-            CVR_MenuManager.Instance.quickMenu.View.TriggerEvent("btkAddPlayer", obj.Username, obj.Uuid, obj.ApiProfileImageUrl, CVRPlayerManager.Instance.NetworkPlayers.Count);
+            UIUtils.GetQMInternalView().TriggerEvent("btkAddPlayer", obj.Username, obj.Uuid, obj.ApiProfileImageUrl, CVRPlayerManager.Instance.NetworkPlayers.Count);
         }
         
         private void OnWorldLeave()
         {
-            CVR_MenuManager.Instance.quickMenu.View.TriggerEvent("btkLeaveWorld");
+            UIUtils.GetQMInternalView().TriggerEvent("btkLeaveWorld");
         }
 
         #region Cohtml Event Functions
@@ -111,7 +111,7 @@ namespace BTKUILib
         {
             if (tabTarget == "CVRMainQM")
             {
-                CVR_MenuManager.Instance.quickMenu.View.TriggerEvent("btkChangeTab", tabTarget, "CVR", "", "");
+                UIUtils.GetQMInternalView().TriggerEvent("btkChangeTab", tabTarget, "CVR", "", "");
                 QuickMenuAPI.OnTabChange?.Invoke(tabTarget, _lastTab);
                 _lastTab = tabTarget;
                 return;
@@ -125,7 +125,7 @@ namespace BTKUILib
                 return;
             }
             
-            CVR_MenuManager.Instance.quickMenu.View.TriggerEvent("btkChangeTab", tabTarget, root.ModName, root.MenuTitle, root.MenuSubtitle);
+            UIUtils.GetQMInternalView().TriggerEvent("btkChangeTab", tabTarget, root.ModName, root.MenuTitle, root.MenuSubtitle);
             QuickMenuAPI.OnTabChange?.Invoke(tabTarget, _lastTab);
             _lastTab = tabTarget;
         }
