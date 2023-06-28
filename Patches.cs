@@ -1,16 +1,9 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
 using ABI_RC.Core.InteractionSystem;
-using ABI_RC.Core.Networking;
 using ABI_RC.Core.Player;
-using cohtml;
-using DarkRift.Client;
+using ABI_RC.Systems.GameEventSystem;
 using HarmonyLib;
 using MelonLoader;
-using OpCodes = System.Reflection.Emit.OpCodes;
 
 namespace BTKUILib
 {
@@ -23,10 +16,43 @@ namespace BTKUILib
             _modInstance = modInstance;
             
             ApplyPatches(typeof(CVRMenuManagerPatch));
-            ApplyPatches(typeof(CVRPlayerManagerJoin));
-            ApplyPatches(typeof(CVRPlayerEntityLeave));
             ApplyPatches(typeof(ViewManagerPatches));
-            ApplyPatches(typeof(NetworkManagerPatches));
+
+            CVRGameEventSystem.Instance.OnConnectionLost.AddListener((message) =>
+            {
+                try
+                {
+                    QuickMenuAPI.OnWorldLeave?.Invoke();
+                }
+                catch (Exception e)
+                {
+                    BTKUILib.Log.Error(e);
+                }
+            });
+
+            CVRPlayerManager.Instance.OnPlayerEntityCreated += entity =>
+            {
+                try
+                {
+                    QuickMenuAPI.UserJoin?.Invoke(entity);                
+                }
+                catch (Exception e)
+                {
+                    BTKUILib.Log.Error(e);
+                }
+            };
+            
+            CVRPlayerManager.Instance.OnPlayerEntityRecycled += entity =>
+            {
+                try
+                {
+                    QuickMenuAPI.UserLeave?.Invoke(entity);                
+                }
+                catch (Exception e)
+                {
+                    BTKUILib.Log.Error(e);
+                }
+            }; 
             
             BTKUILib.Log.Msg("Applied patches!");
         }
@@ -44,30 +70,6 @@ namespace BTKUILib
                 BTKUILib.Log.Error(e);
             }
         }
-        
-        private static void UserJoinPatch(CVRPlayerEntity player)
-        {
-            try
-            {
-                QuickMenuAPI.UserJoin?.Invoke(player);                
-            }
-            catch (Exception e)
-            {
-                BTKUILib.Log.Error(e);
-            }
-        }
-        
-        private static void UserLeavePatch(CVRPlayerEntity player)
-        {
-            try
-            {
-                QuickMenuAPI.UserLeave?.Invoke(player);                
-            }
-            catch (Exception e)
-            {
-                BTKUILib.Log.Error(e);
-            }
-        }
     }
     
     [HarmonyPatch(typeof(CVR_MenuManager))]
@@ -80,75 +82,6 @@ namespace BTKUILib
             try
             {
                 QuickMenuAPI.OnMenuRegenerate?.Invoke(__instance);
-            }
-            catch (Exception e)
-            {
-                BTKUILib.Log.Error(e);
-            }
-        }
-    }
-    
-        [HarmonyPatch]
-    class CVRPlayerManagerJoin
-    {
-        private static readonly MethodInfo _targetMethod = typeof(List<CVRPlayerEntity>).GetMethod("Add", BindingFlags.Public | BindingFlags.Instance);
-        private static readonly MethodInfo _userJoinMethod = typeof(Patches).GetMethod("UserJoinPatch", BindingFlags.Static | BindingFlags.NonPublic);
-        private static readonly FieldInfo _playerEntity = typeof(CVRPlayerManager).GetNestedTypes(BindingFlags.NonPublic | BindingFlags.Instance).Single(t => t.GetField("p") != null).GetField("p");
-        
-        static MethodInfo TargetMethod()
-        {
-            return typeof(CVRPlayerManager).GetMethod(nameof(CVRPlayerManager.TryCreatePlayer), BindingFlags.Instance | BindingFlags.Public);
-        }
-        
-        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
-        {
-            var code = new CodeMatcher(instructions)
-                .MatchForward(true, new CodeMatch(OpCodes.Callvirt, _targetMethod))
-                .Insert(
-                    new CodeInstruction(OpCodes.Ldloc_0),
-                    new CodeInstruction(OpCodes.Ldfld, _playerEntity),
-                    new CodeInstruction(OpCodes.Call, _userJoinMethod)
-                )
-                .InstructionEnumeration();
-
-            return code;
-        }
-    }
-    
-    [HarmonyPatch]
-    class CVRPlayerEntityLeave
-    {
-        private static readonly MethodInfo _userLeaveMethod = typeof(Patches).GetMethod("UserLeavePatch", BindingFlags.Static | BindingFlags.NonPublic);
-        
-        static MethodInfo TargetMethod()
-        {
-            return typeof(CVRPlayerEntity).GetMethod(nameof(CVRPlayerEntity.Recycle), BindingFlags.Instance | BindingFlags.Public);
-        }
-        
-        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
-        {
-            var code = new CodeMatcher(instructions)
-                .Advance(1)
-                .Insert(
-                    new CodeInstruction(OpCodes.Ldarg_0),
-                    new CodeInstruction(OpCodes.Call, _userLeaveMethod)
-                )
-                .InstructionEnumeration();
-            
-            return code;
-        }
-    }
-    
-    [HarmonyPatch(typeof(NetworkManager))]
-    class NetworkManagerPatches
-    {
-        [HarmonyPatch("OnGameNetworkConnectionClosed")]
-        [HarmonyPostfix]
-        static void OnGameNetworkClosed(object __0, DisconnectedEventArgs __1)
-        {
-            try
-            {
-                QuickMenuAPI.OnWorldLeave?.Invoke();
             }
             catch (Exception e)
             {
