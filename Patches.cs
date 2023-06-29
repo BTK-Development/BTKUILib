@@ -31,6 +31,18 @@ namespace BTKUILib
                 }
             });
             
+            CVRGameEventSystem.Instance.OnDisconnected.AddListener(s =>
+            {
+                try
+                {
+                    QuickMenuAPI.OnWorldLeave?.Invoke();
+                }
+                catch (Exception e)
+                {
+                    BTKUILib.Log.Error(e);
+                }
+            });
+            
             CVRGameEventSystem.World.OnLoad.AddListener((message) =>
             {
                 if (_firstOnLoadComplete) return;
