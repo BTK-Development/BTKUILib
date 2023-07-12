@@ -110,7 +110,7 @@ namespace BTKUILib.UIObjects
         {
             if (!UIUtils.IsQMReady() || !IsGenerated) return;
             
-            UIUtils.GetQMInternalView().TriggerEvent("btkPushPage", ElementID);
+            CVR_MenuManager.Instance.quickMenu.View.TriggerEvent("btkPushPage", ElementID);
         }
 
         /// <summary>
@@ -211,7 +211,7 @@ namespace BTKUILib.UIObjects
             if (RootPage)
             {
                 UserInterface.RootPages.Remove(this);
-                UIUtils.GetQMInternalView().TriggerEvent("btkDeleteElement", _tabID);
+                CVR_MenuManager.Instance.quickMenu.View.TriggerEvent("btkDeleteElement", _tabID);
             }
 
             //Remove this page from the category list
@@ -224,7 +224,7 @@ namespace BTKUILib.UIObjects
         /// </summary>
         public void ClearChildren()
         {
-            UIUtils.GetQMInternalView().TriggerEvent("btkClearChildren", ElementID + "-Content");
+            CVR_MenuManager.Instance.quickMenu.View.TriggerEvent("btkClearChildren", ElementID + "-Content");
         }
 
         internal override void DeleteInternal()
@@ -234,7 +234,7 @@ namespace BTKUILib.UIObjects
             if (RootPage)
             {
                 UserInterface.RootPages.Remove(this);
-                UIUtils.GetQMInternalView().TriggerEvent("btkDeleteElement", _tabID);
+                CVR_MenuManager.Instance.quickMenu.View.TriggerEvent("btkDeleteElement", _tabID);
             }
 
             //Remove this page from the category list
@@ -245,7 +245,7 @@ namespace BTKUILib.UIObjects
         internal override void GenerateCohtml()
         {
             if(!IsGenerated)
-                UIUtils.GetQMInternalView().TriggerEvent("btkCreatePage", PageName, ModName, _tabIcon, ElementID, RootPage, UIUtils.GetCleanString(PageName), InPlayerlist);
+                CVR_MenuManager.Instance.quickMenu.View.TriggerEvent("btkCreatePage", PageName, ModName, _tabIcon, ElementID, RootPage, UIUtils.GetCleanString(PageName), InPlayerlist);
             
             IsGenerated = true;
             

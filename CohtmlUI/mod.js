@@ -249,6 +249,8 @@ cvr.menu.prototype.BTKUI = {
         tabRoot.addEventListener('mousedown', this.btkTabRootMouseDown);
         document.addEventListener("mousemove", this.btkTabRootMouseMove);
         document.addEventListener('mouseup', this.btkTabRootMouseUp);
+        
+        engine.call("btkUI-UILoaded");
     },
 
     btkOnHover: function (e){

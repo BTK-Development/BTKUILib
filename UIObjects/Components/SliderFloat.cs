@@ -180,7 +180,7 @@ namespace BTKUILib.UIObjects.Components
                     AllowDefaultReset = _allowDefaultReset
                 };
                 
-                UIUtils.GetQMInternalView().TriggerEvent("btkCreateSlider", _page.ElementID, UUID, _sliderValue, settings);
+                CVR_MenuManager.Instance.quickMenu.View.TriggerEvent("btkCreateSlider", _page.ElementID, UUID, _sliderValue, settings);
             }
 
             IsGenerated = true;
@@ -201,8 +201,8 @@ namespace BTKUILib.UIObjects.Components
                 AllowDefaultReset = _allowDefaultReset
             };
 
-            UIUtils.GetQMInternalView().TriggerEvent("btkSliderUpdateSettings", UUID, settings);
-            UIUtils.GetQMInternalView().TriggerEvent("btkSliderSetValue", UUID, SliderValue);
+            CVR_MenuManager.Instance.quickMenu.View.TriggerEvent("btkSliderUpdateSettings", UUID, settings);
+            CVR_MenuManager.Instance.quickMenu.View.TriggerEvent("btkSliderSetValue", UUID, SliderValue);
         }
     }
 

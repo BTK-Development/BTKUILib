@@ -15,8 +15,6 @@ namespace BTKUILib
     {
         private static MD5 _hasher = MD5.Create();
         private static FieldInfo _qmReady = typeof(CVR_MenuManager).GetField("_quickMenuReady", BindingFlags.Instance | BindingFlags.NonPublic);
-        private static FieldInfo _internalViewGetter = typeof(CohtmlControlledViewDisposable).GetField("_view", BindingFlags.NonPublic | BindingFlags.Instance);
-        private static View _qmView;
 
         /// <summary>
         /// Check if the CVR_MenuManager view is ready
@@ -29,20 +27,7 @@ namespace BTKUILib
 
             return (bool)_qmReady.GetValue(CVR_MenuManager.Instance);
         }
-        
-        /// <summary>
-        /// Gets the internal Cohtml View from a CVR CohtmlControlledViewDisposable
-        /// This is used to get around issues introduced by the changes to TriggerEvent
-        /// </summary>
-        /// <returns>Cohtml.net.View object</returns>
-        public static View GetQMInternalView()
-        {
-            if (_qmView == null)
-                _qmView = (View)_internalViewGetter.GetValue(CVR_MenuManager.Instance.quickMenu.View);
 
-            return _qmView;
-        }
-        
         /// <summary>
         /// Clean non alphanumeric characters from a given string
         /// </summary>

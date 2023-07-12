@@ -59,18 +59,26 @@ namespace BTKUILib
             CVR_MenuManager.Instance.quickMenu.View.BindCall("btkUI-RootCreated", new Action<string, string>(OnRootCreated));
             CVR_MenuManager.Instance.quickMenu.View.BindCall("btkUI-TabChange", new Action<string>(OnTabChange));
             CVR_MenuManager.Instance.quickMenu.View.BindCall("btkUI-SelectedPlayer", new Action<string, string>(OnSelectedPlayer));
+            CVR_MenuManager.Instance.quickMenu.View.BindCall("btkUI-UILoaded", new Action(OnMenuIsLoaded));
+        }
+
+        private void OnMenuIsLoaded()
+        {
+            MelonDebug.Msg("BTKUILib menu is loaded, setting up!");
             
-            UIUtils.GetQMInternalView().TriggerEvent("btkModInit");
+            CVR_MenuManager.Instance.quickMenu.View.TriggerEvent("btkModInit");
             
             //Begin creating the UI elements!
             foreach (var root in RootPages)
             {
-                BTKUILib.Log.Msg($"Creating root page | Name: {root.PageName} | ModName: {root.ModName} | ElementID: {root.ElementID}");
+                MelonDebug.Msg($"Creating root page | Name: {root.PageName} | ModName: {root.ModName} | ElementID: {root.ElementID}");
                 root.GenerateCohtml();
             }
-            
+
             //Run the ml prefs tab generation
             BTKUILib.Instance.GenerateMlPrefsTab();
+            
+            BTKUILib.Log.Msg($"Setup {RootPages.Count} root pages! BTKUILib is ready!");
         }
 
         internal void RegisterRootPage(Page rootPage)
@@ -79,23 +87,23 @@ namespace BTKUILib
 
             if (!UIUtils.IsQMReady()) return;
             
-            BTKUILib.Log.Msg($"Creating root page | Name: {rootPage.PageName} | ModName: {rootPage.ModName} | ElementID: {rootPage.ElementID}");
+            MelonDebug.Msg($"Creating root page | Name: {rootPage.PageName} | ModName: {rootPage.ModName} | ElementID: {rootPage.ElementID}");
             rootPage.GenerateCohtml();
         }
 
         private void UserLeave(CVRPlayerEntity obj)
         {
-            UIUtils.GetQMInternalView().TriggerEvent("btkRemovePlayer", obj.Uuid, CVRPlayerManager.Instance.NetworkPlayers.Count);
+            CVR_MenuManager.Instance.quickMenu.View.TriggerEvent("btkRemovePlayer", obj.Uuid, CVRPlayerManager.Instance.NetworkPlayers.Count);
         }
 
         private void UserJoin(CVRPlayerEntity obj)
         {
-            UIUtils.GetQMInternalView().TriggerEvent("btkAddPlayer", obj.Username, obj.Uuid, obj.ApiProfileImageUrl, CVRPlayerManager.Instance.NetworkPlayers.Count);
+            CVR_MenuManager.Instance.quickMenu.View.TriggerEvent("btkAddPlayer", obj.Username, obj.Uuid, obj.ApiProfileImageUrl, CVRPlayerManager.Instance.NetworkPlayers.Count);
         }
         
         private void OnWorldLeave()
         {
-            UIUtils.GetQMInternalView().TriggerEvent("btkLeaveWorld");
+            CVR_MenuManager.Instance.quickMenu.View.TriggerEvent("btkLeaveWorld");
         }
 
         #region Cohtml Event Functions
@@ -111,7 +119,7 @@ namespace BTKUILib
         {
             if (tabTarget == "CVRMainQM")
             {
-                UIUtils.GetQMInternalView().TriggerEvent("btkChangeTab", tabTarget, "CVR", "", "");
+                CVR_MenuManager.Instance.quickMenu.View.TriggerEvent("btkChangeTab", tabTarget, "CVR", "", "");
                 QuickMenuAPI.OnTabChange?.Invoke(tabTarget, _lastTab);
                 _lastTab = tabTarget;
                 return;
@@ -125,7 +133,7 @@ namespace BTKUILib
                 return;
             }
             
-            UIUtils.GetQMInternalView().TriggerEvent("btkChangeTab", tabTarget, root.ModName, root.MenuTitle, root.MenuSubtitle);
+            CVR_MenuManager.Instance.quickMenu.View.TriggerEvent("btkChangeTab", tabTarget, root.ModName, root.MenuTitle, root.MenuSubtitle);
             QuickMenuAPI.OnTabChange?.Invoke(tabTarget, _lastTab);
             _lastTab = tabTarget;
         }
