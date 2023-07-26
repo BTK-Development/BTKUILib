@@ -29,8 +29,7 @@ namespace BTKUILib
         internal void SetupUI()
         {
             Instance = this;
-
-            QuickMenuAPI.OnMenuRegenerate += OnMenuRegenerate;
+            
             QuickMenuAPI.UserJoin += UserJoin;
             QuickMenuAPI.UserLeave += UserLeave;
             QuickMenuAPI.OnWorldLeave += OnWorldLeave;
@@ -39,7 +38,7 @@ namespace BTKUILib
             CheckUpdateUI();
         }
 
-        private void OnMenuRegenerate(CVR_MenuManager cvrMenuManager)
+        internal void OnMenuRegenerate()
         {
             MelonDebug.Msg("Registering events");
 
@@ -65,6 +64,8 @@ namespace BTKUILib
         private void OnMenuIsLoaded()
         {
             MelonDebug.Msg("BTKUILib menu is loaded, setting up!");
+            
+            QuickMenuAPI.OnMenuRegenerate?.Invoke(CVR_MenuManager.Instance);
             
             CVR_MenuManager.Instance.quickMenu.View.TriggerEvent("btkModInit");
             

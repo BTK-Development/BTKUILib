@@ -101,7 +101,7 @@ namespace BTKUILib
         {
             try
             {
-                QuickMenuAPI.OnMenuRegenerate?.Invoke(__instance);
+                UserInterface.Instance?.OnMenuRegenerate();
             }
             catch (Exception e)
             {
