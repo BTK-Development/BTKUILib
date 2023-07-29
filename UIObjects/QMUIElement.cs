@@ -24,6 +24,9 @@ namespace BTKUILib.UIObjects
         /// </summary>
         public bool IsGenerated;
 
+        /// <summary>
+        /// Disabled will block input and gray out the element it is set on
+        /// </summary>
         public bool Disabled
         {
             get => _disabled;

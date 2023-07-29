@@ -25,7 +25,7 @@ namespace BTKUILib
             if (CVR_MenuManager.Instance == null)
                 return false;
 
-            return (bool)_qmReady.GetValue(CVR_MenuManager.Instance);
+            return (bool)_qmReady.GetValue(CVR_MenuManager.Instance) && UserInterface.BTKUIReady;
         }
 
         /// <summary>

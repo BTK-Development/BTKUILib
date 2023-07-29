@@ -22,6 +22,7 @@ namespace BTKUILib
         internal static List<QMUIElement> QMElements = new();
         internal static Dictionary<string, SliderFloat> Sliders = new();
         internal static Dictionary<string, QMInteractable> Interactables = new();
+        internal static bool BTKUIReady; 
         internal MultiSelection SelectedMultiSelect;
 
         private string _lastTab = "CVRMainQM";
@@ -41,6 +42,8 @@ namespace BTKUILib
         internal void OnMenuRegenerate()
         {
             MelonDebug.Msg("Registering events");
+
+            BTKUIReady = false;
 
             foreach (var element in QMElements)
                 element.IsGenerated = false;
@@ -78,6 +81,8 @@ namespace BTKUILib
 
             //Run the ml prefs tab generation
             BTKUILib.Instance.GenerateMlPrefsTab();
+
+            BTKUIReady = true;
             
             BTKUILib.Log.Msg($"Setup {RootPages.Count} root pages! BTKUILib is ready!");
         }
