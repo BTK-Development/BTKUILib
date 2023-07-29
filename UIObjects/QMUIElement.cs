@@ -24,10 +24,29 @@ namespace BTKUILib.UIObjects
         /// </summary>
         public bool IsGenerated;
 
+        public bool Disabled
+        {
+            get => _disabled;
+            set
+            {
+                var thisType = GetType();
+
+                //Don't allow pages to be disabled
+                if (thisType == typeof(Page)) return;
+
+                _disabled = value;
+
+                if (!UIUtils.IsQMReady()) return;
+                CVR_MenuManager.Instance.quickMenu.View.TriggerEvent("btkSetDisabled", ElementID, value);
+            }
+        }
+
         /// <summary>
         /// Set to prevent changes to some elements (Internal use)
         /// </summary>
         internal bool Protected;
+
+        private bool _disabled;
 
         internal QMUIElement()
         {
@@ -65,7 +84,8 @@ namespace BTKUILib.UIObjects
         /// </summary>
         internal virtual void GenerateCohtml()
         {
-            
+            if (!UIUtils.IsQMReady()) return;
+            CVR_MenuManager.Instance.quickMenu.View.TriggerEvent("btkSetDisabled", ElementID, _disabled);
         }
     }
 }

@@ -98,6 +98,8 @@ namespace BTKUILib.UIObjects.Components
         {
             if(!IsGenerated)
                 CVR_MenuManager.Instance.quickMenu.View.TriggerEvent("btkCreateToggle", _category.ElementID, _toggleName, UUID, _toggleTooltip, _toggleValue);
+            
+            base.GenerateCohtml();
 
             IsGenerated = true;
         }

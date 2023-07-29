@@ -182,6 +182,8 @@ namespace BTKUILib.UIObjects.Components
                 
                 CVR_MenuManager.Instance.quickMenu.View.TriggerEvent("btkCreateSlider", _page.ElementID, UUID, _sliderValue, settings);
             }
+            
+            base.GenerateCohtml();
 
             IsGenerated = true;
         }

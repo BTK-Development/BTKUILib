@@ -89,6 +89,8 @@ namespace BTKUILib.UIObjects.Components
         {
             if (!IsGenerated)
                 CVR_MenuManager.Instance.quickMenu.View.TriggerEvent("btkCreateButton", _category.ElementID, _buttonText, _buttonIcon, _buttonTooltip, UUID, _category.ModName, (int)_style);
+            
+            base.GenerateCohtml();
 
             IsGenerated = true;
         }

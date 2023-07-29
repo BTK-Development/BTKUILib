@@ -94,7 +94,7 @@ cvr.menu.prototype.BTKUI = {
                                         {c: "tab-content", a:{"id":"btkUI-Tab-CVRQM-Icon"}}
                                     ], a:{"id":"btkUI-Tab-CVRMainQM", "tabTarget": "CVRMainQM"}, x: "btkUI-TabChange"},
                                 {c: "col-md justify-content-md-center", s:[
-                                        {c:"scroll-bg", s:[{c:"scroll-overlay", a: {"id": "btkUI-TabScroll-Indicator"}}]},
+                                        {c:"scroll-bg hide", s:[{c:"scroll-overlay", a: {"id": "btkUI-TabScroll-Indicator"}}], a:{"id": "btkUI-TabScroll-Container"}},
                                         {c:"row btkUI-TabScroll", a: {"id": "btkUI-TabRoot"}, s: [
                                         ]},
                                     ]}
@@ -233,6 +233,7 @@ cvr.menu.prototype.BTKUI = {
         engine.on("btkLeaveWorld", this.btkLeaveWorld);
         engine.on("btkAlertToast", this.btkShowAlert);
         engine.on("btkClearChildren", this.btkClearChildren);
+        engine.on("btkSetDisabled", this.btkSetDisabled);
     },
 
     init: function(menu){
@@ -810,6 +811,11 @@ cvr.menu.prototype.BTKUI = {
         cvr("#btkUI-Root").appendChild(cvr.render(uiRefBTK.templates["btkUIRootPage"], {
             "[ModName]": modName
         }, uiRefBTK.templates, uiRefBTK.actions));
+
+        if(document.getElementById("btkUI-TabRoot").childElementCount >= 8)
+            cvr("#btkUI-TabScroll-Container").show();
+        else
+            cvr("#btkUI-TabScroll-Container").hide();
     },
 
     btkChangeTab: function (rootTarget, rootMod, menuTitle, menuSubtitle){
@@ -846,6 +852,11 @@ cvr.menu.prototype.BTKUI = {
         }
 
         element.parentElement.removeChild(element);
+
+        if(document.getElementById("btkUI-TabRoot").childElementCount >= 8)
+            cvr("#btkUI-TabScroll-Container").show();
+        else
+            cvr("#btkUI-TabScroll-Container").hide();
     },
 
     btkUpdateIcon: function (elementID, modName, icon, suffix = "Image") {
@@ -910,6 +921,19 @@ cvr.menu.prototype.BTKUI = {
         if(target === null) return;
 
         target.clear();
+    },
+
+    btkSetDisabled: function(targetID, state){
+        let target = document.getElementById(targetID);
+
+        if(target === null) return;
+
+        if(state){
+            if(target.classList.contains("disabled")) return;
+            target.classList.add("disabled");
+        } else {
+            target.classList.remove("disabled");
+        }
     },
 
     actions: {

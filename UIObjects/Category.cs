@@ -154,6 +154,8 @@ namespace BTKUILib.UIObjects
             
             foreach(var element in CategoryElements)
                 element.GenerateCohtml();
+            
+            base.GenerateCohtml();
 
             IsGenerated = true;
         }
