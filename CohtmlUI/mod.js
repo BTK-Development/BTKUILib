@@ -19,6 +19,7 @@ cvr.menu.prototype.BTKUI = {
     btkAlertToasts: [],
     btkAlertShown: false,
     btkShowAlertFunc: {},
+    btkGetImageBackgroundFunc: {},
 
     info: function(){
         return {
@@ -66,6 +67,7 @@ cvr.menu.prototype.BTKUI = {
         btkAlertToasts = [];
         btkAlertShown = false;
         btkShowAlertFunc = this.btkShowAlert;
+        btkGetImageBackgroundFunc = this.btkGetImageBackground;
 
         menu.templates["btkUI-btn"] = {c: "btkUI-btn hide", s: [{c: "icon"}], x: "btkUI-pushPage", a:{"id" : "btkUI-UserMenu", "data-page": "btkUI-PlayerList"}};
         menu.templates["btkUI-shared"] = {c: "btkUI-shared hide", s:[
@@ -252,6 +254,20 @@ cvr.menu.prototype.BTKUI = {
         document.addEventListener('mouseup', this.btkTabRootMouseUp);
         
         engine.call("btkUI-UILoaded");
+    },
+
+    btkGetImageBackground: function(modName, iconInput) {
+        if(iconInput !== null && typeof iconInput === "string" && iconInput.length > 0){
+            //Check if it's a URL that we allow
+            if(iconInput.startsWith("http")){
+                if(iconInput.startsWith("https://files.abidata.io")){
+                    return "url('" + iconInput + "')";
+                }
+            } else {
+                return "url('mods/BTKUI/images/" + modName + "/" + iconInput + ".png')";
+            }
+        }
+        return "url('mods/BTKUI/images/Placeholder.png')";
     },
 
     btkOnHover: function (e){
@@ -636,18 +652,7 @@ cvr.menu.prototype.BTKUI = {
             "[UUID]": buttonUUID,
         }, uiRefBTK.templates, uiRefBTK.actions));
 
-        let buttonBgImage = "url('mods/BTKUI/images/Placeholder.png')";
-
-        if(buttonIcon !== null && typeof buttonIcon === "string" && buttonIcon.length > 0){
-            //Check if it's a URL that we allow
-            if(buttonIcon.startsWith("http")){
-                if(buttonIcon.startsWith("https://files.abidata.io")){
-                    buttonBgImage = "url('" + encodeURIComponent(buttonIcon) + "')";
-                }
-            } else {
-                buttonBgImage = "url('mods/BTKUI/images/" + modName + "/" + buttonIcon + ".png')";
-            }
-        }
+        const buttonBgImage = btkGetImageBackgroundFunc(modName, buttonIcon);
 
         if(buttonStyle === 0) {
             let button = document.getElementById("btkUI-Button-" + buttonUUID + "-Image");
@@ -867,20 +872,7 @@ cvr.menu.prototype.BTKUI = {
             return;
         }
 
-        let buttonBgImage = "url('mods/BTKUI/images/Placeholder.png')";
-
-        if(icon !== null && typeof icon === "string" && icon.length > 0){
-            //Check if it's a URL that we allow
-            if(icon.startsWith("http")){
-                if(icon.startsWith("https://files.abidata.io")){
-                    buttonBgImage = "url('" + encodeURIComponent(icon) + "')";
-                }
-            } else {
-                buttonBgImage = "url('mods/BTKUI/images/" + modName + "/" + icon + ".png')";
-            }
-        }
-
-        element.style.backgroundImage = buttonBgImage;
+        element.style.backgroundImage = btkGetImageBackgroundFunc(modName, icon);
         element.style.backgroundRepeat = "no-repeat";
         element.style.backgroundSize = "contain";
     },
