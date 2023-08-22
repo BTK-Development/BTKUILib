@@ -77,7 +77,7 @@ namespace BTKUILib.UIObjects.Components
         {
             base.Delete();
             if (Protected) return;
-            _category.CategoryElements.Remove(this);
+            _category.SubElements.Remove(this);
         }
 
         internal override void OnInteraction(bool? toggle = null)
@@ -87,6 +87,8 @@ namespace BTKUILib.UIObjects.Components
 
         internal override void GenerateCohtml()
         {
+            if (!UIUtils.IsQMReady()) return;
+
             if (!IsGenerated)
                 CVR_MenuManager.Instance.quickMenu.View.TriggerEvent("btkCreateButton", _category.ElementID, _buttonText, _buttonIcon, _buttonTooltip, UUID, _category.ModName, (int)_style);
             

@@ -25,8 +25,6 @@ namespace BTKUILib.UIObjects
         internal string ModName => _modName ?? LinkedPage.ModName;
 
         internal readonly Page LinkedPage;
-        internal List<QMUIElement> CategoryElements = new();
-
         private string _categoryName;
         private readonly string _modName;
         private bool _showHeader = false;
@@ -64,7 +62,7 @@ namespace BTKUILib.UIObjects
         public Button AddButton(string buttonText, string buttonIcon, string buttonTooltip, ButtonStyle style)
         {
             var button = new Button(buttonText, buttonIcon, buttonTooltip, this, style);
-            CategoryElements.Add(button);
+            SubElements.Add(button);
             
             if(UIUtils.IsQMReady())
                 button.GenerateCohtml();
@@ -82,7 +80,7 @@ namespace BTKUILib.UIObjects
         public ToggleButton AddToggle(string toggleText, string toggleTooltip, bool state)
         {
             var toggle = new ToggleButton(toggleText, toggleTooltip, state, this);
-            CategoryElements.Add(toggle);
+            SubElements.Add(toggle);
             
             if(UIUtils.IsQMReady())
                 toggle.GenerateCohtml();
@@ -101,7 +99,7 @@ namespace BTKUILib.UIObjects
         public Page AddPage(string pageName, string pageIcon, string pageTooltip, string modName)
         {
             var page = new Page(modName, pageName);
-            CategoryElements.Add(page);
+            SubElements.Add(page);
 
             if (modName == "BTKUILib" && LinkedPage.ElementID == "btkUI-PlayerSelectPage")
             {
@@ -109,7 +107,7 @@ namespace BTKUILib.UIObjects
             }
 
             var pageButton = new Button(pageName, pageIcon, pageTooltip, this);
-            CategoryElements.Add(pageButton);
+            SubElements.Add(pageButton);
             pageButton.OnPress += () =>
             {
                 page.OpenPage();
@@ -134,7 +132,7 @@ namespace BTKUILib.UIObjects
             
             base.Delete();
             if (Protected) return;
-            LinkedPage.PageElements.Remove(this);
+            LinkedPage.SubElements.Remove(this);
         }
 
         /// <summary>
@@ -147,10 +145,12 @@ namespace BTKUILib.UIObjects
 
         internal override void GenerateCohtml()
         {
+            if (!UIUtils.IsQMReady()) return;
+
             if(!IsGenerated)
                 CVR_MenuManager.Instance.quickMenu.View.TriggerEvent("btkCreateRow", LinkedPage.ElementID, UUID, _showHeader ? _categoryName : null);
             
-            foreach(var element in CategoryElements)
+            foreach(var element in SubElements)
                 element.GenerateCohtml();
             
             base.GenerateCohtml();

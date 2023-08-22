@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using ABI_RC.Core.InteractionSystem;
 using cohtml;
 
@@ -49,6 +50,11 @@ namespace BTKUILib.UIObjects
         /// </summary>
         internal bool Protected;
 
+        /// <summary>
+        /// This list contains elements that are children of this element (categories/pages)
+        /// </summary>
+        internal List<QMUIElement> SubElements = new();
+
         private bool _disabled;
 
         internal QMUIElement()
@@ -68,15 +74,24 @@ namespace BTKUILib.UIObjects
                 return;
             }
 
-            UserInterface.QMElements.Remove(this);
-
-            if (!UIUtils.IsQMReady()) return;
-            CVR_MenuManager.Instance.quickMenu.View.TriggerEvent("btkDeleteElement", ElementID);
+            DeleteInternal();
         }
 
         internal virtual void DeleteInternal()
         {
             UserInterface.QMElements.Remove(this);
+
+            //Recursively delete sub elements that need special handling
+            foreach (var element in SubElements)
+            {
+                switch (element)
+                {
+                    case Category:
+                    case Page:
+                        element.DeleteInternal();
+                        break;
+                }
+            }
 
             if (!UIUtils.IsQMReady()) return;
             CVR_MenuManager.Instance.quickMenu.View.TriggerEvent("btkDeleteElement", ElementID);

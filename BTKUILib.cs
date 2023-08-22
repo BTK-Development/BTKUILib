@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using BTKUILib.UIObjects;
 using MelonLoader;
@@ -11,7 +12,7 @@ namespace BTKUILib
         public const string Name = "BTKUILib";
         public const string Author = "BTK Development Team";
         public const string Company = "BTK Development";
-        public const string Version = "1.2.2";
+        public const string Version = "1.2.3";
     }
     
     internal class BTKUILib : MelonMod
@@ -73,7 +74,9 @@ namespace BTKUILib
 
             var prefCat = _mlPrefsPage.AddCategory("Categories");
 
-            foreach (var category in MelonPreferences.Categories)
+            MLPrefsPages.Clear();
+
+            foreach (var category in MelonPreferences.Categories.OrderBy(x => x.DisplayName))
             {
                 var page = prefCat.AddPage(category.DisplayName, "Star", $"Opens the preferences category for {category.DisplayName}", "MelonLoader");
                 MLPrefsPages.Add(category.Identifier, page);

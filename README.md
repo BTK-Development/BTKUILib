@@ -85,6 +85,7 @@ From there you can start creating mods using BTKUILib or download existing mods 
  - Visual Studio or equivalent C#/.net Framework development environment
  - MelonLoader version >= 0.5.7
  - ChilloutVR
+ - [*Optional*] npm and less compiler (`npm install -g less`)
 
 ### Preparing your development environment
  - Clone the current main branch
@@ -94,6 +95,7 @@ From there you can start creating mods using BTKUILib or download existing mods 
 mklink /j ml "C:\Program Files (x86)\Steam\steamapps\common\ChilloutVR\MelonLoader"
 mklink /j Managed "C:\Program Files (x86)\Steam\steamapps\common\ChilloutVR\ChilloutVR_Data\Managed"
 ```
+ - [*Optional*] Install `npm` and then `lessc` via `npm install -g less` to automatically compile `.less` into `.css` during build. *Only required if you changed any `.less` files.*
  - You should now be ready to work on and compile BTKUILib!
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>

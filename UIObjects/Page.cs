@@ -49,7 +49,6 @@ namespace BTKUILib.UIObjects
         internal bool RootPage;
         internal string PageName = "MainPage";
         internal readonly string ModName;
-        internal List<QMUIElement> PageElements = new();
         internal bool InPlayerlist = false;
         private Button _subpageButton;
 
@@ -120,7 +119,7 @@ namespace BTKUILib.UIObjects
         public Category AddCategory(string categoryName)
         {
             var category = new Category(categoryName, this);
-            PageElements.Add(category);
+            SubElements.Add(category);
 
             if (UIUtils.IsQMReady()) 
                 category.GenerateCohtml();
@@ -140,7 +139,7 @@ namespace BTKUILib.UIObjects
                 BTKUILib.Log.Warning("You should not be using AddCategory(categoryName, modName) on your created pages! This is only intended for special protected pages! (PlayerSelectPage and Misc page)");
             
             var category = new Category(categoryName, this, true, modName);
-            PageElements.Add(category);
+            SubElements.Add(category);
 
             if (UIUtils.IsQMReady()) 
                 category.GenerateCohtml();
@@ -192,7 +191,7 @@ namespace BTKUILib.UIObjects
         public SliderFloat AddSlider(string sliderName, string sliderTooltip, float initialValue, float minValue, float maxValue, int decimalPlaces, float defaultValue, bool allowReset)
         {
             var slider = new SliderFloat(this, sliderName, sliderTooltip, initialValue, minValue, maxValue, decimalPlaces, defaultValue, allowReset);
-            PageElements.Add(slider);
+            SubElements.Add(slider);
             
             if(UIUtils.IsQMReady())
                 slider.GenerateCohtml();
@@ -214,8 +213,8 @@ namespace BTKUILib.UIObjects
             }
 
             //Remove this page from the category list
-            if(_category != null && _category.CategoryElements.Contains(this))
-                _category.CategoryElements.Remove(this);
+            if(_category != null && _category.SubElements.Contains(this))
+                _category.SubElements.Remove(this);
         }
         
         /// <summary>
@@ -237,18 +236,20 @@ namespace BTKUILib.UIObjects
             }
 
             //Remove this page from the category list
-            if(_category != null && _category.CategoryElements.Contains(this))
-                _category.CategoryElements.Remove(this);
+            if(_category != null && _category.SubElements.Contains(this))
+                _category.SubElements.Remove(this);
         }
         
         internal override void GenerateCohtml()
         {
+            if (!UIUtils.IsQMReady()) return;
+
             if(!IsGenerated)
                 CVR_MenuManager.Instance.quickMenu.View.TriggerEvent("btkCreatePage", PageName, ModName, _tabIcon, ElementID, RootPage, UIUtils.GetCleanString(PageName), InPlayerlist);
             
             IsGenerated = true;
             
-            foreach (var category in PageElements)
+            foreach (var category in SubElements)
             {
                 category.GenerateCohtml();
             }
