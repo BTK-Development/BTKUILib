@@ -248,6 +248,17 @@ namespace BTKUILib
             
             CVR_MenuManager.Instance.quickMenu.View.TriggerEvent("btkAlertToast", message, delay);
         }
+
+        /// <summary>
+        /// Forcefully adds a page to the RootPages list, you should only use this if you are doing weird stuff.
+        /// For general usage please use the RootPage parameter on the Page constructor!
+        /// </summary>
+        /// <param name="page">The page to be added to the RootPages list</param>
+        public static void AddRootPage(Page page)
+        {
+            if (UserInterface.RootPages.Contains(page)) return;
+            UserInterface.RootPages.Add(page);
+        }
         
         #endregion
     }
