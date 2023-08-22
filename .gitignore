@@ -351,3 +351,6 @@ MigrationBackup/
 
 # JetBrains Shit
 .idea
+
+# Build zip
+BTKUIBuild.zip
