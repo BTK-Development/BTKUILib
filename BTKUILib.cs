@@ -12,7 +12,7 @@ namespace BTKUILib
         public const string Name = "BTKUILib";
         public const string Author = "BTK Development Team";
         public const string Company = "BTK Development";
-        public const string Version = "1.2.2";
+        public const string Version = "1.2.3";
     }
     
     internal class BTKUILib : MelonMod
