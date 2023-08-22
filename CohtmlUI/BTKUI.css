@@ -431,10 +431,14 @@
 }
 .btkUI .toggle .text {
   text-align: center;
-  vertical-align: bottom;
   margin-left: auto;
   margin-right: auto;
-  display: inline;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+  height: 85px;
+  overflow-wrap: break-word;
+  font-size: 32px;
 }
 .btkUI .toggle .text-sm {
   text-align: center;
@@ -443,6 +447,10 @@
   margin-right: auto;
   display: inline;
   font-size: 32px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+  overflow-wrap: break-word;
 }
 .btkUI .toggle .enable {
   background: url("images/Checkmark.png");
@@ -451,8 +459,8 @@
   height: 60px;
   width: 60px;
   margin-left: 15px;
-  margin-top: 30px;
-  margin-bottom: 30px;
+  margin-top: 15px;
+  margin-bottom: 15px;
 }
 .btkUI .toggle .disable {
   background: url("images/BTK-Close.png");
@@ -461,13 +469,12 @@
   height: 60px;
   width: 60px;
   margin-right: 15px;
-  margin-top: 30px;
+  margin-top: 15px;
 }
 .btkUI .toggle .circle {
   border-radius: 50%;
   height: 90px;
   width: 90px;
-  padding: 5px;
   border: 4px solid;
   border-color: #FFFFFF;
   filter: brightness(40%);
@@ -643,4 +650,3 @@
   align-content: center;
   text-align: center;
 }
-/*# sourceMappingURL=BTKUI.css.map */

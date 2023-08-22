@@ -536,10 +536,14 @@
 
     .text {
       text-align: center;
-      vertical-align: bottom;
       margin-left: auto;
       margin-right: auto;
-      display: inline;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 100%;
+      height: 85px;
+      overflow-wrap: break-word;
+      font-size: @font-size-nrm2;
     }
 
     .text-sm {
@@ -549,6 +553,10 @@
       margin-right: auto;
       display: inline;
       font-size: @font-size-nrm2;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 100%;
+      overflow-wrap: break-word;
     }
 
     .enable {
@@ -560,8 +568,8 @@
       width: 60px;
 
       margin-left: 15px;
-      margin-top: 30px;
-      margin-bottom: 30px;
+      margin-top: 15px;
+      margin-bottom: 15px;
     }
 
     .disable {
@@ -573,14 +581,13 @@
       width: 60px;
 
       margin-right: 15px;
-      margin-top: 30px;
+      margin-top: 15px;
     }
 
     .circle {
       border-radius: 50%;
       height: 90px;
       width: 90px;
-      padding: 5px;
       border: 4px solid;
       border-color: #FFFFFF;
 

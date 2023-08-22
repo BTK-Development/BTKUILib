@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using BTKUILib.UIObjects;
 using MelonLoader;
@@ -73,7 +74,9 @@ namespace BTKUILib
 
             var prefCat = _mlPrefsPage.AddCategory("Categories");
 
-            foreach (var category in MelonPreferences.Categories)
+            MLPrefsPages.Clear();
+
+            foreach (var category in MelonPreferences.Categories.OrderBy(x => x.DisplayName))
             {
                 var page = prefCat.AddPage(category.DisplayName, "Star", $"Opens the preferences category for {category.DisplayName}", "MelonLoader");
                 MLPrefsPages.Add(category.Identifier, page);

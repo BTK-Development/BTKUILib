@@ -71,6 +71,12 @@ namespace BTKUILib
             QuickMenuAPI.OnMenuRegenerate?.Invoke(CVR_MenuManager.Instance);
             
             CVR_MenuManager.Instance.quickMenu.View.TriggerEvent("btkModInit");
+
+            //Run the ml prefs tab generation
+            BTKUILib.Instance.GenerateMlPrefsTab();
+
+            //Set BTKUIReady before creating elements, but after generated MLPrefs tab to ensure ordering isn't weird
+            BTKUIReady = true;
             
             //Begin creating the UI elements!
             foreach (var root in RootPages)
@@ -78,11 +84,6 @@ namespace BTKUILib
                 MelonDebug.Msg($"Creating root page | Name: {root.PageName} | ModName: {root.ModName} | ElementID: {root.ElementID}");
                 root.GenerateCohtml();
             }
-
-            //Run the ml prefs tab generation
-            BTKUILib.Instance.GenerateMlPrefsTab();
-
-            BTKUIReady = true;
             
             BTKUILib.Log.Msg($"Setup {RootPages.Count} root pages! BTKUILib is ready!");
         }

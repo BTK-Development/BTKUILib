@@ -162,11 +162,13 @@ namespace BTKUILib.UIObjects.Components
             
             if (Protected) return;
             
-            _page.PageElements.Remove(this);
+            _page.SubElements.Remove(this);
         }
 
         internal override void GenerateCohtml()
         {
+            if (!UIUtils.IsQMReady()) return;
+
             if (!IsGenerated)
             {
                 var settings = new SliderSettings

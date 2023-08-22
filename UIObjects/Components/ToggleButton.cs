@@ -74,7 +74,7 @@ namespace BTKUILib.UIObjects.Components
             if (Protected)
                 BTKUILib.Log.Error($"You cannot delete a protected element! ElementID: {ElementID}");
             
-            _category.CategoryElements.Remove(this);
+            _category.SubElements.Remove(this);
             
             UserInterface.QMElements.Remove(this);
 
@@ -96,6 +96,8 @@ namespace BTKUILib.UIObjects.Components
 
         internal override void GenerateCohtml()
         {
+            if (!UIUtils.IsQMReady()) return;
+
             if(!IsGenerated)
                 CVR_MenuManager.Instance.quickMenu.View.TriggerEvent("btkCreateToggle", _category.ElementID, _toggleName, UUID, _toggleTooltip, _toggleValue);
             
