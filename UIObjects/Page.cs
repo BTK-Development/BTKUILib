@@ -147,6 +147,12 @@ namespace BTKUILib.UIObjects
             return AddCategory(categoryName, true);
         }
 
+        /// <summary>
+        /// Add a new category (row) to this page
+        /// </summary>
+        /// <param name="categoryName">Name of the category, displayed at the top</param>
+        /// <param name="showHeader">Sets if the header of this category is visible</param>
+        /// <returns></returns>
         public Category AddCategory(string categoryName, bool showHeader)
         {
             var category = new Category(categoryName, this, showHeader);
