@@ -236,6 +236,7 @@ cvr.menu.prototype.BTKUI = {
         engine.on("btkAlertToast", this.btkShowAlert);
         engine.on("btkClearChildren", this.btkClearChildren);
         engine.on("btkSetDisabled", this.btkSetDisabled);
+        engine.on("btkUpdatePageTitle", this.btkUpdatePageTitle);
     },
 
     init: function(menu){
@@ -821,6 +822,14 @@ cvr.menu.prototype.BTKUI = {
             cvr("#btkUI-TabScroll-Container").show();
         else
             cvr("#btkUI-TabScroll-Container").hide();
+    },
+
+    btkUpdatePageTitle: function(elementID, title){
+        headerCheck = cvr("#" + elementID + "-Header");
+
+        if(headerCheck === null) return;
+
+        headerCheck.innerHTML(title);
     },
 
     btkChangeTab: function (rootTarget, rootMod, menuTitle, menuSubtitle){

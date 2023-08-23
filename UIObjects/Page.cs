@@ -38,6 +38,27 @@ namespace BTKUILib.UIObjects
         }
 
         /// <summary>
+        /// Get or set the display name for a page, this will only work on non root pages and will update the header with whatever you set
+        /// </summary>
+        public string PageDisplayName
+        {
+            get => _displayName;
+            set
+            {
+                if (RootPage)
+                {
+                    BTKUILib.Log.Warning("Setting the DisplayName on a Root Page will do nothing!");
+                    return;
+                }
+                _displayName = value;
+
+                if (!UIUtils.IsQMReady() || !IsGenerated) return;
+
+                CVR_MenuManager.Instance.quickMenu.View.TriggerEvent("btkUpdatePageTitle", ElementID, value);
+            }
+        }
+
+        /// <summary>
         /// Reference to the button that opens this subpage
         /// </summary>
         public Button SubpageButton
@@ -52,6 +73,7 @@ namespace BTKUILib.UIObjects
         internal bool InPlayerlist = false;
         private Button _subpageButton;
 
+        private string _displayName;
         private string _menuSubtitle;
         private string _tabIcon;
         private string _menuTitle;
@@ -68,8 +90,12 @@ namespace BTKUILib.UIObjects
         /// <param name="category">Only set if this page was created from a category</param>
         public Page(string modName, string pageName, bool rootPage = false, string tabIcon = null, Category category = null)
         {
-            if(!rootPage)
+            if (!rootPage)
+            {
                 PageName = pageName;
+                _displayName = pageName;
+            }
+
             ModName = modName;
             RootPage = rootPage;
             _tabIcon = tabIcon;
@@ -118,10 +144,15 @@ namespace BTKUILib.UIObjects
         /// <returns>A newly created category</returns>
         public Category AddCategory(string categoryName)
         {
-            var category = new Category(categoryName, this);
+            return AddCategory(categoryName, true);
+        }
+
+        public Category AddCategory(string categoryName, bool showHeader)
+        {
+            var category = new Category(categoryName, this, showHeader);
             SubElements.Add(category);
 
-            if (UIUtils.IsQMReady()) 
+            if (UIUtils.IsQMReady())
                 category.GenerateCohtml();
 
             return category;
@@ -245,7 +276,7 @@ namespace BTKUILib.UIObjects
             if (!UIUtils.IsQMReady()) return;
 
             if(!IsGenerated)
-                CVR_MenuManager.Instance.quickMenu.View.TriggerEvent("btkCreatePage", PageName, ModName, _tabIcon, ElementID, RootPage, UIUtils.GetCleanString(PageName), InPlayerlist);
+                CVR_MenuManager.Instance.quickMenu.View.TriggerEvent("btkCreatePage", _displayName, ModName, _tabIcon, ElementID, RootPage, UIUtils.GetCleanString(PageName), InPlayerlist);
             
             IsGenerated = true;
             
