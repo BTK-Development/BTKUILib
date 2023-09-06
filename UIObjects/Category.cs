@@ -139,7 +139,8 @@ namespace BTKUILib.UIObjects
         /// </summary>
         public void ClearChildren()
         {
-            CVR_MenuManager.Instance.quickMenu.View.TriggerEvent("btkClearChildren", ElementID);
+            if(UIUtils.IsQMReady())
+                CVR_MenuManager.Instance.quickMenu.View.TriggerEvent("btkClearChildren", ElementID);
         }
 
         internal override void GenerateCohtml()
