@@ -127,7 +127,7 @@ namespace BTKUILib.UIObjects
         public override void Delete()
         {
             //Delete the row header with the row
-            CVR_MenuManager.Instance.quickMenu.View.TriggerEvent("btkDeleteElement", ElementID + "-HeaderRoot");
+            UIUtils.GetInternalView().TriggerEvent("btkDeleteElement", ElementID + "-HeaderRoot");
             
             base.Delete();
             if (Protected) return;
@@ -140,7 +140,7 @@ namespace BTKUILib.UIObjects
         public void ClearChildren()
         {
             if(UIUtils.IsQMReady())
-                CVR_MenuManager.Instance.quickMenu.View.TriggerEvent("btkClearChildren", ElementID);
+                UIUtils.GetInternalView().TriggerEvent("btkClearChildren", ElementID);
         }
 
         internal override void GenerateCohtml()
@@ -148,7 +148,7 @@ namespace BTKUILib.UIObjects
             if (!UIUtils.IsQMReady()) return;
 
             if(!IsGenerated)
-                CVR_MenuManager.Instance.quickMenu.View.TriggerEvent("btkCreateRow", LinkedPage.ElementID, UUID, _showHeader ? _categoryName : null);
+                UIUtils.GetInternalView().TriggerEvent("btkCreateRow", LinkedPage.ElementID, UUID, _showHeader ? _categoryName : null);
             
             foreach(var element in SubElements)
                 element.GenerateCohtml();
@@ -168,7 +168,7 @@ namespace BTKUILib.UIObjects
             
             if (!UIUtils.IsQMReady()) return;
             
-            CVR_MenuManager.Instance.quickMenu.View.TriggerEvent("btkUpdateText", $"btkUI-Row-{UUID}-HeaderText", _categoryName);
+            UIUtils.GetInternalView().TriggerEvent("btkUpdateText", $"btkUI-Row-{UUID}-HeaderText", _categoryName);
         }
     }
 }

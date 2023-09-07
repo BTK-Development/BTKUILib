@@ -54,7 +54,7 @@ namespace BTKUILib.UIObjects
 
                 if (!UIUtils.IsQMReady() || !IsGenerated) return;
 
-                CVR_MenuManager.Instance.quickMenu.View.TriggerEvent("btkUpdatePageTitle", ElementID, value);
+                UIUtils.GetInternalView().TriggerEvent("btkUpdatePageTitle", ElementID, value);
             }
         }
 
@@ -134,7 +134,7 @@ namespace BTKUILib.UIObjects
         {
             if (!UIUtils.IsQMReady() || !IsGenerated) return;
             
-            CVR_MenuManager.Instance.quickMenu.View.TriggerEvent("btkPushPage", ElementID);
+            UIUtils.GetInternalView().TriggerEvent("btkPushPage", ElementID);
         }
 
         /// <summary>
@@ -246,7 +246,7 @@ namespace BTKUILib.UIObjects
             if (RootPage)
             {
                 UserInterface.RootPages.Remove(this);
-                CVR_MenuManager.Instance.quickMenu.View.TriggerEvent("btkDeleteElement", _tabID);
+                UIUtils.GetInternalView().TriggerEvent("btkDeleteElement", _tabID);
             }
 
             //Remove this page from the category list
@@ -259,7 +259,7 @@ namespace BTKUILib.UIObjects
         /// </summary>
         public void ClearChildren()
         {
-            CVR_MenuManager.Instance.quickMenu.View.TriggerEvent("btkClearChildren", ElementID + "-Content");
+            UIUtils.GetInternalView().TriggerEvent("btkClearChildren", ElementID + "-Content");
         }
 
         internal override void DeleteInternal()
@@ -269,7 +269,7 @@ namespace BTKUILib.UIObjects
             if (RootPage)
             {
                 UserInterface.RootPages.Remove(this);
-                CVR_MenuManager.Instance.quickMenu.View.TriggerEvent("btkDeleteElement", _tabID);
+                UIUtils.GetInternalView().TriggerEvent("btkDeleteElement", _tabID);
             }
 
             //Remove this page from the category list
@@ -282,7 +282,7 @@ namespace BTKUILib.UIObjects
             if (!UIUtils.IsQMReady()) return;
 
             if(!IsGenerated)
-                CVR_MenuManager.Instance.quickMenu.View.TriggerEvent("btkCreatePage", _displayName, ModName, _tabIcon, ElementID, RootPage, UIUtils.GetCleanString(PageName), InPlayerlist);
+                UIUtils.GetInternalView().TriggerEvent("btkCreatePage", _displayName, ModName, _tabIcon, ElementID, RootPage, UIUtils.GetCleanString(PageName), InPlayerlist);
             
             IsGenerated = true;
             

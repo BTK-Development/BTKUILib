@@ -41,7 +41,7 @@ namespace BTKUILib.UIObjects
                 _disabled = value;
 
                 if (!UIUtils.IsQMReady()) return;
-                CVR_MenuManager.Instance.quickMenu.View.TriggerEvent("btkSetDisabled", ElementID, value);
+                UIUtils.GetInternalView().TriggerEvent("btkSetDisabled", ElementID, value);
             }
         }
 
@@ -94,7 +94,7 @@ namespace BTKUILib.UIObjects
             }
 
             if (!UIUtils.IsQMReady()) return;
-            CVR_MenuManager.Instance.quickMenu.View.TriggerEvent("btkDeleteElement", ElementID);
+            UIUtils.GetInternalView().TriggerEvent("btkDeleteElement", ElementID);
         }
 
         /// <summary>
@@ -103,7 +103,7 @@ namespace BTKUILib.UIObjects
         internal virtual void GenerateCohtml()
         {
             if (!UIUtils.IsQMReady()) return;
-            CVR_MenuManager.Instance.quickMenu.View.TriggerEvent("btkSetDisabled", ElementID, _disabled);
+            UIUtils.GetInternalView().TriggerEvent("btkSetDisabled", ElementID, _disabled);
         }
     }
 }
