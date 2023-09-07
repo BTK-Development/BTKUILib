@@ -188,7 +188,7 @@
         <CreateItem Include="$(MSBuildProjectDirectory)\**\*.less">
             <Output TaskParameter="Include" ItemName="DynamicLessFiles" />
         </CreateItem>
-        <Exec Command="lessc %(DynamicLessFiles.FullPath) %(DynamicLessFiles.RootDir)%(DynamicLessFiles.Directory)%(DynamicLessFiles.Filename).css" />
+        <Exec Command="lessc &quot;%(DynamicLessFiles.FullPath)&quot; &quot;%(DynamicLessFiles.RootDir)%(DynamicLessFiles.Directory)%(DynamicLessFiles.Filename).css&quot;" />
     </Target>
 
     <!-- Target to Zip the contents of CohtmlUI to BTKUIBuild.zip (after compiling all less files) -->
