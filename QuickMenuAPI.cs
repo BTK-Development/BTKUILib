@@ -118,6 +118,20 @@ namespace BTKUILib
         #region Utility Functions
 
         /// <summary>
+        /// Injects your custom CSS Style into UILib, this will automatically be reapplied during a menu reload
+        /// </summary>
+        /// <param name="cssData"></param>
+        public static void InjectCSSStyle(string cssData)
+        {
+            UserInterface.CustomCSSStyles.Add(cssData);
+
+            if (!UIUtils.IsQMReady()) return;
+
+            //QM is loaded, let's apply the CSS right now
+            CVR_MenuManager.Instance.quickMenu.View.TriggerEvent("btkSetCustomCSS", cssData);
+        }
+
+        /// <summary>
         /// Get the MelonLoader prefs tab page for a specific mod, fetched by identifier
         /// </summary>
         /// <param name="prefsIdentifier">Identifier used for the mods MelonPreferences (MelonPreferences_Category.Identifier)</param>

@@ -138,6 +138,7 @@
         <Compile Include="QuickMenuAPI.cs" />
         <Compile Include="UIObjects\Category.cs" />
         <Compile Include="UIObjects\Components\Button.cs" />
+        <Compile Include="UIObjects\Components\CustomElement.cs" />
         <Compile Include="UIObjects\Components\SliderFloat.cs" />
         <Compile Include="UIObjects\Components\ToggleButton.cs" />
         <Compile Include="UIObjects\Objects\MultiSelection.cs" />

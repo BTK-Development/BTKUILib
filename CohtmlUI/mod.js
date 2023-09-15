@@ -237,6 +237,9 @@ cvr.menu.prototype.BTKUI = {
         engine.on("btkClearChildren", this.btkClearChildren);
         engine.on("btkSetDisabled", this.btkSetDisabled);
         engine.on("btkUpdatePageTitle", this.btkUpdatePageTitle);
+        engine.on("btkSetCustomCSS", this.btkSetCustomCSS);
+        engine.on("btkCreateCustomGlobal", this.btkCreateCustomGlobal);
+        engine.on("btkAddCustomAction", this.btkAddCustomAction);
     },
 
     init: function(menu){
@@ -935,6 +938,28 @@ cvr.menu.prototype.BTKUI = {
         } else {
             target.classList.remove("disabled");
         }
+    },
+
+    btkSetCustomCSS: function(cssData) {
+        let style = document.createElement('style');
+        style.appendChild(document.createTextNode(cssData));
+        document.getElementsByTagName('head')[0].appendChild(style);
+    },
+
+    //BTKUILib custom element functions
+
+    btkAddCustomAction: function(actionName, actionCode){
+        if(uiRefBTK.actions.includes(actionName)) return;
+
+        console.log("Creating custom action " + actionName + " with code " + actionCode);
+
+        uiRefBTK.actions[actionName] = new Function("e", actionCode);
+    },
+
+    btkCreateCustomGlobal: function(uuid, template){
+          cvr("#btkUI-SharedRoot").appendChild(cvr.render(JSON.parse(template), {
+              "[UUID]": uuid
+          }, uiRefBTK.templates, uiRefBTK.actions));
     },
 
     actions: {

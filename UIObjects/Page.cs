@@ -79,6 +79,7 @@ namespace BTKUILib.UIObjects
         private string _menuTitle;
         private Category _category;
         private string _tabID;
+        private bool _noTab;
 
         /// <summary>
         /// Create a new page object, this will automatically be created within Cohtml when it is ready
@@ -88,7 +89,17 @@ namespace BTKUILib.UIObjects
         /// <param name="rootPage">Sets if this page should also generate a tab</param>
         /// <param name="tabIcon">Icon to be displayed on the tab</param>
         /// <param name="category">Only set if this page was created from a category</param>
-        public Page(string modName, string pageName, bool rootPage = false, string tabIcon = null, Category category = null)
+        public Page(string modName, string pageName, bool rootPage = false, string tabIcon = null, Category category = null) : this(modName, pageName, rootPage, tabIcon, category, false){}
+
+        /// <summary>
+        /// Create a new page object, this will automatically be created within Cohtml when it is ready
+        /// </summary>
+        /// <param name="modName">Name of your mod, you can use this to have multiple mods use the same root tab</param>
+        /// <param name="pageName">Name of the page, this isn't visible anywhere</param>
+        /// <param name="rootPage">Sets if this page should also generate a tab</param>
+        /// <param name="tabIcon">Icon to be displayed on the tab</param>
+        /// <param name="category">Only set if this page was created from a category</param>
+        public Page(string modName, string pageName, bool rootPage, string tabIcon, Category category, bool noTab)
         {
             if (!rootPage)
             {
@@ -100,6 +111,7 @@ namespace BTKUILib.UIObjects
             RootPage = rootPage;
             _tabIcon = tabIcon;
             _category = category;
+            _noTab = noTab;
 
             if(!rootPage)
             {

@@ -22,6 +22,8 @@ namespace BTKUILib
         internal static List<QMUIElement> QMElements = new();
         internal static Dictionary<string, SliderFloat> Sliders = new();
         internal static Dictionary<string, QMInteractable> Interactables = new();
+        internal static List<string> CustomCSSStyles = new();
+        internal static List<CustomElement> CustomElements = new();
         internal static bool BTKUIReady; 
         internal MultiSelection SelectedMultiSelect;
 
@@ -69,6 +71,9 @@ namespace BTKUILib
             MelonDebug.Msg("BTKUILib menu is loaded, setting up!");
             
             QuickMenuAPI.OnMenuRegenerate?.Invoke(CVR_MenuManager.Instance);
+
+            foreach(var css in CustomCSSStyles)
+                CVR_MenuManager.Instance.quickMenu.View.TriggerEvent("btkSetCustomCSS", css);
             
             CVR_MenuManager.Instance.quickMenu.View.TriggerEvent("btkModInit");
 
@@ -84,8 +89,14 @@ namespace BTKUILib
                 MelonDebug.Msg($"Creating root page | Name: {root.PageName} | ModName: {root.ModName} | ElementID: {root.ElementID}");
                 root.GenerateCohtml();
             }
+
+            //Generate custom elements
+            foreach (var custom in CustomElements)
+            {
+                custom.GenerateCohtml();
+            }
             
-            BTKUILib.Log.Msg($"Setup {RootPages.Count} root pages! BTKUILib is ready!");
+            BTKUILib.Log.Msg($"Setup {RootPages.Count} root pages and {CustomElements.Count} custom elements! BTKUILib is ready!");
         }
 
         internal void RegisterRootPage(Page rootPage)
