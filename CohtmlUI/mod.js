@@ -20,6 +20,7 @@ cvr.menu.prototype.BTKUI = {
     btkAlertShown: false,
     btkShowAlertFunc: {},
     btkGetImageBackgroundFunc: {},
+    btkKnownEngineFunctions: [],
 
     info: function(){
         return {
@@ -68,6 +69,7 @@ cvr.menu.prototype.BTKUI = {
         btkAlertShown = false;
         btkShowAlertFunc = this.btkShowAlert;
         btkGetImageBackgroundFunc = this.btkGetImageBackground;
+        btkKnownEngineFunctions = [];
 
         menu.templates["btkUI-btn"] = {c: "btkUI-btn hide", s: [{c: "icon"}], x: "btkUI-pushPage", a:{"id" : "btkUI-UserMenu", "data-page": "btkUI-PlayerList"}};
         menu.templates["btkUI-shared"] = {c: "btkUI-shared hide", s:[
@@ -240,6 +242,7 @@ cvr.menu.prototype.BTKUI = {
         engine.on("btkSetCustomCSS", this.btkSetCustomCSS);
         engine.on("btkCreateCustomGlobal", this.btkCreateCustomGlobal);
         engine.on("btkAddCustomAction", this.btkAddCustomAction);
+        engine.on("btkAddCustomEngineFunction", this.btkAddCustomEngineFunction);
     },
 
     init: function(menu){
@@ -947,6 +950,46 @@ cvr.menu.prototype.BTKUI = {
     },
 
     //BTKUILib custom element functions
+
+    btkAddCustomEngineFunction: function(functionName, functionCode, functionParams){
+        if(btkKnownEngineFunctions.includes(functionName) || functionName.startsWith("btk")) return;
+
+        console.log("Creating custom function " + functionName + " with code " + functionCode + " that has " + functionParams.length + " parameters");
+
+        let createdFunction = null;
+
+        switch(functionParams.length){
+            case 0:
+                createdFunction = new Function(functionCode);
+                break;
+            case 1:
+                createdFunction = new Function(functionParams[0], functionCode);
+                break;
+            case 2:
+                createdFunction = new Function(functionParams[0], functionParams[1], functionCode);
+                break;
+            case 3:
+                createdFunction = new Function(functionParams[0], functionParams[1], functionParams[2], functionCode);
+                break;
+            case 4:
+                createdFunction = new Function(functionParams[0], functionParams[1], functionParams[2], functionParams[3], functionCode);
+                break;
+            case 5:
+                createdFunction = new Function(functionParams[0], functionParams[1], functionParams[2], functionParams[3], functionParams[4], functionCode);
+                break;
+            case 6:
+                createdFunction = new Function(functionParams[0], functionParams[1], functionParams[2], functionParams[3], functionParams[4], functionParams[5], functionCode);
+                break;
+            case 7:
+                createdFunction = new Function(functionParams[0], functionParams[1], functionParams[2], functionParams[3], functionParams[4], functionParams[5], functionParams[6], functionCode);
+                break;
+            case 8:
+                createdFunction = new Function(functionParams[0], functionParams[1], functionParams[2], functionParams[3], functionParams[4], functionParams[5], functionParams[6], functionParams[7], functionCode);
+                break;
+        }
+
+        engine.on(functionName, createdFunction);
+    },
 
     btkAddCustomAction: function(actionName, actionCode){
         if(uiRefBTK.actions.includes(actionName)) return;

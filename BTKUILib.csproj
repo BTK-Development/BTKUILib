@@ -141,6 +141,7 @@
         <Compile Include="UIObjects\Components\CustomElement.cs" />
         <Compile Include="UIObjects\Components\SliderFloat.cs" />
         <Compile Include="UIObjects\Components\ToggleButton.cs" />
+        <Compile Include="UIObjects\Objects\CustomEngineOnFunction.cs" />
         <Compile Include="UIObjects\Objects\MultiSelection.cs" />
         <Compile Include="UIObjects\Page.cs" />
         <Compile Include="UIObjects\QMInteractable.cs" />

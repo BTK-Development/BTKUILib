@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using ABI_RC.Core.InteractionSystem;
+using BTKUILib.UIObjects.Objects;
 
 namespace BTKUILib.UIObjects.Components;
 
@@ -12,6 +14,7 @@ public class CustomElement : QMUIElement
     private Page _parentPage;
     private Category _parentCategory;
     private Dictionary<string, string> _actionFunctions = new();
+    private List<CustomEngineOnFunction> _engineOnFunctions = new();
 
     public CustomElement(string template, ElementType type, Page parentPage = null, Category parentCategory = null)
     {
@@ -59,6 +62,45 @@ public class CustomElement : QMUIElement
         _actionFunctions.Clear();
     }
 
+    /// <summary>
+    /// Creates a engine.on function within Cohtml, these can be called from C# with parameters
+    /// All must be added before GenerateCohtml is called as they cannot be added afterwards!
+    ///
+    /// You will want to store the reference to this CustomEngineOnFunction so you can call it later!
+    /// </summary>
+    /// <param name="function">CustomEngineOnFunction object containing code and parameters</param>
+    public void AddEngineOnFunction(CustomEngineOnFunction function)
+    {
+        if (_engineOnFunctions.Any(x => x.FunctionName == function.FunctionName))
+        {
+            BTKUILib.Log.Error($"Duplicate function name, {function.FunctionName} already exists in CustomElement!");
+            return;
+        }
+
+        _engineOnFunctions.Add(function);
+    }
+
+    /// <summary>
+    /// Remove specific function from list, this only affects the C# side, it cannot be changed on the fly
+    /// </summary>
+    /// <param name="functionName"></param>
+    public void RemoveEngineOnFunction(string functionName)
+    {
+        var function = _engineOnFunctions.FirstOrDefault(x => x.FunctionName == functionName);
+
+        if (function == null) return;
+
+        _engineOnFunctions.Remove(function);
+    }
+
+    /// <summary>
+    /// Clears all functions from list, this only affects the C# side, it cannot be changed on the fly
+    /// </summary>
+    public void ClearEngineOnFunctions()
+    {
+        _engineOnFunctions.Clear();
+    }
+
     internal override void GenerateCohtml()
     {
         if (!UIUtils.IsQMReady()) return;
@@ -67,6 +109,9 @@ public class CustomElement : QMUIElement
         {
             foreach(var action in _actionFunctions)
                 CVR_MenuManager.Instance.quickMenu.View.TriggerEvent("btkAddCustomAction", action.Key, action.Value);
+
+            foreach (var function in _engineOnFunctions)
+                CVR_MenuManager.Instance.quickMenu.View.TriggerEvent("btkAddCustomEngineFunction", function.FunctionName, function.JSCode, function.Parameters.Select(x=> x.ParameterName).ToArray());
 
             switch (_type)
             {
