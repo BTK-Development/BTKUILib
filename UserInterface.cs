@@ -95,6 +95,8 @@ namespace BTKUILib
             {
                 custom.GenerateCohtml();
             }
+
+            QuickMenuAPI.OnMenuGenerated?.Invoke(CVR_MenuManager.Instance);
             
             BTKUILib.Log.Msg($"Setup {RootPages.Count} root pages and {CustomElements.Count} custom elements! BTKUILib is ready!");
         }

@@ -123,6 +123,10 @@ public class CustomElement : QMUIElement
                 case ElementType.OnPageElement:
                     break;
                 case ElementType.InCategoryElement:
+                    if (_parentCategory == null)
+                        throw new Exception("Cannot create a custom element with a category when no parent category is given!");
+
+                    CVR_MenuManager.Instance.quickMenu.View.TriggerEvent("btkCreateCustomElementCategory", _parentCategory.ElementID, UUID, _template);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();

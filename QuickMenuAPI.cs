@@ -21,6 +21,10 @@ namespace BTKUILib
         /// </summary>
         public static Action<CVR_MenuManager> OnMenuRegenerate;
         /// <summary>
+        /// Called after BTKUILib has finished generating all menu components and BTKUIReady is set
+        /// </summary>
+        public static Action<CVR_MenuManager> OnMenuGenerated;
+        /// <summary>
         /// Called when a user joins the instance, passes the complete CVRPlayerEntity object
         /// </summary>
         public static Action<CVRPlayerEntity> UserLeave;

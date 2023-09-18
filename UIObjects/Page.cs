@@ -294,7 +294,7 @@ namespace BTKUILib.UIObjects
             if (!UIUtils.IsQMReady()) return;
 
             if(!IsGenerated)
-                CVR_MenuManager.Instance.quickMenu.View.TriggerEvent("btkCreatePage", _displayName, ModName, _tabIcon, ElementID, RootPage, UIUtils.GetCleanString(PageName), InPlayerlist);
+                CVR_MenuManager.Instance.quickMenu.View.TriggerEvent("btkCreatePage", _displayName, ModName, _tabIcon, ElementID, RootPage, UIUtils.GetCleanString(PageName), InPlayerlist, _noTab);
             
             IsGenerated = true;
             
