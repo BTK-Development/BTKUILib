@@ -139,6 +139,8 @@ namespace BTKUILib.UIObjects
         /// </summary>
         public void ClearChildren()
         {
+            SubElements.Clear();
+
             if(UIUtils.IsQMReady())
                 CVR_MenuManager.Instance.quickMenu.View.TriggerEvent("btkClearChildren", ElementID);
         }
