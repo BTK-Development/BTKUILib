@@ -132,7 +132,7 @@ namespace BTKUILib
             if (!UIUtils.IsQMReady()) return;
 
             //QM is loaded, let's apply the CSS right now
-            CVR_MenuManager.Instance.quickMenu.View.TriggerEvent("btkSetCustomCSS", cssData);
+            UIUtils.GetInternalView().TriggerEvent("btkSetCustomCSS", cssData);
         }
 
         /// <summary>

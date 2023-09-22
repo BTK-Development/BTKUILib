@@ -108,15 +108,15 @@ public class CustomElement : QMUIElement
         if (!IsGenerated)
         {
             foreach(var action in _actionFunctions)
-                CVR_MenuManager.Instance.quickMenu.View.TriggerEvent("btkAddCustomAction", action.Key, action.Value);
+                UIUtils.GetInternalView().TriggerEvent("btkAddCustomAction", action.Key, action.Value);
 
             foreach (var function in _engineOnFunctions)
-                CVR_MenuManager.Instance.quickMenu.View.TriggerEvent("btkAddCustomEngineFunction", function.FunctionName, function.JSCode, function.Parameters.Select(x=> x.ParameterName).ToArray());
+                UIUtils.GetInternalView().TriggerEvent("btkAddCustomEngineFunction", function.FunctionName, function.JSCode, function.Parameters.Select(x=> x.ParameterName).ToArray());
 
             switch (_type)
             {
                 case ElementType.GlobalElement:
-                    CVR_MenuManager.Instance.quickMenu.View.TriggerEvent("btkCreateCustomGlobal", UUID, _template);
+                    UIUtils.GetInternalView().TriggerEvent("btkCreateCustomGlobal", UUID, _template);
                     break;
                 case ElementType.CustomPage:
                     break;
@@ -126,7 +126,7 @@ public class CustomElement : QMUIElement
                     if (_parentCategory == null)
                         throw new Exception("Cannot create a custom element with a category when no parent category is given!");
 
-                    CVR_MenuManager.Instance.quickMenu.View.TriggerEvent("btkCreateCustomElementCategory", _parentCategory.ElementID, UUID, _template);
+                    UIUtils.GetInternalView().TriggerEvent("btkCreateCustomElementCategory", _parentCategory.ElementID, UUID, _template);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();

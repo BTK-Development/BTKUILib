@@ -73,7 +73,7 @@ namespace BTKUILib
             QuickMenuAPI.OnMenuRegenerate?.Invoke(CVR_MenuManager.Instance);
 
             foreach(var css in CustomCSSStyles)
-                CVR_MenuManager.Instance.quickMenu.View.TriggerEvent("btkSetCustomCSS", css);
+                UIUtils.GetInternalView().TriggerEvent("btkSetCustomCSS", css);
             
             UIUtils.GetInternalView().TriggerEvent("btkModInit");
 

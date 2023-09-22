@@ -43,31 +43,31 @@ public class CustomEngineOnFunction
         switch (parameters.Length)
         {
             case 0:
-                CVR_MenuManager.Instance.quickMenu.View.TriggerEvent(FunctionName);
+                UIUtils.GetInternalView().TriggerEvent(FunctionName);
                 break;
             case 1:
-                CVR_MenuManager.Instance.quickMenu.View.TriggerEvent(FunctionName, parameters[0]);
+                UIUtils.GetInternalView().TriggerEvent(FunctionName, parameters[0]);
                 break;
             case 2:
-                CVR_MenuManager.Instance.quickMenu.View.TriggerEvent(FunctionName, parameters[0], parameters[1]);
+                UIUtils.GetInternalView().TriggerEvent(FunctionName, parameters[0], parameters[1]);
                 break;
             case 3:
-                CVR_MenuManager.Instance.quickMenu.View.TriggerEvent(FunctionName, parameters[0], parameters[1], parameters[2]);
+                UIUtils.GetInternalView().TriggerEvent(FunctionName, parameters[0], parameters[1], parameters[2]);
                 break;
             case 4:
-                CVR_MenuManager.Instance.quickMenu.View.TriggerEvent(FunctionName, parameters[0], parameters[1], parameters[2], parameters[3]);
+                UIUtils.GetInternalView().TriggerEvent(FunctionName, parameters[0], parameters[1], parameters[2], parameters[3]);
                 break;
             case 5:
-                CVR_MenuManager.Instance.quickMenu.View.TriggerEvent(FunctionName, parameters[0], parameters[1], parameters[2], parameters[3], parameters[4]);
+                UIUtils.GetInternalView().TriggerEvent(FunctionName, parameters[0], parameters[1], parameters[2], parameters[3], parameters[4]);
                 break;
             case 6:
-                CVR_MenuManager.Instance.quickMenu.View.TriggerEvent(FunctionName, parameters[0], parameters[1], parameters[2], parameters[3], parameters[4], parameters[5]);
+                UIUtils.GetInternalView().TriggerEvent(FunctionName, parameters[0], parameters[1], parameters[2], parameters[3], parameters[4], parameters[5]);
                 break;
             case 7:
-                CVR_MenuManager.Instance.quickMenu.View.TriggerEvent(FunctionName, parameters[0], parameters[1], parameters[2], parameters[3], parameters[4], parameters[5], parameters[6]);
+                UIUtils.GetInternalView().TriggerEvent(FunctionName, parameters[0], parameters[1], parameters[2], parameters[3], parameters[4], parameters[5], parameters[6]);
                 break;
             case 8:
-                CVR_MenuManager.Instance.quickMenu.View.TriggerEvent(FunctionName, parameters[0], parameters[1], parameters[2], parameters[3], parameters[4], parameters[5], parameters[6], parameters[7]);
+                UIUtils.GetInternalView().TriggerEvent(FunctionName, parameters[0], parameters[1], parameters[2], parameters[3], parameters[4], parameters[5], parameters[6], parameters[7]);
                 break;
             default:
                 throw new Exception($"CustomEngineOnEvent {FunctionName} TriggerEvent was attempted with too many parameters! Maximum parameters is 8!");
