@@ -182,7 +182,7 @@ namespace BTKUILib.UIObjects.Components
                     AllowDefaultReset = _allowDefaultReset
                 };
                 
-                CVR_MenuManager.Instance.quickMenu.View.TriggerEvent("btkCreateSlider", _page.ElementID, UUID, _sliderValue, settings);
+                UIUtils.GetInternalView().TriggerEvent("btkCreateSlider", _page.ElementID, UUID, _sliderValue, settings);
             }
             
             base.GenerateCohtml();
@@ -205,8 +205,8 @@ namespace BTKUILib.UIObjects.Components
                 AllowDefaultReset = _allowDefaultReset
             };
 
-            CVR_MenuManager.Instance.quickMenu.View.TriggerEvent("btkSliderUpdateSettings", UUID, settings);
-            CVR_MenuManager.Instance.quickMenu.View.TriggerEvent("btkSliderSetValue", UUID, SliderValue);
+            UIUtils.GetInternalView().TriggerEvent("btkSliderUpdateSettings", UUID, settings);
+            UIUtils.GetInternalView().TriggerEvent("btkSliderSetValue", UUID, SliderValue);
         }
     }
 

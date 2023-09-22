@@ -95,7 +95,7 @@ namespace BTKUILib
     [HarmonyPatch(typeof(CVR_MenuManager))]
     class CVRMenuManagerPatch
     {
-        [HarmonyPatch("markMenuAsReady")]
+        [HarmonyPatch("RegisterEvents")]
         [HarmonyPostfix]
         static void MarkMenuAsReady(CVR_MenuManager __instance)
         {
@@ -107,6 +107,16 @@ namespace BTKUILib
             {
                 BTKUILib.Log.Error(e);
             }
+        }
+
+        //We'll use this point to detect a menu reload/setup and ensure BTKUIReady is false
+        [HarmonyPatch("UpdateModList")]
+        [HarmonyPrefix]
+        static bool UpdateModListPatch()
+        {
+            UserInterface.BTKUIReady = false;
+
+            return true;
         }
     }
 

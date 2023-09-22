@@ -90,7 +90,7 @@ namespace BTKUILib.UIObjects.Components
             if (!UIUtils.IsQMReady()) return;
 
             if (!IsGenerated)
-                CVR_MenuManager.Instance.quickMenu.View.TriggerEvent("btkCreateButton", _category.ElementID, _buttonText, _buttonIcon, _buttonTooltip, UUID, _category.ModName, (int)_style);
+                UIUtils.GetInternalView().TriggerEvent("btkCreateButton", _category.ElementID, _buttonText, _buttonIcon, _buttonTooltip, UUID, _category.ModName, (int)_style);
             
             base.GenerateCohtml();
 
@@ -106,9 +106,9 @@ namespace BTKUILib.UIObjects.Components
             }
 
             if(_style != ButtonStyle.TextOnly)
-                CVR_MenuManager.Instance.quickMenu.View.TriggerEvent("btkUpdateIcon", ElementID, _category.ModName, _buttonIcon, _style == ButtonStyle.TextWithIcon ? "Image" : "Tooltip");
-            CVR_MenuManager.Instance.quickMenu.View.TriggerEvent("btkUpdateTooltip", $"{ElementID}-Tooltip", _buttonTooltip);
-            CVR_MenuManager.Instance.quickMenu.View.TriggerEvent("btkUpdateText", $"{ElementID}-Text", _buttonText);
+                UIUtils.GetInternalView().TriggerEvent("btkUpdateIcon", ElementID, _category.ModName, _buttonIcon, _style == ButtonStyle.TextWithIcon ? "Image" : "Tooltip");
+            UIUtils.GetInternalView().TriggerEvent("btkUpdateTooltip", $"{ElementID}-Tooltip", _buttonTooltip);
+            UIUtils.GetInternalView().TriggerEvent("btkUpdateText", $"{ElementID}-Text", _buttonText);
         }
     }
 

@@ -114,7 +114,7 @@ namespace BTKUILib
             
             if (!UIUtils.IsQMReady()) return;
             
-            CVR_MenuManager.Instance.quickMenu.View.TriggerEvent("btkUpdateTitle", title, subtitle);
+            UIUtils.GetInternalView().TriggerEvent("btkUpdateTitle", title, subtitle);
         }
 
         #endregion
@@ -197,7 +197,7 @@ namespace BTKUILib
             ConfirmYes = onYes;
             ConfirmNo = onNo;
             
-            CVR_MenuManager.Instance.quickMenu.View.TriggerEvent("btkShowConfirm", title, content, yesText, noText);
+            UIUtils.GetInternalView().TriggerEvent("btkShowConfirm", title, content, yesText, noText);
         }
         
         /// <summary>
@@ -212,7 +212,7 @@ namespace BTKUILib
             if (!UIUtils.IsQMReady()) return;
             
             NoticeOk = onOK;
-            CVR_MenuManager.Instance.quickMenu.View.TriggerEvent("btkShowNotice", title, content, okText);
+            UIUtils.GetInternalView().TriggerEvent("btkShowNotice", title, content, okText);
         }
         
         /// <summary>
@@ -226,7 +226,7 @@ namespace BTKUILib
             if (!UIUtils.IsQMReady()) return;
             
             NumberInputComplete = onCompleted;
-            CVR_MenuManager.Instance.quickMenu.View.TriggerEvent("btkOpenNumberInput", name, input);
+            UIUtils.GetInternalView().TriggerEvent("btkOpenNumberInput", name, input);
         }
         
         /// <summary>
@@ -238,7 +238,7 @@ namespace BTKUILib
             if (!UIUtils.IsQMReady()) return;
             
             UserInterface.Instance.SelectedMultiSelect = multiSelection;
-            CVR_MenuManager.Instance.quickMenu.View.TriggerEvent("btkOpenMultiSelect", multiSelection.Name, multiSelection.Options, multiSelection.SelectedOption);
+            UIUtils.GetInternalView().TriggerEvent("btkOpenMultiSelect", multiSelection.Name, multiSelection.Options, multiSelection.SelectedOption);
         }
         
         /// <summary>
@@ -264,7 +264,7 @@ namespace BTKUILib
         {
             if (!UIUtils.IsQMReady()) return;
             
-            CVR_MenuManager.Instance.quickMenu.View.TriggerEvent("btkAlertToast", message, delay);
+            UIUtils.GetInternalView().TriggerEvent("btkAlertToast", message, delay);
         }
 
         /// <summary>

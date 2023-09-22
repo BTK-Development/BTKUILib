@@ -14,7 +14,8 @@ namespace BTKUILib
     public static class UIUtils
     {
         private static MD5 _hasher = MD5.Create();
-        private static FieldInfo _qmReady = typeof(CVR_MenuManager).GetField("_quickMenuReady", BindingFlags.Instance | BindingFlags.NonPublic);
+        private static FieldInfo _internalCohtmlView = typeof(CohtmlControlledViewWrapper).GetField("_view", BindingFlags.Instance | BindingFlags.NonPublic);
+        private static View _internalViewCache;
 
         /// <summary>
         /// Check if the CVR_MenuManager view is ready
@@ -25,7 +26,7 @@ namespace BTKUILib
             if (CVR_MenuManager.Instance == null)
                 return false;
 
-            return (bool)_qmReady.GetValue(CVR_MenuManager.Instance) && UserInterface.BTKUIReady;
+            return UserInterface.BTKUIReady;
         }
 
         /// <summary>
@@ -57,6 +58,16 @@ namespace BTKUILib
             }
 
             return sb.ToString();
+        }
+
+        internal static View GetInternalView()
+        {
+            if (CVR_MenuManager.Instance == null || CVR_MenuManager.Instance.quickMenu == null) return null;
+
+            if (_internalViewCache == null)
+                _internalViewCache = (View)_internalCohtmlView.GetValue(CVR_MenuManager.Instance.quickMenu.View);
+
+            return _internalViewCache;
         }
     }
 }
