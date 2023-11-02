@@ -64,7 +64,7 @@ namespace BTKUILib.UIObjects
             SubElements.Add(button);
             
             if(UIUtils.IsQMReady())
-                button.GenerateCohtml();
+                button.GenerateCohtml(RootPage);
 
             return button;
         }
@@ -82,7 +82,7 @@ namespace BTKUILib.UIObjects
             SubElements.Add(toggle);
             
             if(UIUtils.IsQMReady())
-                toggle.GenerateCohtml();
+                toggle.GenerateCohtml(RootPage);
 
             return toggle;
         }
@@ -114,8 +114,8 @@ namespace BTKUILib.UIObjects
 
             if (UIUtils.IsQMReady())
             {
-                page.GenerateCohtml();
-                pageButton.GenerateCohtml();
+                page.GenerateCohtml(RootPage);
+                pageButton.GenerateCohtml(RootPage);
             }
 
             page.SubpageButton = pageButton;
@@ -141,21 +141,23 @@ namespace BTKUILib.UIObjects
         {
             SubElements.Clear();
 
-            if(UIUtils.IsQMReady())
+            if(UIUtils.IsQMReady() && IsVisible)
                 UIUtils.GetInternalView().TriggerEvent("btkClearChildren", ElementID);
         }
 
-        internal override void GenerateCohtml()
+        internal override void GenerateCohtml(Page rootPage)
         {
             if (!UIUtils.IsQMReady()) return;
+
+            if (!LinkedPage.IsVisible) return;
 
             if(!IsGenerated)
                 UIUtils.GetInternalView().TriggerEvent("btkCreateRow", LinkedPage.ElementID, UUID, _showHeader ? _categoryName : null);
             
             foreach(var element in SubElements)
-                element.GenerateCohtml();
+                element.GenerateCohtml(RootPage);
             
-            base.GenerateCohtml();
+            base.GenerateCohtml(rootPage);
 
             IsGenerated = true;
         }

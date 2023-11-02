@@ -9,17 +9,18 @@ namespace BTKUILib.UIObjects.Components;
 public class CustomElement : QMUIElement
 {
     //btkUI-Custom-[UUID] required in "id" of root
+    internal ElementType ElementType;
+
     private string _template;
-    private ElementType _type;
     private Page _parentPage;
     private Category _parentCategory;
     private Dictionary<string, string> _actionFunctions = new();
     private List<CustomEngineOnFunction> _engineOnFunctions = new();
 
-    public CustomElement(string template, ElementType type, Page parentPage = null, Category parentCategory = null)
+    public CustomElement(string template, ElementType elementType, Page parentPage = null, Category parentCategory = null)
     {
         _template = template;
-        _type = type;
+        ElementType = elementType;
         _parentPage = parentPage;
         _parentCategory = parentCategory;
 
@@ -101,7 +102,7 @@ public class CustomElement : QMUIElement
         _engineOnFunctions.Clear();
     }
 
-    internal override void GenerateCohtml()
+    internal override void GenerateCohtml(Page rootPage)
     {
         if (!UIUtils.IsQMReady()) return;
 
@@ -113,7 +114,7 @@ public class CustomElement : QMUIElement
             foreach (var function in _engineOnFunctions)
                 UIUtils.GetInternalView().TriggerEvent("btkAddCustomEngineFunction", function.FunctionName, function.JSCode, function.Parameters.Select(x=> x.ParameterName).ToArray());
 
-            switch (_type)
+            switch (ElementType)
             {
                 case ElementType.GlobalElement:
                     UIUtils.GetInternalView().TriggerEvent("btkCreateCustomGlobal", UUID, _template);

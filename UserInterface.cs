@@ -26,6 +26,7 @@ namespace BTKUILib
         internal static List<CustomElement> CustomElements = new();
         internal static bool BTKUIReady; 
         internal MultiSelection SelectedMultiSelect;
+        internal static Page SelectedRootPage;
 
         private string _lastTab = "CVRMainQM";
 
@@ -87,13 +88,13 @@ namespace BTKUILib
             foreach (var root in RootPages)
             {
                 MelonDebug.Msg($"Creating root page | Name: {root.PageName} | ModName: {root.ModName} | ElementID: {root.ElementID}");
-                root.GenerateCohtml();
+                root.GenerateTab();
             }
 
             //Generate custom elements
-            foreach (var custom in CustomElements)
+            foreach (var custom in CustomElements.Where(x => x.ElementType == ElementType.GlobalElement))
             {
-                custom.GenerateCohtml();
+                custom.GenerateCohtml(null);
             }
 
             QuickMenuAPI.OnMenuGenerated?.Invoke(CVR_MenuManager.Instance);
@@ -108,7 +109,7 @@ namespace BTKUILib
             if (!UIUtils.IsQMReady()) return;
             
             MelonDebug.Msg($"Creating root page | Name: {rootPage.PageName} | ModName: {rootPage.ModName} | ElementID: {rootPage.ElementID}");
-            rootPage.GenerateCohtml();
+            rootPage.GenerateTab();
         }
 
         private void UserLeave(CVRPlayerEntity obj)
@@ -137,6 +138,13 @@ namespace BTKUILib
         
         private void OnTabChange(string tabTarget)
         {
+            if (SelectedRootPage != null)
+            {
+                SelectedRootPage.Delete();
+                SelectedRootPage.IsVisible = false;
+                SelectedRootPage = null;
+            }
+
             if (tabTarget == "CVRMainQM")
             {
                 UIUtils.GetInternalView().TriggerEvent("btkChangeTab", tabTarget, "CVR", "", "");
@@ -152,6 +160,9 @@ namespace BTKUILib
                 BTKUILib.Log.Error("RootPage was not found! Cannot switch tabs!");
                 return;
             }
+
+            root.GenerateCohtml(null);
+            root.IsVisible = true;
             
             UIUtils.GetInternalView().TriggerEvent("btkChangeTab", tabTarget, root.ModName, root.MenuTitle, root.MenuSubtitle);
             QuickMenuAPI.OnTabChange?.Invoke(tabTarget, _lastTab);

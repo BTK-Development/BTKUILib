@@ -69,8 +69,6 @@ namespace BTKUILib
             _mlPrefsPage.MenuTitle = "MelonLoader Preferences";
             _mlPrefsPage.MenuSubtitle = "Control your MelonLoader Preferences from other mods!";
             _mlPrefsPage.Protected = true;
-            
-            _mlPrefsPage.GenerateCohtml();
 
             var prefCat = _mlPrefsPage.AddCategory("Categories");
 

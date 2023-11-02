@@ -165,7 +165,7 @@ namespace BTKUILib.UIObjects.Components
             _page.SubElements.Remove(this);
         }
 
-        internal override void GenerateCohtml()
+        internal override void GenerateCohtml(Page rootPage)
         {
             if (!UIUtils.IsQMReady()) return;
 
@@ -185,13 +185,17 @@ namespace BTKUILib.UIObjects.Components
                 UIUtils.GetInternalView().TriggerEvent("btkCreateSlider", _page.ElementID, UUID, _sliderValue, settings);
             }
             
-            base.GenerateCohtml();
+            base.GenerateCohtml(rootPage);
 
             IsGenerated = true;
         }
 
         private void UpdateSlider()
         {
+            if (!IsVisible) return;
+
+            if (!_page.IsVisible) return;
+
             if (!UIUtils.IsQMReady()) return;
 
             var settings = new SliderSettings

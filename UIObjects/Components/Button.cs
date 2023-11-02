@@ -85,20 +85,24 @@ namespace BTKUILib.UIObjects.Components
             OnPress?.Invoke();
         }
 
-        internal override void GenerateCohtml()
+        internal override void GenerateCohtml(Page rootPage)
         {
             if (!UIUtils.IsQMReady()) return;
+
+            if (!_category.IsVisible) return;
 
             if (!IsGenerated)
                 UIUtils.GetInternalView().TriggerEvent("btkCreateButton", _category.ElementID, _buttonText, _buttonIcon, _buttonTooltip, UUID, _category.ModName, (int)_style);
             
-            base.GenerateCohtml();
+            base.GenerateCohtml(rootPage);
 
             IsGenerated = true;
         }
 
         private void UpdateButton()
         {
+            if(!IsVisible) return;
+
             if (!BTKUILib.Instance.IsOnMainThread())
             {
                 BTKUILib.Instance.MainThreadQueue.Enqueue(UpdateButton);

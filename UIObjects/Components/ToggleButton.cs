@@ -94,20 +94,24 @@ namespace BTKUILib.UIObjects.Components
             OnValueUpdated?.Invoke(_toggleValue);
         }
 
-        internal override void GenerateCohtml()
+        internal override void GenerateCohtml(Page rootPage)
         {
             if (!UIUtils.IsQMReady()) return;
+
+            if (!_category.IsVisible) return;
 
             if(!IsGenerated)
                 UIUtils.GetInternalView().TriggerEvent("btkCreateToggle", _category.ElementID, _toggleName, UUID, _toggleTooltip, _toggleValue);
             
-            base.GenerateCohtml();
+            base.GenerateCohtml(rootPage);
 
             IsGenerated = true;
         }
 
         private void UpdateToggle()
         {
+            if(!IsVisible) return;
+
             if (!BTKUILib.Instance.IsOnMainThread())
             {
                 BTKUILib.Instance.MainThreadQueue.Enqueue(UpdateToggle);

@@ -26,6 +26,28 @@ namespace BTKUILib.UIObjects
         public bool IsGenerated;
 
         /// <summary>
+        /// Root page a given element is a child of, can be null in some cases
+        /// mainly for root pages and for global custom elements
+        /// </summary>
+        public Page RootPage;
+
+        public bool IsVisible
+        {
+            get
+            {
+                if (RootPage != null)
+                    return RootPage.IsVisible && IsGenerated;
+
+                return _visible && IsGenerated;
+            }
+            internal set
+            {
+                if(RootPage == null)
+                    _visible = value;
+            }
+        }
+
+        /// <summary>
         /// Disabled will block input and gray out the element it is set on
         /// </summary>
         public bool Disabled
@@ -56,6 +78,7 @@ namespace BTKUILib.UIObjects
         internal List<QMUIElement> SubElements = new();
 
         private bool _disabled;
+        private bool _visible;
 
         internal QMUIElement()
         {
@@ -100,8 +123,10 @@ namespace BTKUILib.UIObjects
         /// <summary>
         /// Used to generate the cohtml side of this element, expected to be overriden
         /// </summary>
-        internal virtual void GenerateCohtml()
+        internal virtual void GenerateCohtml(Page rootPage)
         {
+            RootPage = rootPage;
+
             if (!UIUtils.IsQMReady()) return;
             UIUtils.GetInternalView().TriggerEvent("btkSetDisabled", ElementID, _disabled);
         }
