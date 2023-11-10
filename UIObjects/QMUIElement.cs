@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using ABI_RC.Core.InteractionSystem;
-using cohtml;
 
 namespace BTKUILib.UIObjects
 {
@@ -26,23 +24,41 @@ namespace BTKUILib.UIObjects
         public bool IsGenerated;
 
         /// <summary>
-        /// Root page a given element is a child of, can be null in some cases
-        /// mainly for root pages and for global custom elements
+        /// Reference to the parent QMUIElement this element is a child of
+        /// Root pages will be null, so will global custom elements
         /// </summary>
-        public Page RootPage;
+        public QMUIElement Parent { get; internal set; }
+
+        /// <summary>
+        /// Returns the root page of this element by walking up the parents
+        /// </summary>
+        public QMUIElement RootPage
+        {
+            get
+            {
+                if (_cachedRootPage != null)
+                    return _cachedRootPage;
+
+                _cachedRootPage = this;
+
+                while (_cachedRootPage.Parent != null)
+                {
+                    _cachedRootPage = _cachedRootPage.Parent;
+                }
+
+                return _cachedRootPage;
+            }
+        }
 
         public bool IsVisible
         {
             get
             {
-                if (RootPage != null)
-                    return RootPage.IsVisible && IsGenerated;
-
-                return _visible && IsGenerated;
+                return RootPage != null ? RootPage._visible : _visible;
             }
             internal set
             {
-                if(RootPage == null)
+                if(RootPage == this)
                     _visible = value;
             }
         }
@@ -57,13 +73,21 @@ namespace BTKUILib.UIObjects
             {
                 var thisType = GetType();
 
-                //Don't allow pages to be disabled
-                if (thisType == typeof(Page)) return;
+                var target = ElementID;
+
+                //Disabling page disables the subpage button if it's applicable
+                if (thisType == typeof(Page))
+                {
+                    var page = (Page)this;
+                    if(page.SubpageButton != null)
+                        page.SubpageButton.Disabled = value;
+                    return;
+                }
 
                 _disabled = value;
 
                 if (!UIUtils.IsQMReady()) return;
-                UIUtils.GetInternalView().TriggerEvent("btkSetDisabled", ElementID, value);
+                UIUtils.GetInternalView().TriggerEvent("btkSetDisabled", target, value);
             }
         }
 
@@ -79,6 +103,7 @@ namespace BTKUILib.UIObjects
 
         private bool _disabled;
         private bool _visible;
+        private QMUIElement _cachedRootPage;
 
         internal QMUIElement()
         {
@@ -100,18 +125,23 @@ namespace BTKUILib.UIObjects
             DeleteInternal();
         }
 
-        internal virtual void DeleteInternal()
+        internal virtual void DeleteInternal(bool tabChange = false)
         {
-            UserInterface.QMElements.Remove(this);
+            if(!tabChange)
+                UserInterface.QMElements.Remove(this);
+
+            IsGenerated = false;
 
             //Recursively delete sub elements that need special handling
-            foreach (var element in SubElements)
+            foreach (var element in SubElements.ToArray())
             {
+                element.IsGenerated = false;
+
                 switch (element)
                 {
                     case Category:
                     case Page:
-                        element.DeleteInternal();
+                        element.DeleteInternal(tabChange);
                         break;
                 }
             }
@@ -123,10 +153,8 @@ namespace BTKUILib.UIObjects
         /// <summary>
         /// Used to generate the cohtml side of this element, expected to be overriden
         /// </summary>
-        internal virtual void GenerateCohtml(Page rootPage)
+        internal virtual void GenerateCohtml()
         {
-            RootPage = rootPage;
-
             if (!UIUtils.IsQMReady()) return;
             UIUtils.GetInternalView().TriggerEvent("btkSetDisabled", ElementID, _disabled);
         }

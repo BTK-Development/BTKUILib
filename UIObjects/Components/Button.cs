@@ -69,6 +69,8 @@ namespace BTKUILib.UIObjects.Components
             _category = category;
             _style = style;
 
+            Parent = category;
+
             ElementID = "btkUI-Button-" + UUID;
         }
 
@@ -85,16 +87,16 @@ namespace BTKUILib.UIObjects.Components
             OnPress?.Invoke();
         }
 
-        internal override void GenerateCohtml(Page rootPage)
+        internal override void GenerateCohtml()
         {
             if (!UIUtils.IsQMReady()) return;
 
-            if (!_category.IsVisible) return;
+            if (RootPage is { IsVisible: false }) return;
 
             if (!IsGenerated)
                 UIUtils.GetInternalView().TriggerEvent("btkCreateButton", _category.ElementID, _buttonText, _buttonIcon, _buttonTooltip, UUID, _category.ModName, (int)_style);
             
-            base.GenerateCohtml(rootPage);
+            base.GenerateCohtml();
 
             IsGenerated = true;
         }

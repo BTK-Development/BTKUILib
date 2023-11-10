@@ -24,6 +24,11 @@ public class CustomElement : QMUIElement
         _parentPage = parentPage;
         _parentCategory = parentCategory;
 
+        if (parentCategory != null)
+            Parent = parentCategory;
+        if (parentPage != null)
+            Parent = parentPage;
+
         ElementID = "btkUI-Custom-" + UUID;
 
         UserInterface.CustomElements.Add(this);
@@ -102,9 +107,11 @@ public class CustomElement : QMUIElement
         _engineOnFunctions.Clear();
     }
 
-    internal override void GenerateCohtml(Page rootPage)
+    internal override void GenerateCohtml()
     {
         if (!UIUtils.IsQMReady()) return;
+
+        if (RootPage is { IsVisible: false } && ElementType != ElementType.GlobalElement) return;
 
         if (!IsGenerated)
         {
@@ -133,6 +140,8 @@ public class CustomElement : QMUIElement
                     throw new ArgumentOutOfRangeException();
             }
         }
+
+        base.GenerateCohtml();
     }
 
     public override void Delete()

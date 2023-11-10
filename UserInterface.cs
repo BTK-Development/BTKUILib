@@ -29,6 +29,7 @@ namespace BTKUILib
         internal static Page SelectedRootPage;
 
         private string _lastTab = "CVRMainQM";
+        private static Dictionary<string, List<Page>> _modPages = new();
 
         internal void SetupUI()
         {
@@ -49,8 +50,16 @@ namespace BTKUILib
             BTKUIReady = false;
 
             foreach (var element in QMElements)
+            {
                 element.IsGenerated = false;
-            
+                element.IsVisible = false;
+            }
+
+            foreach (var root in RootPages)
+            {
+                root.TabGenerated = false;
+            }
+
             CVR_MenuManager.Instance.quickMenu.View.BindCall("btkUI-ButtonAction", new Action<string>(HandleButtonAction));
             CVR_MenuManager.Instance.quickMenu.View.BindCall("btkUI-Toggle", new Action<string, bool>(OnToggle));
             CVR_MenuManager.Instance.quickMenu.View.BindCall("btkUI-PopupConfirmOK", new Action(ConfirmOK));
@@ -94,7 +103,7 @@ namespace BTKUILib
             //Generate custom elements
             foreach (var custom in CustomElements.Where(x => x.ElementType == ElementType.GlobalElement))
             {
-                custom.GenerateCohtml(null);
+                custom.GenerateCohtml();
             }
 
             QuickMenuAPI.OnMenuGenerated?.Invoke(CVR_MenuManager.Instance);
@@ -110,6 +119,16 @@ namespace BTKUILib
             
             MelonDebug.Msg($"Creating root page | Name: {rootPage.PageName} | ModName: {rootPage.ModName} | ElementID: {rootPage.ElementID}");
             rootPage.GenerateTab();
+        }
+
+        //Store all pages connected to a specific mod name to catch unintended cases like orphaned pages
+        internal void AddModPage(string modName, Page page)
+        {
+            var modPages = _modPages.TryGetValue(modName, out var modPage) ? modPage : new List<Page>();
+            modPages.Add(page);
+
+            if(!_modPages.ContainsKey(modName))
+                _modPages.Add(modName, modPages);
         }
 
         private void UserLeave(CVRPlayerEntity obj)
@@ -140,8 +159,20 @@ namespace BTKUILib
         {
             if (SelectedRootPage != null)
             {
-                SelectedRootPage.Delete();
+                SelectedRootPage.TabChange();
                 SelectedRootPage.IsVisible = false;
+
+                //Catch orphaned of injected root pages
+                if (_modPages.TryGetValue(SelectedRootPage.ModName, out var modPages))
+                {
+                    foreach (var page in modPages)
+                    {
+                        page.DeleteInternal(true);
+                        if (page.RootPage == page)
+                            page.IsVisible = false;
+                    }
+                }
+
                 SelectedRootPage = null;
             }
 
@@ -161,8 +192,22 @@ namespace BTKUILib
                 return;
             }
 
-            root.GenerateCohtml(null);
+            SelectedRootPage = root;
+
             root.IsVisible = true;
+            root.GenerateCohtml();
+
+            if (_modPages.TryGetValue(root.ModName, out var pages))
+            {
+                foreach (var page in pages)
+                {
+                    //Hacky, make sure disconnected root pages get IsVisible set correctly
+                    if (page.RootPage == page)
+                        page.IsVisible = true;
+                    if(!page.IsGenerated)
+                        page.GenerateCohtml();
+                }
+            }
             
             UIUtils.GetInternalView().TriggerEvent("btkChangeTab", tabTarget, root.ModName, root.MenuTitle, root.MenuSubtitle);
             QuickMenuAPI.OnTabChange?.Invoke(tabTarget, _lastTab);

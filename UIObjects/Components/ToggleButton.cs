@@ -64,6 +64,8 @@ namespace BTKUILib.UIObjects.Components
             _toggleName = toggleText;
             _toggleTooltip = toggleTooltip;
             _category = category;
+
+            Parent = category;
             
             ElementID = $"btkUI-Toggle-{UUID}";
         }
@@ -94,16 +96,16 @@ namespace BTKUILib.UIObjects.Components
             OnValueUpdated?.Invoke(_toggleValue);
         }
 
-        internal override void GenerateCohtml(Page rootPage)
+        internal override void GenerateCohtml()
         {
             if (!UIUtils.IsQMReady()) return;
 
-            if (!_category.IsVisible) return;
+            if (RootPage is { IsVisible: false }) return;
 
             if(!IsGenerated)
                 UIUtils.GetInternalView().TriggerEvent("btkCreateToggle", _category.ElementID, _toggleName, UUID, _toggleTooltip, _toggleValue);
             
-            base.GenerateCohtml(rootPage);
+            base.GenerateCohtml();
 
             IsGenerated = true;
         }

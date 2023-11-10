@@ -139,6 +139,7 @@ namespace BTKUILib.UIObjects.Components
             _decimalPlaces = decimalPlaces;
             _defaultValue = defaultValue;
             _allowDefaultReset = allowDefaultReset;
+            Parent = page;
             
             UserInterface.Sliders.Add(UUID, this);
             
@@ -165,9 +166,11 @@ namespace BTKUILib.UIObjects.Components
             _page.SubElements.Remove(this);
         }
 
-        internal override void GenerateCohtml(Page rootPage)
+        internal override void GenerateCohtml()
         {
             if (!UIUtils.IsQMReady()) return;
+
+            if (RootPage is { IsVisible: false }) return;
 
             if (!IsGenerated)
             {
@@ -184,8 +187,8 @@ namespace BTKUILib.UIObjects.Components
                 
                 UIUtils.GetInternalView().TriggerEvent("btkCreateSlider", _page.ElementID, UUID, _sliderValue, settings);
             }
-            
-            base.GenerateCohtml(rootPage);
+
+            base.GenerateCohtml();
 
             IsGenerated = true;
         }

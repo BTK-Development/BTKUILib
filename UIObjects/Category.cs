@@ -34,6 +34,8 @@ namespace BTKUILib.UIObjects
             LinkedPage = page;
             _showHeader = showHeader;
             _modName = modName;
+
+            Parent = page;
             
             ElementID = "btkUI-Row-" + UUID;
         }
@@ -64,7 +66,7 @@ namespace BTKUILib.UIObjects
             SubElements.Add(button);
             
             if(UIUtils.IsQMReady())
-                button.GenerateCohtml(RootPage);
+                button.GenerateCohtml();
 
             return button;
         }
@@ -82,7 +84,7 @@ namespace BTKUILib.UIObjects
             SubElements.Add(toggle);
             
             if(UIUtils.IsQMReady())
-                toggle.GenerateCohtml(RootPage);
+                toggle.GenerateCohtml();
 
             return toggle;
         }
@@ -97,7 +99,7 @@ namespace BTKUILib.UIObjects
         /// <returns>Newly created page object with SubpageButton set to the created button</returns>
         public Page AddPage(string pageName, string pageIcon, string pageTooltip, string modName)
         {
-            var page = new Page(modName, pageName);
+            var page = new Page(modName, pageName, category: this);
             SubElements.Add(page);
 
             if (modName == "BTKUILib" && LinkedPage.ElementID == "btkUI-PlayerSelectPage")
@@ -114,8 +116,8 @@ namespace BTKUILib.UIObjects
 
             if (UIUtils.IsQMReady())
             {
-                page.GenerateCohtml(RootPage);
-                pageButton.GenerateCohtml(RootPage);
+                page.GenerateCohtml();
+                pageButton.GenerateCohtml();
             }
 
             page.SubpageButton = pageButton;
@@ -145,19 +147,17 @@ namespace BTKUILib.UIObjects
                 UIUtils.GetInternalView().TriggerEvent("btkClearChildren", ElementID);
         }
 
-        internal override void GenerateCohtml(Page rootPage)
+        internal override void GenerateCohtml()
         {
             if (!UIUtils.IsQMReady()) return;
 
-            if (!LinkedPage.IsVisible) return;
+            if (RootPage is { IsVisible: false }) return;
 
             if(!IsGenerated)
                 UIUtils.GetInternalView().TriggerEvent("btkCreateRow", LinkedPage.ElementID, UUID, _showHeader ? _categoryName : null);
             
             foreach(var element in SubElements)
-                element.GenerateCohtml(RootPage);
-            
-            base.GenerateCohtml(rootPage);
+                element.GenerateCohtml();
 
             IsGenerated = true;
         }

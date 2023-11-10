@@ -58,6 +58,8 @@ namespace BTKUILib.UIObjects
             }
         }
 
+
+
         /// <summary>
         /// Reference to the button that opens this subpage
         /// </summary>
@@ -114,6 +116,8 @@ namespace BTKUILib.UIObjects
             _category = category;
             _noTab = noTab;
 
+            Parent = category;
+
             if(!isRootPage)
             {
                 ElementID = $"btkUI-{UIUtils.GetCleanString(modName)}-{UIUtils.GetCleanString(pageName)}";
@@ -126,6 +130,8 @@ namespace BTKUILib.UIObjects
             
             if (isRootPage)
                 UserInterface.Instance.RegisterRootPage(this);
+
+            UserInterface.Instance.AddModPage(modName, this);
         }
 
         /// <summary>
@@ -145,7 +151,13 @@ namespace BTKUILib.UIObjects
         /// </summary>
         public void OpenPage()
         {
-            if (!UIUtils.IsQMReady() || !IsGenerated) return;
+            if (!UIUtils.IsQMReady()) return;
+
+            if (!RootPage.IsVisible)
+            {
+                //We need to trigger a tab change first!
+                //TODO: make the tab change happen!
+            }
             
             UIUtils.GetInternalView().TriggerEvent("btkPushPage", ElementID);
         }
@@ -172,7 +184,7 @@ namespace BTKUILib.UIObjects
             SubElements.Add(category);
 
             if (UIUtils.IsQMReady())
-                category.GenerateCohtml(RootPage);
+                category.GenerateCohtml();
 
             return category;
         }
@@ -192,7 +204,7 @@ namespace BTKUILib.UIObjects
             SubElements.Add(category);
 
             if (UIUtils.IsQMReady()) 
-                category.GenerateCohtml(RootPage);
+                category.GenerateCohtml();
 
             return category;
         }
@@ -244,7 +256,7 @@ namespace BTKUILib.UIObjects
             SubElements.Add(slider);
             
             if(UIUtils.IsQMReady())
-                slider.GenerateCohtml(RootPage);
+                slider.GenerateCohtml();
 
             return slider;
         }
@@ -278,17 +290,19 @@ namespace BTKUILib.UIObjects
 
         internal void GenerateTab()
         {
-            if (!UIUtils.IsQMReady() || TabGenerated || _noTab) return;
+            if (!UIUtils.IsQMReady() || TabGenerated || _noTab || !IsRootPage) return;
 
             UIUtils.GetInternalView().TriggerEvent("btkCreateTab", _displayName, ModName, _tabIcon);
 
             TabGenerated = true;
         }
 
-        internal override void DeleteInternal()
+        internal override void DeleteInternal(bool tabChange = false)
         {
-            base.DeleteInternal();
-            
+            base.DeleteInternal(tabChange);
+
+            if(tabChange) return;
+
             if (IsRootPage)
             {
                 UserInterface.RootPages.Remove(this);
@@ -298,13 +312,17 @@ namespace BTKUILib.UIObjects
             //Remove this page from the category list
             if(_category != null && _category.SubElements.Contains(this))
                 _category.SubElements.Remove(this);
+
+            SubElements.Clear();
         }
         
-        internal override void GenerateCohtml(Page rootPage)
+        internal override void GenerateCohtml()
         {
             if (!UIUtils.IsQMReady()) return;
 
-            if (_category is { IsVisible: false }) return;
+            BTKUILib.Log.Warning($"Fuck: {RootPage is { IsVisible: false }} RootPage: {RootPage.ElementID}");
+
+            if (RootPage is { IsVisible: false }) return;
 
             if(!IsGenerated)
                 UIUtils.GetInternalView().TriggerEvent("btkCreatePage", _displayName, ModName, _tabIcon, ElementID, IsRootPage, UIUtils.GetCleanString(PageName), InPlayerlist, _noTab);
@@ -313,8 +331,30 @@ namespace BTKUILib.UIObjects
             
             foreach (var category in SubElements)
             {
-                category.GenerateCohtml(rootPage);
+                category.GenerateCohtml();
             }
+        }
+
+        internal void TabChange()
+        {
+            IsGenerated = false;
+
+            //Recursively delete sub elements that need special handling
+            foreach (var element in SubElements)
+            {
+                element.IsGenerated = false;
+
+                switch (element)
+                {
+                    case Category:
+                    case Page:
+                        element.DeleteInternal(true);
+                        break;
+                }
+            }
+
+            if (!UIUtils.IsQMReady()) return;
+            UIUtils.GetInternalView().TriggerEvent("btkDeleteElement", ElementID);
         }
     }
 }
