@@ -21,6 +21,7 @@ cvr.menu.prototype.BTKUI = {
     btkShowAlertFunc: {},
     btkGetImageBackgroundFunc: {},
     btkKnownEngineFunctions: [],
+    btkLastTab: "",
 
     info: function(){
         return {
@@ -70,6 +71,7 @@ cvr.menu.prototype.BTKUI = {
         btkShowAlertFunc = this.btkShowAlert;
         btkGetImageBackgroundFunc = this.btkGetImageBackground;
         btkKnownEngineFunctions = [];
+        btkLastTab = "";
 
         menu.templates["btkUI-btn"] = {c: "btkUI-btn hide", s: [{c: "icon"}], x: "btkUI-pushPage", a:{"id" : "btkUI-UserMenu", "data-page": "btkUI-PlayerList"}};
         menu.templates["btkUI-shared"] = {c: "btkUI-shared hide", s:[
@@ -244,6 +246,7 @@ cvr.menu.prototype.BTKUI = {
         engine.on("btkAddCustomAction", this.btkAddCustomAction);
         engine.on("btkAddCustomEngineFunction", this.btkAddCustomEngineFunction);
         engine.on("btkCreateCustomElementCategory", this.btkCreateCustomElementCategory);
+        engine.on("btkCreateTab", this.btkCreateTab);
     },
 
     init: function(menu){
@@ -773,7 +776,36 @@ cvr.menu.prototype.BTKUI = {
         }, uiRefBTK.templates, uiRefBTK.actions))
     },
 
-    btkCreatePage: function (pageName, modName, tabIcon, elementID, rootPage, cleanedPageName, inPlayerlist, noTab){
+    btkCreateTab: function (pageName, modName, tabIcon){
+        cvr("#btkUI-TabRoot").appendChild(cvr.render(uiRefBTK.templates["btkUITab"], {
+            "[TabName]": modName
+        }, uiRefBTK.templates, uiRefBTK.actions));
+
+        if (tabIcon !== null && tabIcon.length > 0) {
+            let tab = document.getElementById("btkUI-Tab-" + modName + "-Image");
+            tab.style.backgroundImage = "url('mods/BTKUI/images/" + modName + "/" + tabIcon + ".png')";
+            tab.style.backgroundRepeat = "no-repeat";
+            tab.style.backgroundSize = "contain";
+        } else {
+            let tab = document.getElementById("btkUI-Tab-" + modName + "-Image");
+            tab.style.backgroundImage = "url('mods/BTKUI/images/Placeholder.png')";
+            tab.style.backgroundRepeat = "no-repeat";
+            tab.style.backgroundSize = "contain";
+        }
+
+        let tabRoot = document.getElementById("btkUI-TabRoot");
+        tabRoot.scrollLeft = 0;
+
+        let scrollInd = document.getElementById("btkUI-TabScroll-Indicator");
+        scrollInd.style.width = "1%";
+
+        if(document.getElementById("btkUI-TabRoot").childElementCount >= 8)
+            cvr("#btkUI-TabScroll-Container").show();
+        else
+            cvr("#btkUI-TabScroll-Container").hide();
+    },
+
+    btkCreatePage: function (pageName, modName, tabIcon, elementID, rootPage, cleanedPageName, inPlayerlist){
         let elementCheck = null;
 
         if(rootPage)
@@ -798,38 +830,9 @@ cvr.menu.prototype.BTKUI = {
             return;
         }
 
-        if(!noTab) {
-            cvr("#btkUI-TabRoot").appendChild(cvr.render(uiRefBTK.templates["btkUITab"], {
-                "[TabName]": modName
-            }, uiRefBTK.templates, uiRefBTK.actions));
-
-            if (tabIcon !== null && tabIcon.length > 0) {
-                let tab = document.getElementById("btkUI-Tab-" + modName + "-Image");
-                tab.style.backgroundImage = "url('mods/BTKUI/images/" + modName + "/" + tabIcon + ".png')";
-                tab.style.backgroundRepeat = "no-repeat";
-                tab.style.backgroundSize = "contain";
-            } else {
-                let tab = document.getElementById("btkUI-Tab-" + modName + "-Image");
-                tab.style.backgroundImage = "url('mods/BTKUI/images/Placeholder.png')";
-                tab.style.backgroundRepeat = "no-repeat";
-                tab.style.backgroundSize = "contain";
-            }
-
-            let tabRoot = document.getElementById("btkUI-TabRoot");
-            tabRoot.scrollLeft = 0;
-
-            let scrollInd = document.getElementById("btkUI-TabScroll-Indicator");
-            scrollInd.style.width = "1%";
-        }
-
         cvr("#btkUI-Root").appendChild(cvr.render(uiRefBTK.templates["btkUIRootPage"], {
             "[ModName]": modName
         }, uiRefBTK.templates, uiRefBTK.actions));
-
-        if(document.getElementById("btkUI-TabRoot").childElementCount >= 8)
-            cvr("#btkUI-TabScroll-Container").show();
-        else
-            cvr("#btkUI-TabScroll-Container").hide();
     },
 
     btkUpdatePageTitle: function(elementID, title){
@@ -842,6 +845,8 @@ cvr.menu.prototype.BTKUI = {
 
     btkChangeTab: function (rootTarget, rootMod, menuTitle, menuSubtitle){
         console.log("Setting to rootTarget " + rootTarget + " | currentMod = " + currentMod + " | rootMod = " + rootMod);
+
+        btkLastTab = rootTarget;
 
         if(rootTarget === "CVRMainQM"){
             uiRefBTK.core.switchCategorySelected("quickmenu-home");
@@ -1033,6 +1038,8 @@ cvr.menu.prototype.BTKUI = {
                 console.error("Tab did not have a tabTarget!" + e);
                 return;
             }
+
+            if(target === btkLastTab) return;
 
             var tabs = document.querySelectorAll(".container-tabs .tab");
             for(let i=0; i < tabs.length; i++){
