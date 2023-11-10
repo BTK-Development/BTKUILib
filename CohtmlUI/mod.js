@@ -71,7 +71,6 @@ cvr.menu.prototype.BTKUI = {
         btkGetImageBackgroundFunc = this.btkGetImageBackground;
         btkKnownEngineFunctions = [];
 
-        menu.templates["btkUI-btn"] = {c: "btkUI-btn hide", s: [{c: "icon"}], x: "btkUI-pushPage", a:{"id" : "btkUI-UserMenu", "data-page": "btkUI-PlayerList"}};
         menu.templates["btkUI-shared"] = {c: "btkUI-shared hide", s:[
                 {c: "container btk-popup-container hide", a: {"id": "btkUI-PopupConfirm"}, s:[
                         {c: "row", s: [
@@ -94,6 +93,9 @@ cvr.menu.prototype.BTKUI = {
                     ]},
                 {c: "container container-tabs", s:[
                         {c:"row", s:[
+                                {c: "col-md-2 justify-content-md-left tab", s:[
+                                        {c: "icon"}
+                                    ], a:{"id":"btkUI-UserMenu", "data-page": "btkUI-PlayerList"}, x: "btkUI-pushPage"},
                                 {c: "col-md-2 justify-content-md-left tab selected", s:[
                                         {c: "tab-content", a:{"id":"btkUI-Tab-CVRQM-Icon"}}
                                     ], a:{"id":"btkUI-Tab-CVRMainQM", "tabTarget": "CVRMainQM"}, x: "btkUI-TabChange"},
@@ -189,7 +191,6 @@ cvr.menu.prototype.BTKUI = {
         menu.templates["btkUITab"] = {c: "col-md-2 tab", s:[{c: "tab-content", a:{"id":"btkUI-Tab-[TabName]-Image"}}], a:{"id":"btkUI-Tab-[TabName]", "tabTarget": "btkUI-[TabName]-MainPage"}, x: "btkUI-TabChange"};
         menu.templates["btkPlayerListEntry"] = {c:"col-3", s:[{c:"button-fullImage", x:"btkUI-SelectPlayer", s:[{c:"text", h:"[player-name]"}], a:{"id": "btkUI-PlayerButton-[player-id]-Icon","data-id": "[player-id]", "data-name": "[player-name]", "data-tooltip": "Open up the player options for [player-name]"}}], a:{"id": "btkUI-PlayerButton-[player-id]"}};
 
-        menu.templates["core-quickmenu"].l.push("btkUI-btn");
         menu.templates["core-quickmenu"].l.push("btkUI-shared");
         menu.templates["core-quickmenu"].l.push("btkUI-menu");
 
