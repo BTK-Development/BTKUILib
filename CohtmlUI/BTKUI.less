@@ -31,35 +31,6 @@
 }
 
 #quickmenu-wrapper {
-  .btkUI-btn {
-    background-color: rgba(41, 41, 41, 0);
-    width: 150px;
-    height: 150px;
-    border-radius: 10px;
-    font-size: 36px;
-    text-align: center;
-    position: absolute;
-    left: 1280px;
-    top: 485px;
-
-    &:hover {
-      filter: brightness(75%);
-    }
-
-    .icon {
-      background: url("images/Multiuser.png");
-      background-size: cover;
-      background-repeat: no-repeat;
-
-      height: 150px;
-      width: 150px;
-      position: absolute;
-      margin-bottom: 100px;
-      padding: 10px;
-      z-index: 0;
-    }
-  }
-
   .quick-buttons-container{
     left: 13px;
   }
@@ -75,11 +46,12 @@
 
   .container-tabs {
     position: absolute;
-    width: 1440px;
+    width: 1610px;
     height: auto;
     top: 1560px;
-    max-width: 1440px;
+    max-width: 1610px;
     margin-right: 10px;
+    left: -170px;
 
     .scroll-bg{
       margin-left: 10px;
@@ -88,7 +60,7 @@
       width: 100%;
       border-radius: 10px;
       position: absolute;
-      left: 182px;
+      left: 352px;
       top: -5px;
     }
 
@@ -126,6 +98,17 @@
         background-image: url("images/Home-Icon.png");
         background-size: contain;
         background-repeat: no-repeat;
+      }
+
+      .icon {
+        background: url("images/Multiuser.png");
+        background-size: contain;
+        background-repeat: no-repeat;
+
+        font-size: 2vw;
+        text-align: center;
+        margin-top: 10px;
+        height: 100%;
       }
     }
 
