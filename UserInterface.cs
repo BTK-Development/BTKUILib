@@ -160,7 +160,7 @@ namespace BTKUILib
 
         internal void OnTabChange(string tabTarget)
         {
-            if (SelectedRootPage != null)
+            if (SelectedRootPage != null && SelectedRootPage.ElementID != tabTarget)
             {
                 SelectedRootPage.TabChange();
                 SelectedRootPage.IsVisible = false;

@@ -851,6 +851,7 @@ cvr.menu.prototype.BTKUI = {
 
         if(rootTarget === "CVRMainQM"){
             uiRefBTK.core.switchCategorySelected("quickmenu-home");
+            currentMod = rootMod;
             return;
         }
 
@@ -861,6 +862,8 @@ cvr.menu.prototype.BTKUI = {
                cvr("#" + currentPageBTK).hide();
         }
 
+        currentPageBTK = "";
+
         let targetTab = document.getElementById("btkUI-Tab-" + rootMod);
 
         if(targetTab !== null) {
@@ -870,7 +873,7 @@ cvr.menu.prototype.BTKUI = {
                 tab.classList.remove("selected");
             }
 
-            targetTab.currentTarget.classList.add("selected");
+            targetTab.classList.add("selected");
         }
 
         updateTitle(menuTitle, menuSubtitle);
@@ -1051,8 +1054,6 @@ cvr.menu.prototype.BTKUI = {
                 console.error("Tab did not have a tabTarget!" + e);
                 return;
             }
-
-            if(target === btkLastTab) return;
 
             var tabs = document.querySelectorAll(".container-tabs .tab");
             for(let i=0; i < tabs.length; i++){
