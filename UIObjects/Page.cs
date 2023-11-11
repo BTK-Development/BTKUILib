@@ -156,7 +156,7 @@ namespace BTKUILib.UIObjects
             if (!RootPage.IsVisible)
             {
                 //We need to trigger a tab change first!
-                //TODO: make the tab change happen!
+                UserInterface.Instance.OnTabChange($"btkUI-{ModName}-MainPage");
             }
             
             UIUtils.GetInternalView().TriggerEvent("btkPushPage", ElementID);

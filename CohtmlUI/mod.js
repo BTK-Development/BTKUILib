@@ -861,6 +861,18 @@ cvr.menu.prototype.BTKUI = {
                cvr("#" + currentPageBTK).hide();
         }
 
+        let targetTab = document.getElementById("btkUI-Tab-" + rootMod);
+
+        if(targetTab !== null) {
+            var tabs = document.querySelectorAll(".container-tabs .tab");
+            for (let i = 0; i < tabs.length; i++) {
+                let tab = tabs[i];
+                tab.classList.remove("selected");
+            }
+
+            targetTab.currentTarget.classList.add("selected");
+        }
+
         updateTitle(menuTitle, menuSubtitle);
 
         pushPageBTK(rootTarget, rootMod);

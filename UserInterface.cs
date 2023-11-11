@@ -157,8 +157,8 @@ namespace BTKUILib
             QuickMenuAPI.SelectedPlayerID = playerID;
             QuickMenuAPI.OnPlayerSelected?.Invoke(playerName, playerID);
         }
-        
-        private void OnTabChange(string tabTarget)
+
+        internal void OnTabChange(string tabTarget)
         {
             if (SelectedRootPage != null)
             {
