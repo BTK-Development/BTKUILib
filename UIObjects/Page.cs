@@ -102,6 +102,7 @@ namespace BTKUILib.UIObjects
         /// <param name="isRootPage">Sets if this page should also generate a tab</param>
         /// <param name="tabIcon">Icon to be displayed on the tab</param>
         /// <param name="category">Only set if this page was created from a category</param>
+        /// <param name="noTab">Sets if this page should not generate a tab, only functions for rootpages</param>
         public Page(string modName, string pageName, bool isRootPage, string tabIcon, Category category, bool noTab)
         {
             if (!isRootPage)

@@ -50,6 +50,9 @@ namespace BTKUILib.UIObjects
             }
         }
 
+        /// <summary>
+        /// Returns the visibility state of this objects highest root page element
+        /// </summary>
         public bool IsVisible
         {
             get

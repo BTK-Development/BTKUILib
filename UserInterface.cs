@@ -8,7 +8,6 @@ using ABI_RC.Core.Player;
 using BTKUILib.UIObjects;
 using BTKUILib.UIObjects.Components;
 using BTKUILib.UIObjects.Objects;
-using cohtml;
 using MelonLoader;
 using MelonLoader.ICSharpCode.SharpZipLib.Zip;
 

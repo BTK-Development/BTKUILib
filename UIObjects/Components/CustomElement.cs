@@ -6,6 +6,9 @@ using BTKUILib.UIObjects.Objects;
 
 namespace BTKUILib.UIObjects.Components;
 
+/// <summary>
+/// Custom element component can be used to create custom templates and functionality that gets injected into Cohtml
+/// </summary>
 public class CustomElement : QMUIElement
 {
     //btkUI-Custom-[UUID] required in "id" of root
@@ -17,6 +20,13 @@ public class CustomElement : QMUIElement
     private Dictionary<string, string> _actionFunctions = new();
     private List<CustomEngineOnFunction> _engineOnFunctions = new();
 
+    /// <summary>
+    /// Custom element constructor, most parts of a custom element cannot be changed after generation
+    /// </summary>
+    /// <param name="template">CVR QM template code</param>
+    /// <param name="elementType">Type of custom element, controls where and how the element reacts</param>
+    /// <param name="parentPage">Parent page of the element, only used for on page elements</param>
+    /// <param name="parentCategory">Parent category of the element, only used for in category elements</param>
     public CustomElement(string template, ElementType elementType, Page parentPage = null, Category parentCategory = null)
     {
         _template = template;
@@ -142,11 +152,6 @@ public class CustomElement : QMUIElement
         }
 
         base.GenerateCohtml();
-    }
-
-    public override void Delete()
-    {
-        base.Delete();
     }
 }
 
