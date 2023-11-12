@@ -1,7 +1,7 @@
 cvr.menu.prototype.BTKUI = {
     uiRefBTK: {},
     breadcrumbsBTK: [],
-    currentPageBTK: "",
+    currentPageBTK: "CVRMainQM",
     currentDraggedSliderBTK: {},
     currentSliderBarBTK: {},
     currentSliderKnobBTK: {},
@@ -163,7 +163,7 @@ cvr.menu.prototype.BTKUI = {
                             ]}, {c: "scroll-marker-v"}]}]},
                 {c: "container container-controls-playerlist hide", a:{"id": "btkUI-PlayerList"}, s:[
                         {c: "row header-section", s:[
-                                {c:"col-1", s:[{c: "icon-back", x: "btkUI-Home"}]},
+                                {c:"col-1", s:[{c: "icon-back", x: "btkUI-Back"}]},
                                 {c:"col", s:[{c:"header", h:"Player Selection | 0 Players in World", a: {"id": "btkUI-PlayerListHeaderText"}}]}
                             ]},
                         {c: "scroll-view", s:[{c: "content-subpage scroll-content", s:[
@@ -851,7 +851,8 @@ cvr.menu.prototype.BTKUI = {
 
         if(rootTarget === "CVRMainQM"){
             uiRefBTK.core.switchCategorySelected("quickmenu-home");
-            currentMod = rootMod;
+            currentMod = "CVR";
+            currentPageBTK = "CVRMainQM";
             return;
         }
 
@@ -1077,8 +1078,14 @@ cvr.menu.prototype.BTKUI = {
 
             let target = breadcrumbsBTK.pop();
 
+            if(target === "")
+                target = "CVRMainQM";
+
             cvr("#" + target).show();
             cvr("#" + currentPageBTK).hide();
+
+            if(target === "CVRMainQM")
+                uiRefBTK.core.switchCategorySelected("quickmenu-home");
 
             engine.call("btkUI-BackAction", target, currentPageBTK);
 

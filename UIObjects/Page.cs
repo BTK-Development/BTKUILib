@@ -320,8 +320,6 @@ namespace BTKUILib.UIObjects
         {
             if (!UIUtils.IsQMReady()) return;
 
-            BTKUILib.Log.Warning($"Fuck: {RootPage is { IsVisible: false }} RootPage: {RootPage.ElementID}");
-
             if (RootPage is { IsVisible: false }) return;
 
             if(!IsGenerated)
