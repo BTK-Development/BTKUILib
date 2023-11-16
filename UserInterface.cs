@@ -23,12 +23,12 @@ namespace BTKUILib
         internal static Dictionary<string, QMInteractable> Interactables = new();
         internal static List<string> CustomCSSStyles = new();
         internal static List<CustomElement> CustomElements = new();
+        internal static Dictionary<string, List<Page>> ModPages = new();
         internal static bool BTKUIReady; 
         internal MultiSelection SelectedMultiSelect;
         internal static Page SelectedRootPage;
 
         private string _lastTab = "CVRMainQM";
-        private static Dictionary<string, List<Page>> _modPages = new();
 
         internal void SetupUI()
         {
@@ -124,13 +124,21 @@ namespace BTKUILib
         }
 
         //Store all pages connected to a specific mod name to catch unintended cases like orphaned pages
-        internal void AddModPage(string modName, Page page)
+        internal bool AddModPage(string modName, Page page)
         {
-            var modPages = _modPages.TryGetValue(modName, out var modPage) ? modPage : new List<Page>();
-            modPages.Add(page);
+            bool duplicate = false;
 
-            if(!_modPages.ContainsKey(modName))
-                _modPages.Add(modName, modPages);
+            var modPageList = ModPages.TryGetValue(modName, out var pageList) ? pageList : new List<Page>();
+
+            if (modPageList.Any(x => x.PageName == page.PageName))
+                duplicate = true;
+
+            modPageList.Add(page);
+
+            if(!ModPages.ContainsKey(modName))
+                ModPages.Add(modName, modPageList);
+
+            return duplicate;
         }
 
         private void UserLeave(CVRPlayerEntity obj)
@@ -165,7 +173,7 @@ namespace BTKUILib
                 SelectedRootPage.IsVisible = false;
 
                 //Catch orphaned of injected root pages
-                if (_modPages.TryGetValue(SelectedRootPage.ModName, out var modPages))
+                if (ModPages.TryGetValue(SelectedRootPage.ModName, out var modPages))
                 {
                     foreach (var page in modPages)
                     {
@@ -199,7 +207,7 @@ namespace BTKUILib
             root.IsVisible = true;
             root.GenerateCohtml();
 
-            if (_modPages.TryGetValue(root.ModName, out var pages))
+            if (ModPages.TryGetValue(root.ModName, out var pages))
             {
                 foreach (var page in pages)
                 {

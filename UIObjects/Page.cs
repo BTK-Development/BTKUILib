@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using ABI_RC.Core.InteractionSystem;
 using BTKUILib.UIObjects.Components;
 
@@ -58,7 +59,27 @@ namespace BTKUILib.UIObjects
             }
         }
 
+        /// <summary>
+        /// Sets if this pages tab is visible or not
+        /// </summary>
+        public bool HideTab
+        {
+            get => _hideTab;
+            set
+            {
+                if (!IsRootPage || _noTab)
+                {
+                    BTKUILib.Log.Warning($"Page \"{PageName}\" of mod \"{ModName}\" does not have an associated tab! Cannot update tab state!");
+                    return;
+                }
 
+                _hideTab = value;
+
+                if (!UIUtils.IsQMReady() || !TabGenerated) return;
+
+                UIUtils.GetInternalView().TriggerEvent("btkUpdateTab", ModName, value);
+            }
+        }
 
         /// <summary>
         /// Reference to the button that opens this subpage
@@ -83,6 +104,7 @@ namespace BTKUILib.UIObjects
         private Category _category;
         private string _tabID;
         private bool _noTab;
+        private bool _hideTab;
 
         /// <summary>
         /// Create a new page object, this will automatically be created within Cohtml when it is ready
@@ -132,7 +154,10 @@ namespace BTKUILib.UIObjects
             if (isRootPage)
                 UserInterface.Instance.RegisterRootPage(this);
 
-            UserInterface.Instance.AddModPage(modName, this);
+            if (UserInterface.Instance.AddModPage(modName, this))
+            {
+                BTKUILib.Log.Warning($"The page \"{pageName}\" of mod \"{modName}\" appears to have already been created! Tell the creator of this to switch to Page.GetOrCreatePage to ensure they use the existing page properly!");
+            }
         }
 
         /// <summary>
@@ -145,6 +170,29 @@ namespace BTKUILib.UIObjects
             ModName = "BTKUILib";
             UserInterface.RootPages.Add(this);
             ElementID = elementID;
+        }
+
+        /// <summary>
+        /// Attempts to get an existing page matching the modName and pageName given, otherwise creates a new page
+        /// </summary>
+        /// <param name="modName">Name of your mod, you can use this to have multiple mods use the same root tab</param>
+        /// <param name="pageName">Name of the page, this isn't visible anywhere</param>
+        /// <param name="isRootPage">Sets if this page should also generate a tab</param>
+        /// <param name="tabIcon">Icon to be displayed on the tab</param>
+        /// <param name="category">Only set if this page was created from a category</param>
+        /// <param name="noTab">Sets if this page should not generate a tab, only functions for rootpages</param>
+        /// <returns>New or existing page object</returns>
+        public static Page GetOrCreatePage(string modName, string pageName, bool isRootPage = false, string tabIcon = null, Category category = null, bool noTab = false)
+        {
+            if (UserInterface.ModPages.TryGetValue(modName, out var pages))
+            {
+                var page = pages.FirstOrDefault(x => x.PageName == pageName);
+
+                if (page != null)
+                    return page;
+            }
+
+            return new Page(modName, pageName, isRootPage, tabIcon, category, noTab);
         }
 
         /// <summary>
@@ -296,6 +344,8 @@ namespace BTKUILib.UIObjects
             UIUtils.GetInternalView().TriggerEvent("btkCreateTab", _displayName, ModName, _tabIcon);
 
             TabGenerated = true;
+
+            UIUtils.GetInternalView().TriggerEvent("btkUpdateTab", ModName, HideTab);
         }
 
         internal override void DeleteInternal(bool tabChange = false)

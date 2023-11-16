@@ -99,7 +99,7 @@ namespace BTKUILib.UIObjects
         /// <returns>Newly created page object with SubpageButton set to the created button</returns>
         public Page AddPage(string pageName, string pageIcon, string pageTooltip, string modName)
         {
-            var page = new Page(modName, pageName, category: this);
+            var page = Page.GetOrCreatePage(modName, pageName, category: this);
             SubElements.Add(page);
 
             if (modName == "BTKUILib" && LinkedPage.ElementID == "btkUI-PlayerSelectPage")

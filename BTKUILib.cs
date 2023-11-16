@@ -12,7 +12,7 @@ namespace BTKUILib
         public const string Name = "BTKUILib";
         public const string Author = "BTK Development Team";
         public const string Company = "BTK Development";
-        public const string Version = "2.0.0-preview1";
+        public const string Version = "2.0.0-preview2";
     }
     
     internal class BTKUILib : MelonMod
@@ -39,17 +39,10 @@ namespace BTKUILib
 
             MelonPreferences.CreateCategory("BTKUILib", "BTKUILib");
             _displayPrefsTab = MelonPreferences.CreateEntry("BTKUILib", "DisplayPrefsTab", false, "Display MelonPrefs Tab", "Sets if the MelonLoader Prefs tab should be displayed");
-            _displayPrefsTab.OnEntryValueChanged.Subscribe((_, b1) =>
+            _displayPrefsTab.OnEntryValueChanged.Subscribe((b1, _) =>
             {
-                if (!b1 && _mlPrefsPage != null)
-                {
-                    _mlPrefsPage.DeleteInternal();
-                    _mlPrefsPage = null;
-                }
-                else
-                {
-                    GenerateMlPrefsTab();
-                }
+                if (_mlPrefsPage != null)
+                    _mlPrefsPage.HideTab = b1;
             });
             
             Patches.Initialize(HarmonyInstance);
@@ -63,12 +56,12 @@ namespace BTKUILib
         internal void GenerateMlPrefsTab()
         {
             if(_mlPrefsPage != null) return;
-            if (!_displayPrefsTab.Value) return;
 
-            _mlPrefsPage = new Page("MelonLoader", "Prefs", true, "Settings");
+            _mlPrefsPage = Page.GetOrCreatePage("MelonLoader", "Prefs", true, "Settings");
             _mlPrefsPage.MenuTitle = "MelonLoader Preferences";
             _mlPrefsPage.MenuSubtitle = "Control your MelonLoader Preferences from other mods!";
             _mlPrefsPage.Protected = true;
+            _mlPrefsPage.HideTab = !_displayPrefsTab.Value;
 
             var prefCat = _mlPrefsPage.AddCategory("Categories");
 

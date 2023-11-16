@@ -79,7 +79,7 @@ namespace BTKUILib
                 //Create the page as needed
                 if (_miscTabPage == null)
                 {
-                    _miscTabPage = new Page("Misc", "Misc", true, "MiscIcon");
+                    _miscTabPage = Page.GetOrCreatePage("Misc", "Misc", true, "MiscIcon");
                     _miscTabPage.Protected = true;
                     _miscTabPage.MenuTitle = "Misc";
                     _miscTabPage.MenuSubtitle = "Miscellaneous mod elements be found here!";

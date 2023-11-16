@@ -248,6 +248,7 @@ cvr.menu.prototype.BTKUI = {
         engine.on("btkAddCustomEngineFunction", this.btkAddCustomEngineFunction);
         engine.on("btkCreateCustomElementCategory", this.btkCreateCustomElementCategory);
         engine.on("btkCreateTab", this.btkCreateTab);
+        engine.on("btkUpdateTab", this.btkUpdateTab);
     },
 
     init: function(menu){
@@ -778,6 +779,14 @@ cvr.menu.prototype.BTKUI = {
     },
 
     btkCreateTab: function (pageName, modName, tabIcon){
+        //Check if tab exists to avoid generating duplicates
+        let element = document.getElementById("btkUI-Tab-" + modName);
+
+        if(element !== null){
+            console.error("Tab for " + modName + " already exists! Tell this mods dev to switch to Page.GetOrCreatePage to avoid creating duplicate root pages!");
+            return;
+        }
+
         cvr("#btkUI-TabRoot").appendChild(cvr.render(uiRefBTK.templates["btkUITab"], {
             "[TabName]": modName
         }, uiRefBTK.templates, uiRefBTK.actions));
@@ -804,6 +813,19 @@ cvr.menu.prototype.BTKUI = {
             cvr("#btkUI-TabScroll-Container").show();
         else
             cvr("#btkUI-TabScroll-Container").hide();
+    },
+
+    btkUpdateTab: function (modName, state){
+        let target = document.getElementById("btkUI-Tab-" + modName);
+
+        if(target === null) return;
+
+        if(state){
+            if(target.classList.contains("hide")) return;
+            target.classList.add("hide");
+        } else {
+            target.classList.remove("hide");
+        }
     },
 
     btkCreatePage: function (pageName, modName, tabIcon, elementID, rootPage, cleanedPageName, inPlayerlist){
@@ -849,6 +871,11 @@ cvr.menu.prototype.BTKUI = {
 
         btkLastTab = rootTarget;
 
+        //Clean things up before changing roots
+        if(currentPageBTK.length > 0){
+            cvr("#" + currentPageBTK).hide();
+        }
+
         if(rootTarget === "CVRMainQM"){
             uiRefBTK.core.switchCategorySelected("quickmenu-home");
             currentMod = "CVR";
@@ -857,11 +884,6 @@ cvr.menu.prototype.BTKUI = {
         }
 
         uiRefBTK.core.switchCategorySelected("btkUI");
-
-        //Clean things up before changing roots
-        if(currentMod !== rootMod && currentPageBTK.length > 0){
-               cvr("#" + currentPageBTK).hide();
-        }
 
         currentPageBTK = "";
 
