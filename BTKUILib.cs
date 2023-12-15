@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using BTKUILib.UIObjects;
+using BTKUILib.UIObjects.Objects;
 using MelonLoader;
 
 namespace BTKUILib
@@ -19,15 +20,19 @@ namespace BTKUILib
     {
         internal static MelonLogger.Instance Log;
         internal static BTKUILib Instance;
+        internal static Page UISettingsPage;
 
         internal UserInterface UI;
         internal Queue<Action> MainThreadQueue = new();
         internal Dictionary<string, Page> MLPrefsPages = new();
 
         private MelonPreferences_Entry<bool> _displayPrefsTab;
+        private MelonPreferences_Entry<string> _playerListStyle;
 
         private Thread _mainThread;
         private Page _mlPrefsPage;
+        private MultiSelection _playerListButtonStyle;
+        private string[] _playerListOptions = { "Tab Bar", "Replace TTS", "Replace Groups" };
 
         public override void OnInitializeMelon()
         {
@@ -44,6 +49,12 @@ namespace BTKUILib
                 if (_mlPrefsPage != null)
                     _mlPrefsPage.HideTab = b1;
             });
+
+            _playerListStyle = MelonPreferences.CreateEntry("BTKUILib", "PlayerListStyle", "Tab Bar", "PlayerList Button Style", "Sets where the playerlist button will appear");
+            _playerListStyle.OnEntryValueChanged.Subscribe((s1, _) =>
+            {
+
+            });
             
             Patches.Initialize(HarmonyInstance);
 
@@ -51,6 +62,32 @@ namespace BTKUILib
             UI.SetupUI();
 
             QuickMenuAPI.PlayerSelectPage = new Page("btkUI-PlayerSelectPage");
+        }
+
+        internal void GenerateSettingsPage()
+        {
+            if (UISettingsPage != null) return;
+
+            UISettingsPage = new Page("btkUI-SettingsPage");
+            var mainCat = UISettingsPage.AddCategory("Main", false);
+
+            var prefsTabDisplay = mainCat.AddToggle("Show ML Prefs Tab", "Displays the MelonLoader prefs tab", _displayPrefsTab.Value);
+            prefsTabDisplay.OnValueUpdated += b =>
+            {
+                _displayPrefsTab.Value = b;
+            };
+
+            var openListStyle = mainCat.AddButton("Playerlist Button Style", "Change the style and position of the playerlist button", "BTKList");
+            openListStyle.OnPress += () =>
+            {
+                QuickMenuAPI.OpenMultiSelect(_playerListButtonStyle);
+            };
+
+            _playerListButtonStyle = new MultiSelection("PlayerList Button Style", _playerListOptions, Array.FindIndex(_playerListOptions, x => x.Contains(_playerListStyle.Value)));
+            _playerListButtonStyle.OnOptionUpdated += i =>
+            {
+                _playerListStyle.Value = _playerListOptions[i];
+            };
         }
 
         internal void GenerateMlPrefsTab()

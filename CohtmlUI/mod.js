@@ -164,7 +164,8 @@ cvr.menu.prototype.BTKUI = {
                 {c: "container container-controls-playerlist hide", a:{"id": "btkUI-PlayerList"}, s:[
                         {c: "row header-section", s:[
                                 {c:"col-1", s:[{c: "icon-back", x: "btkUI-Back"}]},
-                                {c:"col", s:[{c:"header", h:"Player Selection | 0 Players in World", a: {"id": "btkUI-PlayerListHeaderText"}}]}
+                                {c:"col", s:[{c:"header", h:"Player Selection | 0 Players in World", a: {"id": "btkUI-PlayerListHeaderText"}}]},
+                                {c:"col-1", s:[{c: "icon-gear", a:{"data-page": "btkUI-SettingsPage"}, x: "btkUI-pushPage"}]}
                             ]},
                         {c: "scroll-view", s:[{c: "content-subpage scroll-content", s:[
                                     {c: "row", a:{"id": "btkUI-PlayerListContent"}}
@@ -177,6 +178,16 @@ cvr.menu.prototype.BTKUI = {
                         {c: "scroll-view", s:[{c: "content-subpage scroll-content", s: [
                                     {c: "row", a:{"id": "btkUI-PlayerSelectPage-Content"}},
                                 ]}, {c: "scroll-marker-v"}]}]},
+                {c: "container container-controls-playerlist hide", a:{"id": "btkUI-SettingsPage"}, s:[
+                    {c: "row header-section", s:[
+                            {c:"col-1", s:[{c: "icon-back", x: "btkUI-Back"}]},
+                            {c:"col", s:[{c:"header", h:"BTKUI Settings"}]}
+                        ]},
+                        {c: "scroll-view", s:[
+                                    {c: "content-subpage scroll-content", s:[], a:{"id": "btkUI-SettingsPage-Content"}},
+                                {c: "scroll-marker-v"}
+                            ]}
+                    ]}
             ], a:{"id":"btkUI-Root"}};
 
         menu.templates["btkUIRowContent"] = {c:"row justify-content-start", a:{"id": "btkUI-Row-[UUID]"}};

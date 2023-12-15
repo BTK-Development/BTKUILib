@@ -288,6 +288,20 @@
   height: 100px;
   width: 100px;
 }
+.btkUI .container-controls-playerlist .icon-gear {
+  background: url("images/Settings.png");
+  background-size: cover;
+  background-repeat: no-repeat;
+  height: 100px;
+  width: 100px;
+}
+.btkUI .container-controls-playerlist .icon-list {
+  background: url("images/List x3.png");
+  background-size: cover;
+  background-repeat: no-repeat;
+  height: 100px;
+  width: 100px;
+}
 .btkUI .container-controls-playerlist .icon-close {
   background: url("images/BTK-Close.png");
   background-size: cover;
@@ -635,4 +649,3 @@
   align-content: center;
   text-align: center;
 }
-/*# sourceMappingURL=BTKUI.css.map */

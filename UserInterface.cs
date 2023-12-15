@@ -89,6 +89,9 @@ namespace BTKUILib
             //Run the ml prefs tab generation
             BTKUILib.Instance.GenerateMlPrefsTab();
 
+            //Generate our settings page
+            BTKUILib.Instance.GenerateSettingsPage();
+
             //Set BTKUIReady before creating elements, but after generated MLPrefs tab to ensure ordering isn't weird
             BTKUIReady = true;
             
@@ -107,6 +110,8 @@ namespace BTKUILib
 
             QuickMenuAPI.PlayerSelectPage.IsVisible = true;
             QuickMenuAPI.PlayerSelectPage.GenerateCohtml();
+            BTKUILib.UISettingsPage.IsVisible = true;
+            BTKUILib.UISettingsPage.GenerateCohtml();
 
             QuickMenuAPI.OnMenuGenerated?.Invoke(CVR_MenuManager.Instance);
             

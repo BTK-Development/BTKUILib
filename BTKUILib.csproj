@@ -164,9 +164,13 @@
       <Content Include="CohtmlUI\images\Arrow Left.png" />
       <Content Include="CohtmlUI\images\Checkmark.png" />
       <Content Include="CohtmlUI\images\Multiuser.png" />
+      <Content Include="CohtmlUI\images\Settings.png" />
       <Content Include="CohtmlUI\mod.js" />
       <Content Include="LICENSE" />
       <Content Include="README.md" />
+    </ItemGroup>
+    <ItemGroup>
+      <EmbeddedResource Include="CohtmlUI\images\BTKList.png" />
     </ItemGroup>
     <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
     <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
