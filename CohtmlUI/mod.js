@@ -22,6 +22,7 @@ cvr.menu.prototype.BTKUI = {
     btkGetImageBackgroundFunc: {},
     btkKnownEngineFunctions: [],
     btkLastTab: "",
+    btkMultiSelectPLMode: false,
 
     info: function(){
         return {
@@ -72,6 +73,7 @@ cvr.menu.prototype.BTKUI = {
         btkGetImageBackgroundFunc = this.btkGetImageBackground;
         btkKnownEngineFunctions = [];
         btkLastTab = "";
+        btkMultiSelectPLMode = false;
 
         menu.templates["btkUI-shared"] = {c: "btkUI-shared hide", s:[
                 {c: "container btk-popup-container hide", a: {"id": "btkUI-PopupConfirm"}, s:[
@@ -93,7 +95,7 @@ cvr.menu.prototype.BTKUI = {
                                 {c:"col offset-4 align-self-center", s:[{c:"button", s:[{c:"text", h:"OK", a: {"id": "btkUI-PopupNoticeOK"}}], x:"btkUI-NoticeClose"}]}
                             ]},
                     ]},
-                {c: "container container-tabs", s:[
+                {c: "container container-tabs container-tabs-left", s:[
                         {c:"row", s:[
                                 {c: "col-md-2 justify-content-md-left tab", s:[
                                         {c: "icon"}
@@ -102,12 +104,12 @@ cvr.menu.prototype.BTKUI = {
                                         {c: "tab-content", a:{"id":"btkUI-Tab-CVRQM-Icon"}}
                                     ], a:{"id":"btkUI-Tab-CVRMainQM", "tabTarget": "CVRMainQM"}, x: "btkUI-TabChange"},
                                 {c: "col-md justify-content-md-center", s:[
-                                        {c:"scroll-bg hide", s:[{c:"scroll-overlay", a: {"id": "btkUI-TabScroll-Indicator"}}], a:{"id": "btkUI-TabScroll-Container"}},
+                                        {c:"scroll-bg scroll-bg-left hide", s:[{c:"scroll-overlay", a: {"id": "btkUI-TabScroll-Indicator"}}], a:{"id": "btkUI-TabScroll-Container"}},
                                         {c:"row btkUI-TabScroll", a: {"id": "btkUI-TabRoot"}, s: [
                                         ]},
                                     ]}
                             ]}
-                    ]},
+                    ], a: {"id": "btkUI-TabContainer"}},
                 {c: "container-tooltip hide", s:[{c:"content", h:"tooltip info", a:{"id": "btkUI-Tooltip"}}], a:{"id": "btkUI-TooltipContainer"}},
                 {c: "container-alertToast hide", s:[{c:"content", h:"toasty!", a:{"id": "btkUI-AlertToast"}}], a:{"id": "btkUI-AlertToastContainer"}, x:"btkUI-ToastDismiss"}
             ], a: {"id": "btkUI-SharedRoot"}};
@@ -187,7 +189,15 @@ cvr.menu.prototype.BTKUI = {
                                     {c: "content-subpage scroll-content", s:[], a:{"id": "btkUI-SettingsPage-Content"}},
                                 {c: "scroll-marker-v"}
                             ]}
-                    ]}
+                    ]},
+                {c: "container container-controls-playerlist hide", a:{"id": "btkUI-DropdownPagePL"}, s:[
+                        {c: "row header-section", s:[
+                                {c:"col-1", s:[{c: "icon-back", x: "btkUI-Back"}]},
+                                {c:"col", s:[{c:"header", h:"Dropdown", a:{"id": "btkUI-DropdownPLHeader"}}]}
+                            ]},
+                        {c: "scroll-view", s:[{c: "content-subpage scroll-content", s:[
+                                    {c:"row", a:{"id": "btkUI-DropdownPL-OptionRoot"}},
+                                ]}, {c: "scroll-marker-v"}]}]},
             ], a:{"id":"btkUI-Root"}};
 
         menu.templates["btkUIRowContent"] = {c:"row justify-content-start", a:{"id": "btkUI-Row-[UUID]"}};
@@ -315,9 +325,72 @@ cvr.menu.prototype.BTKUI = {
 
         cvr("#btkUI-TooltipContainer").hide();
     },
-    btkUILibInit: function () {
+    btkUILibInit: function (plButtonStyle) {
         cvr("#btkUI-UserMenu").show();
         cvr("#btkUI-SharedRoot").show();
+
+        if(plButtonStyle !== "Tab Bar"){
+            let tabCont = document.getElementById("btkUI-TabContainer");
+            if(tabCont !== null)
+                tabCont.classList.remove("container-tabs-left")
+            let scrollCont = document.getElementById("btkUI-TabScroll-Container");
+            if(scrollCont !== null)
+                scrollCont.classList.remove("scroll-bg-left");
+            cvr("#btkUI-UserMenu").hide();
+        }
+
+        switch(plButtonStyle){
+            case "Replace TTS":
+                let ttsElement = document.getElementsByClassName("button-tts");
+
+                if(ttsElement.length === 0){
+                    console.error("Couldn't find TTS element! Unable to replace!");
+                    return;
+                }
+
+                ttsElement = ttsElement[0];
+
+                ttsElement.classList.add("icon-multiuser");
+                ttsElement.style.backgroundImage = "url(mods/BTKUI/images/Multiuser.png)";
+                ttsElement.style.backgroundSize = "contain";
+                ttsElement.style.backgroundPositionY = "0";
+                ttsElement.style.backgroundPositionX = "0";
+
+                ttsElement.removeEventListener("click", uiRefBTK.actions["openTTSKeyboard"]);
+                ttsElement.addEventListener("click", uiRefBTK.actions["btkUI-pushPage"]);
+                ttsElement.setAttribute("data-x", "btkUI-pushPage");
+                ttsElement.setAttribute("data-page", "btkUI-PlayerList");
+                ttsElement.setAttribute("data-tooltip", "Opens the UILib PlayerList");
+                break;
+            case "Replace Events":
+                let eventButton = document.getElementsByClassName("events");
+
+                if(eventButton.length === 0){
+                    console.error("Couldn't find event button! Unable to replace!");
+                    return;
+                }
+
+                eventButton = eventButton[0];
+
+                eventButton.classList.remove("disabled");
+
+                eventButton.removeEventListener("click", uiRefBTK.actions["notImplementedPage"]);
+                eventButton.addEventListener("click", uiRefBTK.actions["btkUI-pushPage"]);
+                eventButton.setAttribute("data-x", "btkUI-pushPage");
+                eventButton.setAttribute("data-page", "btkUI-PlayerList");
+                eventButton.setAttribute("data-tooltip", "Opens the UILib PlayerList");
+
+                let icon = eventButton.querySelector('.icon');
+                icon.classList.add("icon-multiuser");
+                icon.style.backgroundImage = "url(mods/BTKUI/images/Multiuser.png)";
+                icon.style.backgroundSize = "contain";
+                icon.style.backgroundPositionY = "0";
+                icon.style.backgroundPositionX = "0";
+
+                let label = eventButton.querySelector('.label');
+                label.innerHTML = "Playerlist";
+                break;
+        }
     },
 
     btkAddPlayer: function(username, userid, userImage, playerCount){
@@ -692,8 +765,12 @@ cvr.menu.prototype.BTKUI = {
             button.style.backgroundSize = "cover";
         }
     },
-    btkOpenMultiSelect: function(name, options, selectedIndex){
+    btkOpenMultiSelect: function(name, options, selectedIndex, playerListMode = false){
+        btkMultiSelectPLMode = playerListMode;
+
         let element = cvr("#btkUI-Dropdown-OptionRoot");
+        if(playerListMode)
+            element = cvr("#btkUI-DropdownPL-OptionRoot");
         element.clear();
 
         for(let i=0; i<options.length; i++){
@@ -709,9 +786,15 @@ cvr.menu.prototype.BTKUI = {
                 optionIcon.classList.add("selected");
         }
 
-        cvr("#btkUI-DropdownHeader").innerHTML(name);
+        if(!playerListMode)
+            cvr("#btkUI-DropdownHeader").innerHTML(name);
+        else
+            cvr("#btkUI-DropdownPLHeader").innerHTML(name);
 
-        cvr("#btkUI-DropdownPage").show();
+        if(!playerListMode)
+            cvr("#btkUI-DropdownPage").show();
+        else
+            cvr("#btkUI-DropdownPagePL").show();
         cvr("#" + currentPageBTK).hide();
 
         breadcrumbsBTK.push(currentPageBTK);
@@ -719,6 +802,9 @@ cvr.menu.prototype.BTKUI = {
         engine.call("btkUI-OpenedPage", "DropdownPage", currentPageBTK);
 
         currentPageBTK = "btkUI-DropdownPage";
+
+        if(playerListMode)
+            currentPageBTK = "btkUI-DropdownPagePL";
     },
     btkOpenNumberInput: function(name, number) {
         let display = document.getElementById("btkUI-numDisplay");
@@ -1222,6 +1308,8 @@ cvr.menu.prototype.BTKUI = {
         btkDropdownSelect: function(e){
             uiRefBTK.core.playSoundCore("Click");
             let dropdown = document.getElementById("btkUI-Dropdown-OptionRoot");
+            if(btkMultiSelectPLMode)
+                dropdown = document.getElementById("btkUI-DropdownPL-OptionRoot");
             let options = dropdown.getElementsByClassName("dropdown-option");
             let index = parseInt(e.currentTarget.getAttribute("data-index"));
 

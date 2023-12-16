@@ -13,7 +13,7 @@ namespace BTKUILib
         public const string Name = "BTKUILib";
         public const string Author = "BTK Development Team";
         public const string Company = "BTK Development";
-        public const string Version = "2.0.0-preview2";
+        public const string Version = "2.0.0-preview3";
     }
     
     internal class BTKUILib : MelonMod
@@ -25,14 +25,14 @@ namespace BTKUILib
         internal UserInterface UI;
         internal Queue<Action> MainThreadQueue = new();
         internal Dictionary<string, Page> MLPrefsPages = new();
+        internal MelonPreferences_Entry<string> PlayerListStyle;
 
         private MelonPreferences_Entry<bool> _displayPrefsTab;
-        private MelonPreferences_Entry<string> _playerListStyle;
 
         private Thread _mainThread;
         private Page _mlPrefsPage;
         private MultiSelection _playerListButtonStyle;
-        private string[] _playerListOptions = { "Tab Bar", "Replace TTS", "Replace Groups" };
+        private string[] _playerListOptions = { "Tab Bar", "Replace TTS", "Replace Events" };
 
         public override void OnInitializeMelon()
         {
@@ -50,11 +50,7 @@ namespace BTKUILib
                     _mlPrefsPage.HideTab = b1;
             });
 
-            _playerListStyle = MelonPreferences.CreateEntry("BTKUILib", "PlayerListStyle", "Tab Bar", "PlayerList Button Style", "Sets where the playerlist button will appear");
-            _playerListStyle.OnEntryValueChanged.Subscribe((s1, _) =>
-            {
-
-            });
+            PlayerListStyle = MelonPreferences.CreateEntry("BTKUILib", "PlayerListPosition", "Tab Bar", "PlayerList Button Position", "Sets where the playerlist button will appear");
             
             Patches.Initialize(HarmonyInstance);
 
@@ -77,16 +73,17 @@ namespace BTKUILib
                 _displayPrefsTab.Value = b;
             };
 
-            var openListStyle = mainCat.AddButton("Playerlist Button Style", "Change the style and position of the playerlist button", "BTKList");
+            var openListStyle = mainCat.AddButton("Playerlist Button Position", "BTKList", "Change the position of the playerlist button");
             openListStyle.OnPress += () =>
             {
                 QuickMenuAPI.OpenMultiSelect(_playerListButtonStyle);
             };
 
-            _playerListButtonStyle = new MultiSelection("PlayerList Button Style", _playerListOptions, Array.FindIndex(_playerListOptions, x => x.Contains(_playerListStyle.Value)));
+            _playerListButtonStyle = new MultiSelection("PlayerList Button Position", _playerListOptions, Array.FindIndex(_playerListOptions, x => x.Contains(PlayerListStyle.Value)));
             _playerListButtonStyle.OnOptionUpdated += i =>
             {
-                _playerListStyle.Value = _playerListOptions[i];
+                QuickMenuAPI.ShowAlertToast("You must restart ChilloutVR for this change to apply!");
+                PlayerListStyle.Value = _playerListOptions[i];
             };
         }
 

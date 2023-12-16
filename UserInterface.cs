@@ -24,7 +24,8 @@ namespace BTKUILib
         internal static List<string> CustomCSSStyles = new();
         internal static List<CustomElement> CustomElements = new();
         internal static Dictionary<string, List<Page>> ModPages = new();
-        internal static bool BTKUIReady; 
+        internal static bool BTKUIReady;
+        internal static bool IsInPlayerList;
         internal MultiSelection SelectedMultiSelect;
         internal static Page SelectedRootPage;
 
@@ -84,7 +85,7 @@ namespace BTKUILib
             foreach(var css in CustomCSSStyles)
                 UIUtils.GetInternalView().TriggerEvent("btkSetCustomCSS", css);
             
-            UIUtils.GetInternalView().TriggerEvent("btkModInit");
+            UIUtils.GetInternalView().TriggerEvent("btkModInit", BTKUILib.Instance.PlayerListStyle.Value);
 
             //Run the ml prefs tab generation
             BTKUILib.Instance.GenerateMlPrefsTab();
@@ -94,6 +95,7 @@ namespace BTKUILib
 
             //Set BTKUIReady before creating elements, but after generated MLPrefs tab to ensure ordering isn't weird
             BTKUIReady = true;
+            IsInPlayerList = false;
             
             //Begin creating the UI elements!
             foreach (var root in RootPages)
@@ -172,6 +174,8 @@ namespace BTKUILib
 
         internal void OnTabChange(string tabTarget)
         {
+            IsInPlayerList = false;
+
             if (SelectedRootPage != null && SelectedRootPage.ElementID != tabTarget)
             {
                 SelectedRootPage.TabChange();
@@ -268,11 +272,19 @@ namespace BTKUILib
         
         private void OnBackActionEvent(string targetPage, string lastPage)
         {
+            if (targetPage == "btkUI-PlayerList")
+                IsInPlayerList = true;
+            if (lastPage == "btkUI-PlayerList")
+                IsInPlayerList = false;
+
             QuickMenuAPI.OnBackAction?.Invoke(targetPage, lastPage);
         }
 
         private void OnOpenedPageEvent(string targetPage, string lastPage)
         {
+            if (targetPage == "btkUI-PlayerList")
+                IsInPlayerList = true;
+
             QuickMenuAPI.OnOpenedPage?.Invoke(targetPage, lastPage);
         }
         

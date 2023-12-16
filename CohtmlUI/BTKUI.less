@@ -44,14 +44,23 @@
     margin-top: 10px;
   }
 
+  .icon-multiuser {
+    background: url("mods/BTKUI/images/Multiuser.png");
+    background-size: contain;
+    background-repeat: no-repeat;
+    font-size: 2vw;
+    text-align: center;
+    margin-top: 10px;
+    height: 100%;
+  }
+
   .container-tabs {
     position: absolute;
-    width: 1610px;
+    width: 1440px;
     height: auto;
     top: 1560px;
-    max-width: 1610px;
+    max-width: 1440px;
     margin-right: 10px;
-    left: -170px;
 
     .scroll-bg{
       margin-left: 10px;
@@ -60,8 +69,12 @@
       width: 100%;
       border-radius: 10px;
       position: absolute;
-      left: 352px;
+      left: 182px;
       top: -5px;
+    }
+
+    .scroll-bg-left {
+      left: 352px !important;
     }
 
     .scroll-overlay{
@@ -121,6 +134,12 @@
     .selected {
       border: 4px solid @color-btn-primary;
     }
+  }
+
+  .container-tabs-left {
+    left: -170px;
+    width: 1610px !important;
+    max-width: 1610px !important;
   }
 
   .container-tooltip {
@@ -377,7 +396,7 @@
     }
 
     .icon-list {
-      background: url("images/List x3.png");
+      background: url("images/BTKList.png");
       background-size: cover;
       background-repeat: no-repeat;
       height: 100px;

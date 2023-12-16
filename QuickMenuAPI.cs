@@ -238,7 +238,7 @@ namespace BTKUILib
             if (!UIUtils.IsQMReady()) return;
             
             UserInterface.Instance.SelectedMultiSelect = multiSelection;
-            UIUtils.GetInternalView().TriggerEvent("btkOpenMultiSelect", multiSelection.Name, multiSelection.Options, multiSelection.SelectedOption);
+            UIUtils.GetInternalView().TriggerEvent("btkOpenMultiSelect", multiSelection.Name, multiSelection.Options, multiSelection.SelectedOption, UserInterface.IsInPlayerList);
         }
         
         /// <summary>
