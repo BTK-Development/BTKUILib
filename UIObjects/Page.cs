@@ -127,11 +127,8 @@ namespace BTKUILib.UIObjects
         /// <param name="noTab">Sets if this page should not generate a tab, only functions for rootpages</param>
         public Page(string modName, string pageName, bool isRootPage, string tabIcon, Category category, bool noTab)
         {
-            if (!isRootPage)
-            {
-                PageName = pageName;
-                _displayName = pageName;
-            }
+            PageName = pageName;
+            _displayName = pageName;
 
             ModName = modName;
             IsRootPage = isRootPage;
@@ -200,7 +197,7 @@ namespace BTKUILib.UIObjects
             if (!RootPage.IsVisible)
             {
                 //We need to trigger a tab change first!
-                UserInterface.Instance.OnTabChange($"btkUI-{ModName}-MainPage");
+                UserInterface.Instance.OnTabChange(ElementID);
             }
             
             UIUtils.GetInternalView().TriggerEvent("btkPushPage", ElementID);
@@ -336,7 +333,7 @@ namespace BTKUILib.UIObjects
         {
             if (!UIUtils.IsQMReady() || TabGenerated || _noTab || !IsRootPage) return;
 
-            UIUtils.GetInternalView().TriggerEvent("btkCreateTab", _displayName, ModName, _tabIcon);
+            UIUtils.GetInternalView().TriggerEvent("btkCreateTab", _displayName, ModName, _tabIcon, UIUtils.GetCleanString(PageName));
 
             TabGenerated = true;
 
