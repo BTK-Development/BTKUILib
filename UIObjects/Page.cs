@@ -141,18 +141,13 @@ namespace BTKUILib.UIObjects
 
             Parent = category;
 
-            if(!isRootPage)
+            ElementID = $"btkUI-{UIUtils.GetCleanString(modName)}-{UIUtils.GetCleanString(pageName)}";
+
+            if (isRootPage)
             {
-                ElementID = $"btkUI-{UIUtils.GetCleanString(modName)}-{UIUtils.GetCleanString(pageName)}";
-            }
-            else
-            {
-                ElementID = $"btkUI-{UIUtils.GetCleanString(modName)}-MainPage";
+                UserInterface.Instance.RegisterRootPage(this);
                 _tabID = $"btkUI-Tab-{UIUtils.GetCleanString(modName)}";
             }
-            
-            if (isRootPage)
-                UserInterface.Instance.RegisterRootPage(this);
 
             if (UserInterface.Instance.AddModPage(modName, this))
             {
