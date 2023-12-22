@@ -89,6 +89,58 @@ namespace BTKUILib.UIObjects
             return toggle;
         }
 
+                /// <summary>
+        /// Create a slider on the page
+        /// </summary>
+        /// <param name="sliderName">Name of the slider, displayed above the slider</param>
+        /// <param name="sliderTooltip">Tooltip displayed when hovering on the slider</param>
+        /// <param name="initialValue">Initial value of the slider</param>
+        /// <param name="minValue">Minimum value that the slider can slide to</param>
+        /// <param name="maxValue">Maximum value the slider can slide to</param>
+        /// <returns></returns>
+        public SliderFloat AddSlider(string sliderName, string sliderTooltip, float initialValue, float minValue, float maxValue)
+        {
+            return AddSlider(sliderName, sliderTooltip, initialValue, minValue, maxValue, 2, 0f, false);
+        }
+
+        /// <summary>
+        /// Create a slider on the page
+        /// </summary>
+        /// <param name="sliderName">Name of the slider, displayed above the slider</param>
+        /// <param name="sliderTooltip">Tooltip displayed when hovering on the slider</param>
+        /// <param name="initialValue">Initial value of the slider</param>
+        /// <param name="minValue">Minimum value that the slider can slide to</param>
+        /// <param name="maxValue">Maximum value the slider can slide to</param>
+        /// <param name="decimalPlaces">Set the number of decimal places displayed on the slider</param>
+        /// <returns></returns>
+        public SliderFloat AddSlider(string sliderName, string sliderTooltip, float initialValue, float minValue, float maxValue, int decimalPlaces)
+        {
+            return AddSlider(sliderName, sliderTooltip, initialValue, minValue, maxValue, decimalPlaces, 0f, false);
+        }
+
+        /// <summary>
+        /// Create a slider on the page
+        /// </summary>
+        /// <param name="sliderName">Name of the slider, displayed above the slider</param>
+        /// <param name="sliderTooltip">Tooltip displayed when hovering on the slider</param>
+        /// <param name="initialValue">Initial value of the slider</param>
+        /// <param name="minValue">Minimum value that the slider can slide to</param>
+        /// <param name="maxValue">Maximum value the slider can slide to</param>
+        /// <param name="decimalPlaces">Set the number of decimal places displayed on the slider</param>
+        /// <param name="defaultValue">Default value for this slider</param>
+        /// <param name="allowReset">Allow this slider to be reset using the reset button</param>
+        /// <returns></returns>
+        public SliderFloat AddSlider(string sliderName, string sliderTooltip, float initialValue, float minValue, float maxValue, int decimalPlaces, float defaultValue, bool allowReset)
+        {
+            var slider = new SliderFloat(this, sliderName, sliderTooltip, initialValue, minValue, maxValue, decimalPlaces, defaultValue, allowReset, true);
+            SubElements.Add(slider);
+
+            if(UIUtils.IsQMReady())
+                slider.GenerateCohtml();
+
+            return slider;
+        }
+
         /// <summary>
         /// Create a new subpage as well as the button required to open it
         /// </summary>
@@ -154,7 +206,7 @@ namespace BTKUILib.UIObjects
             if (RootPage is { IsVisible: false }) return;
 
             if(!IsGenerated)
-                UIUtils.GetInternalView().TriggerEvent("btkCreateRow", LinkedPage.ElementID, UUID, _showHeader ? _categoryName : null);
+                UIUtils.GetInternalView().TriggerEvent("btkCreateRow", LinkedPage.ElementID, UUID, true, _showHeader ? _categoryName : null);
             
             foreach(var element in SubElements)
                 element.GenerateCohtml();

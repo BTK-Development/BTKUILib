@@ -249,6 +249,26 @@
   height: 100px;
   width: 100px;
 }
+.btkUI .container-controls .icon-collapse {
+  background: url("images/Arrow Up.png");
+  background-size: cover;
+  background-repeat: no-repeat;
+  height: 100px;
+  width: 100px;
+}
+.btkUI .container-controls .icon-expand {
+  background: url("images/Arrow Up.png");
+  background-size: cover;
+  background-repeat: no-repeat;
+  transform: rotate(180deg);
+  height: 100px;
+  width: 100px;
+}
+.btkUI .container-controls .rowBorder {
+  border-bottom-color: white;
+  border-bottom-width: 4px;
+  border-bottom-style: solid;
+}
 .btkUI .container-controls .icon-close {
   background: url("images/BTK-Close.png");
   background-size: cover;

@@ -200,8 +200,9 @@ cvr.menu.prototype.BTKUI = {
                                 ]}, {c: "scroll-marker-v"}]}]},
             ], a:{"id":"btkUI-Root"}};
 
-        menu.templates["btkUIRowContent"] = {c:"row justify-content-start", a:{"id": "btkUI-Row-[UUID]"}};
+        menu.templates["btkUIRowContent"] = {c:"row justify-content-start", a:{"id": "btkUI-Row-[UUID]", "data-collapsed": "false"}};
         menu.templates["btkSlider"] = {c:"slider-root row", s:[{c:"col-9", s:[{c:"text-title", h:"[slider-name] - [current-value]", a:{"id": "btkUI-SliderTitle-[slider-id]", "data-title": "[slider-name]"}}]}, {c:"col", s:[{c:"resetButton hide", x: "btkUI-SliderReset", s: [{c:"text", h:"Reset"}], a: {"id": "btkUI-SliderReset-[slider-id]", "data-sliderid": "[slider-id]", "data-defaultvalue": "[default-value]"}},]}, {c: "col-12", s:[{c:"slider", s:[{c:"sliderBar", s:[{c:"slider-knob", a:{"id": "btkUI-SliderKnob-[slider-id]"}}], a:{"id": "btkUI-SliderBar-[slider-id]"}}], a:{"id":"btkUI-Slider-[slider-id]", "data-slider-id": "[slider-id]", "data-slider-value": "[current-value]", "data-min": "[min-value]", "data-max": "[max-value]", "data-rounding": "[decimal-point]", "data-default": "[default-value]", "data-allow-reset": "[allow-reset]"}}], a:{"id":"btkUI-Slider-[slider-id]-Tooltip", "data-tooltip": "[tooltip-text]"}}]};
+        menu.templates["btkSliderCategory"] = {c:"slider-root col-12", s:[{c:"col-9", s:[{c:"text-title", h:"[slider-name] - [current-value]", a:{"id": "btkUI-SliderTitle-[slider-id]", "data-title": "[slider-name]"}}]}, {c:"col", s:[{c:"resetButton hide", x: "btkUI-SliderReset", s: [{c:"text", h:"Reset"}], a: {"id": "btkUI-SliderReset-[slider-id]", "data-sliderid": "[slider-id]", "data-defaultvalue": "[default-value]"}},]}, {c: "col-12", s:[{c:"slider", s:[{c:"sliderBar", s:[{c:"slider-knob", a:{"id": "btkUI-SliderKnob-[slider-id]"}}], a:{"id": "btkUI-SliderBar-[slider-id]"}}], a:{"id":"btkUI-Slider-[slider-id]", "data-slider-id": "[slider-id]", "data-slider-value": "[current-value]", "data-min": "[min-value]", "data-max": "[max-value]", "data-rounding": "[decimal-point]", "data-default": "[default-value]", "data-allow-reset": "[allow-reset]"}}], a:{"id":"btkUI-Slider-[slider-id]-Tooltip", "data-tooltip": "[tooltip-text]"}}]};
         menu.templates["btkToggle"] = {c:"col-3", a:{"id": "btkUI-Toggle-[toggle-id]-Root"}, s:[{c: "toggle", s:[{c:"row", s:[{c:"col align-content-start", s:[{c:"enable circle", a:{"id": "btkUI-toggle-enable"}}]}, {c:"col align-content-end", s:[{c:"disable circle active", a:{"id": "btkUI-toggle-disable"}}]}]},{c:"text-sm", h:"[toggle-name]", a:{"id": "btkUI-Toggle-[toggle-id]-Text"}}], x: "btkUI-Toggle", a:{"id": "btkUI-Toggle-[toggle-id]", "data-toggle": "[toggle-id]", "data-toggleState": "false", "data-tooltip": "[tooltip-data]"}}]};
         menu.templates["btkButton"] = {c:"col-3", a:{"id": "btkUI-Button-[UUID]"}, s:[{c: "button", s:[{c:"icon", a:{"id": "btkUI-Button-[UUID]-Image"}}, {c:"text", h:"[button-text]", a:{"id": "btkUI-Button-[UUID]-Text"}}], x: "btkUI-ButtonAction", a:{"id": "btkUI-Button-[UUID]-Tooltip","data-tooltip": "[button-tooltip]", "data-action": "[button-action]"}}]};
         menu.templates["btkButtonFullImage"] = {c:"col-3", a:{"id": "btkUI-Button-[UUID]"}, s:[{c: "button-fullImage", s:[{c:"text", h:"[button-text]", a:{"id": "btkUI-Button-[UUID]-Text"}}], x: "btkUI-ButtonAction", a:{"id": "btkUI-Button-[UUID]-Tooltip","data-tooltip": "[button-tooltip]", "data-action": "[button-action]"}}]};
@@ -210,7 +211,8 @@ cvr.menu.prototype.BTKUI = {
         menu.templates["btkUIRootPage"] = {c: "container container-controls hide", a:{"id": "btkUI-[ModName]-[ModPage]"}, s:[{c: "scroll-view", s:[{c: "content scroll-content", s:[], a:{"id": "btkUI-[ModName]-[ModPage]-Content"}}, {c: "scroll-marker-v"}]}]};
         menu.templates["btkUIPage"] = {c: "container container-controls hide", a:{"id": "btkUI-[ModName]-[ModPage]"}, s:[{c: "row header-section", s:[{c:"col-1", s:[{c: "icon-back", x: "btkUI-Back"}]}, {c:"col", s:[{c:"header", h:"[PageHeader]", a:{"id": "btkUI-[ModName]-[ModPage]-Header"}}]}]}, {c: "scroll-view", s:[{c: "content-subpage scroll-content", s:[], a:{"id": "btkUI-[ModName]-[ModPage]-Content"}}, {c: "scroll-marker-v"}]}]};
         menu.templates["btkUIPagePlayerlist"] = {c: "container container-controls-playerlist hide", a:{"id": "btkUI-[ModName]-[ModPage]"}, s:[{c: "row header-section", s:[{c:"col-1", s:[{c: "icon-back", x: "btkUI-Back"}]}, {c:"col", s:[{c:"header", h:"[PageHeader]", a:{"id": "btkUI-[ModName]-[ModPage]-Header"}}]}]}, {c: "scroll-view", s:[{c: "content-subpage scroll-content", s:[], a:{"id": "btkUI-[ModName]-[ModPage]-Content"}}, {c: "scroll-marker-v"}]}]};
-        menu.templates["btkUIRowHeader"] = {c: "row", a: {"id": "btkUI-Row-[UUID]-HeaderRoot"}, s:[{c:"col", s:[{c:"header", h:"[Header]", a:{"id": "btkUI-Row-[UUID]-HeaderText"}}]}]};
+        menu.templates["btkUIRowHeader"] = {c: "row rowBorder", a: {"id": "btkUI-Row-[UUID]-HeaderRoot"}, s:[{c:"col", s:[{c:"header", h:"[Header]", a:{"id": "btkUI-Row-[UUID]-HeaderText"}}]}]};
+        menu.templates["btkUIRowHeaderCollapsible"] = {c: "row rowBorder", a: {"id": "btkUI-Row-[UUID]-HeaderRoot"}, s:[{c:"col", s:[{c:"header", h:"[Header]", a:{"id": "btkUI-Row-[UUID]-HeaderText"}}]}, {c: "col-2", s: [{c: "icon-collapse ml-auto", x: "btkUI-Collapse", a: {"id": "btkUI-Row-[UUID]-Collapse", "data-row": "btkUI-Row-[UUID]"}}]}]};
         menu.templates["btkUITab"] = {c: "col-md-2 tab", s:[{c: "tab-content", a:{"id":"btkUI-Tab-[TabName]-Image"}}], a:{"id":"btkUI-Tab-[TabName]", "tabTarget": "btkUI-[TabName]-[PageName]"}, x: "btkUI-TabChange"};
         menu.templates["btkPlayerListEntry"] = {c:"col-3", s:[{c:"button-fullImage", x:"btkUI-SelectPlayer", s:[{c:"text", h:"[player-name]"}], a:{"id": "btkUI-PlayerButton-[player-id]-Icon","data-id": "[player-id]", "data-name": "[player-name]", "data-tooltip": "Open up the player options for [player-name]"}}], a:{"id": "btkUI-PlayerButton-[player-id]"}};
 
@@ -235,6 +237,7 @@ cvr.menu.prototype.BTKUI = {
         uiRefBTK.actions["btkUI-SelectPlayer"] = this.actions.selectPlayer;
         uiRefBTK.actions["btkUI-ToastDismiss"] = this.actions.btkToastDismiss;
         uiRefBTK.actions["btkUI-SliderReset"] = this.actions.btkSliderReset;
+        uiRefBTK.actions["btkUI-Collapse"] = this.actions.btkRowCollapse;
 
         engine.on("btkModInit", this.btkUILibInit);
         engine.on("btkCreateToggle", this.btkCreateToggle);
@@ -427,25 +430,47 @@ cvr.menu.prototype.BTKUI = {
         plHeader.innerHTML = "Player Selection | 0 Players in World";
     },
 
-    btkCreateSlider: function(parent, sliderID, currentValue, settings){
-        let parentElement = cvr("#" + parent + "-Content");
+    btkCreateSlider: function(parent, sliderID, currentValue, categoryMode, settings){
+        let parentElement;
+
+        if(!categoryMode)
+            parentElement = cvr("#" + parent + "-Content");
+        else
+            parentElement = cvr("#" + parent);
 
         if(parentElement === null){
             console.error("parentElement wasn't found! Unable to create slider!")
             return;
         }
 
-        let slider = cvr.render(uiRefBTK.templates["btkSlider"], {
-            "[slider-name]": settings.SliderName,
-            "[slider-id]": sliderID,
-            "[current-value]": currentValue.toFixed(settings.DecimalPlaces),
-            "[min-value]": settings.MinValue,
-            "[max-value]": settings.MaxValue,
-            "[tooltip-text]": settings.SliderTooltip,
-            "[decimal-point]": settings.DecimalPlaces,
-            "[default-value]": settings.DefaultValue,
-            "[allow-reset]": settings.AllowDefaultReset
-        }, uiRefBTK.templates, uiRefBTK.actions);
+        let slider;
+
+        if(!categoryMode){
+            slider = cvr.render(uiRefBTK.templates["btkSlider"], {
+                "[slider-name]": settings.SliderName,
+                "[slider-id]": sliderID,
+                "[current-value]": currentValue.toFixed(settings.DecimalPlaces),
+                "[min-value]": settings.MinValue,
+                "[max-value]": settings.MaxValue,
+                "[tooltip-text]": settings.SliderTooltip,
+                "[decimal-point]": settings.DecimalPlaces,
+                "[default-value]": settings.DefaultValue,
+                "[allow-reset]": settings.AllowDefaultReset
+            }, uiRefBTK.templates, uiRefBTK.actions);
+        }
+        else{
+            slider = cvr.render(uiRefBTK.templates["btkSliderCategory"], {
+                "[slider-name]": settings.SliderName,
+                "[slider-id]": sliderID,
+                "[current-value]": currentValue.toFixed(settings.DecimalPlaces),
+                "[min-value]": settings.MinValue,
+                "[max-value]": settings.MaxValue,
+                "[tooltip-text]": settings.SliderTooltip,
+                "[decimal-point]": settings.DecimalPlaces,
+                "[default-value]": settings.DefaultValue,
+                "[allow-reset]": settings.AllowDefaultReset
+            }, uiRefBTK.templates, uiRefBTK.actions);
+        }
 
         parentElement.appendChild(slider);
 
@@ -862,17 +887,25 @@ cvr.menu.prototype.BTKUI = {
         element.innerHTML(text);
     },
 
-    btkCreateRow: function (parentID, rowUUID, rowHeader = null){
+    btkCreateRow: function (parentID, rowUUID, collapsible, rowHeader = null){
         if(rowHeader != null){
-            cvr("#" + parentID + "-Content").appendChild(cvr.render(uiRefBTK.templates["btkUIRowHeader"], {
-                "[UUID]": rowUUID,
-                "[Header]": rowHeader
-            }, uiRefBTK.templates, uiRefBTK.actions))
+            if(!collapsible) {
+                cvr("#" + parentID + "-Content").appendChild(cvr.render(uiRefBTK.templates["btkUIRowHeader"], {
+                    "[UUID]": rowUUID,
+                    "[Header]": rowHeader
+                }, uiRefBTK.templates, uiRefBTK.actions));
+            }
+            else {
+                cvr("#" + parentID + "-Content").appendChild(cvr.render(uiRefBTK.templates["btkUIRowHeaderCollapsible"], {
+                    "[UUID]": rowUUID,
+                    "[Header]": rowHeader
+                }, uiRefBTK.templates, uiRefBTK.actions));
+            }
         }
 
         cvr("#" + parentID + "-Content").appendChild(cvr.render(uiRefBTK.templates["btkUIRowContent"], {
             "[UUID]": rowUUID
-        }, uiRefBTK.templates, uiRefBTK.actions))
+        }, uiRefBTK.templates, uiRefBTK.actions));
     },
 
     btkCreateTab: function (pageName, modName, tabIcon, cleanedPageName){
@@ -1363,6 +1396,31 @@ cvr.menu.prototype.BTKUI = {
         btkToastDismiss: function (){
             uiRefBTK.core.playSoundCore("Click");
             cvr("#btkUI-AlertToastContainer").hide();
+        },
+        btkRowCollapse: function (e) {
+            uiRefBTK.core.playSoundCore("Click");
+
+            let rowTarget = e.currentTarget.getAttribute("data-row");
+            let rowElement = document.getElementById(rowTarget);
+
+            if(rowTarget === null)
+                return;
+
+            let state = (rowElement.getAttribute("data-collapsed") === 'true');
+
+            state = !state;
+
+            if (state) {
+                rowElement.classList.add("hide");
+                e.currentTarget.classList.add("icon-expand");
+                e.currentTarget.classList.remove("icon-collapse");
+            } else {
+                rowElement.classList.remove("hide");
+                e.currentTarget.classList.remove("icon-expand");
+                e.currentTarget.classList.add("icon-collapse");
+            }
+
+            rowElement.setAttribute("data-collapsed", state.toString());
         }
     }
 }
