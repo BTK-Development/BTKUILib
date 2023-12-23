@@ -2,6 +2,7 @@
 using System.Linq;
 using ABI_RC.Core.InteractionSystem;
 using BTKUILib.UIObjects.Components;
+// ReSharper disable MethodOverloadWithOptionalParameter
 
 namespace BTKUILib.UIObjects
 {
@@ -194,10 +195,17 @@ namespace BTKUILib.UIObjects
         {
             if (!UIUtils.IsQMReady()) return;
 
-            if (!RootPage.IsVisible)
+            if (!RootPage.IsVisible && (RootPage != this || IsRootPage))
             {
                 //We need to trigger a tab change first!
                 UserInterface.Instance.OnTabChange(ElementID);
+            }
+
+            if (!IsVisible && RootPage == this && !IsRootPage)
+            {
+                //This is a standalone "subpage" rootpage, don't reset the breadcrumbs!
+                IsVisible = true;
+                GenerateCohtml();
             }
             
             UIUtils.GetInternalView().TriggerEvent("btkPushPage", ElementID);
@@ -221,7 +229,20 @@ namespace BTKUILib.UIObjects
         /// <returns></returns>
         public Category AddCategory(string categoryName, bool showHeader)
         {
-            var category = new Category(categoryName, this, showHeader);
+            return AddCategory(categoryName, showHeader, true, false);
+        }
+
+        /// <summary>
+        /// Add a new category (row) to this page
+        /// </summary>
+        /// <param name="categoryName">Name of the category, displayed at the top</param>
+        /// <param name="showHeader">Sets if the header of this category is visible</param>
+        /// <param name="canCollapse">Sets if this category can be collapsed</param>
+        /// <param name="collapsed">Sets if this category should be created as collapsed</param>
+        /// <returns></returns>
+        public Category AddCategory(string categoryName, bool showHeader, bool canCollapse = true, bool collapsed = false)
+        {
+            var category = new Category(categoryName, this, showHeader, null, canCollapse, collapsed);
             SubElements.Add(category);
 
             if (UIUtils.IsQMReady())
@@ -365,9 +386,14 @@ namespace BTKUILib.UIObjects
 
             if (RootPage is { IsVisible: false }) return;
 
-            if(!IsGenerated)
+            if (!IsGenerated)
+            {
                 UIUtils.GetInternalView().TriggerEvent("btkCreatePage", _displayName, ModName, _tabIcon, ElementID, IsRootPage, UIUtils.GetCleanString(PageName), InPlayerlist, _noTab);
-            
+
+                if(!Protected)
+                    UserInterface.GeneratedPages.Add(this);
+            }
+
             IsGenerated = true;
             
             foreach (var category in SubElements)

@@ -23,6 +23,7 @@ cvr.menu.prototype.BTKUI = {
     btkKnownEngineFunctions: [],
     btkLastTab: "",
     btkMultiSelectPLMode: false,
+    btkCollapseCatFunc: {},
 
     info: function(){
         return {
@@ -74,6 +75,7 @@ cvr.menu.prototype.BTKUI = {
         btkKnownEngineFunctions = [];
         btkLastTab = "";
         btkMultiSelectPLMode = false;
+        btkCollapseCatFunc = this.btkCollapseCategory;
 
         menu.templates["btkUI-shared"] = {c: "btkUI-shared hide", s:[
                 {c: "container btk-popup-container hide", a: {"id": "btkUI-PopupConfirm"}, s:[
@@ -212,7 +214,7 @@ cvr.menu.prototype.BTKUI = {
         menu.templates["btkUIPage"] = {c: "container container-controls hide", a:{"id": "btkUI-[ModName]-[ModPage]"}, s:[{c: "row header-section", s:[{c:"col-1", s:[{c: "icon-back", x: "btkUI-Back"}]}, {c:"col", s:[{c:"header", h:"[PageHeader]", a:{"id": "btkUI-[ModName]-[ModPage]-Header"}}]}]}, {c: "scroll-view", s:[{c: "content-subpage scroll-content", s:[], a:{"id": "btkUI-[ModName]-[ModPage]-Content"}}, {c: "scroll-marker-v"}]}]};
         menu.templates["btkUIPagePlayerlist"] = {c: "container container-controls-playerlist hide", a:{"id": "btkUI-[ModName]-[ModPage]"}, s:[{c: "row header-section", s:[{c:"col-1", s:[{c: "icon-back", x: "btkUI-Back"}]}, {c:"col", s:[{c:"header", h:"[PageHeader]", a:{"id": "btkUI-[ModName]-[ModPage]-Header"}}]}]}, {c: "scroll-view", s:[{c: "content-subpage scroll-content", s:[], a:{"id": "btkUI-[ModName]-[ModPage]-Content"}}, {c: "scroll-marker-v"}]}]};
         menu.templates["btkUIRowHeader"] = {c: "row rowBorder", a: {"id": "btkUI-Row-[UUID]-HeaderRoot"}, s:[{c:"col", s:[{c:"header", h:"[Header]", a:{"id": "btkUI-Row-[UUID]-HeaderText"}}]}]};
-        menu.templates["btkUIRowHeaderCollapsible"] = {c: "row rowBorder", a: {"id": "btkUI-Row-[UUID]-HeaderRoot"}, s:[{c:"col", s:[{c:"header", h:"[Header]", a:{"id": "btkUI-Row-[UUID]-HeaderText"}}]}, {c: "col-2", s: [{c: "icon-collapse ml-auto", x: "btkUI-Collapse", a: {"id": "btkUI-Row-[UUID]-Collapse", "data-row": "btkUI-Row-[UUID]"}}]}]};
+        menu.templates["btkUIRowHeaderCollapsible"] = {c: "row rowBorder", x: "btkUI-Collapse", a: {"id": "btkUI-Row-[UUID]-HeaderRoot", "data-row": "btkUI-Row-[UUID]"}, s:[{c:"col", s:[{c:"header", h:"[Header]", a:{"id": "btkUI-Row-[UUID]-HeaderText"}}]}, {c: "col-2", s: [{c: "icon-collapse ml-auto", a: {"id": "btkUI-Row-[UUID]-Collapse"}}]}]};
         menu.templates["btkUITab"] = {c: "col-md-2 tab", s:[{c: "tab-content", a:{"id":"btkUI-Tab-[TabName]-Image"}}], a:{"id":"btkUI-Tab-[TabName]", "tabTarget": "btkUI-[TabName]-[PageName]"}, x: "btkUI-TabChange"};
         menu.templates["btkPlayerListEntry"] = {c:"col-3", s:[{c:"button-fullImage", x:"btkUI-SelectPlayer", s:[{c:"text", h:"[player-name]"}], a:{"id": "btkUI-PlayerButton-[player-id]-Icon","data-id": "[player-id]", "data-name": "[player-name]", "data-tooltip": "Open up the player options for [player-name]"}}], a:{"id": "btkUI-PlayerButton-[player-id]"}};
 
@@ -273,6 +275,7 @@ cvr.menu.prototype.BTKUI = {
         engine.on("btkCreateCustomElementCategory", this.btkCreateCustomElementCategory);
         engine.on("btkCreateTab", this.btkCreateTab);
         engine.on("btkUpdateTab", this.btkUpdateTab);
+        engine.on("btkCollapseCategory", this.btkCollapseCategory);
     },
 
     init: function(menu){
@@ -887,8 +890,10 @@ cvr.menu.prototype.BTKUI = {
         element.innerHTML(text);
     },
 
-    btkCreateRow: function (parentID, rowUUID, collapsible, rowHeader = null){
-        if(rowHeader != null){
+    btkCreateRow: function (parentID, rowUUID, collapsible, collapsed, rowHeader = null){
+        let headerGenerate = rowHeader !== null && rowHeader.match(/^ *$/) === null;
+
+        if(headerGenerate){
             if(!collapsible) {
                 cvr("#" + parentID + "-Content").appendChild(cvr.render(uiRefBTK.templates["btkUIRowHeader"], {
                     "[UUID]": rowUUID,
@@ -906,6 +911,9 @@ cvr.menu.prototype.BTKUI = {
         cvr("#" + parentID + "-Content").appendChild(cvr.render(uiRefBTK.templates["btkUIRowContent"], {
             "[UUID]": rowUUID
         }, uiRefBTK.templates, uiRefBTK.actions));
+
+        if(headerGenerate && collapsed)
+            btkCollapseCatFunc("btkUI-Row-" + rowUUID, true);
     },
 
     btkCreateTab: function (pageName, modName, tabIcon, cleanedPageName){
@@ -1041,10 +1049,7 @@ cvr.menu.prototype.BTKUI = {
     btkDeleteElement: function (elementID){
         let element = document.getElementById(elementID);
 
-        if(element === null) {
-            console.log("Unable to find element with ID " + elementID + " unable to delete!");
-            return;
-        }
+        if(element === null) return;
 
         element.parentElement.removeChild(element);
 
@@ -1189,6 +1194,33 @@ cvr.menu.prototype.BTKUI = {
         cvr("#" + parent).appendChild(cvr.render(JSON.parse(template), {
             "[UUID]": uuid
         }, uiRefBTK.templates, uiRefBTK.actions));
+    },
+
+    btkCollapseCategory: function(rowTarget, state = null){
+        let rowElement = document.getElementById(rowTarget);
+        let collapseElement = document.getElementById(rowTarget + "-Collapse");
+
+        if(rowTarget === null)
+            return;
+
+        if(state === null) {
+            state = (rowElement.getAttribute("data-collapsed") === 'true');
+            state = !state;
+        }
+
+        if (state) {
+            rowElement.classList.add("hide");
+            collapseElement.classList.add("icon-expand");
+            collapseElement.classList.remove("icon-collapse");
+        } else {
+            rowElement.classList.remove("hide");
+            collapseElement.classList.remove("icon-expand");
+            collapseElement.classList.add("icon-collapse");
+        }
+
+        rowElement.setAttribute("data-collapsed", state.toString());
+
+        engine.call("btkUI-CollapseCategory", rowTarget, state);
     },
 
     actions: {
@@ -1401,26 +1433,8 @@ cvr.menu.prototype.BTKUI = {
             uiRefBTK.core.playSoundCore("Click");
 
             let rowTarget = e.currentTarget.getAttribute("data-row");
-            let rowElement = document.getElementById(rowTarget);
 
-            if(rowTarget === null)
-                return;
-
-            let state = (rowElement.getAttribute("data-collapsed") === 'true');
-
-            state = !state;
-
-            if (state) {
-                rowElement.classList.add("hide");
-                e.currentTarget.classList.add("icon-expand");
-                e.currentTarget.classList.remove("icon-collapse");
-            } else {
-                rowElement.classList.remove("hide");
-                e.currentTarget.classList.remove("icon-expand");
-                e.currentTarget.classList.add("icon-collapse");
-            }
-
-            rowElement.setAttribute("data-collapsed", state.toString());
+            btkCollapseCatFunc(rowTarget);
         }
     }
 }

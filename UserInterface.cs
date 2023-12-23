@@ -24,6 +24,8 @@ namespace BTKUILib
         internal static List<string> CustomCSSStyles = new();
         internal static List<CustomElement> CustomElements = new();
         internal static Dictionary<string, List<Page>> ModPages = new();
+        internal static Dictionary<string, Category> Categories = new();
+        internal static List<Page> GeneratedPages = new();
         internal static bool BTKUIReady;
         internal static bool IsInPlayerList;
         internal MultiSelection SelectedMultiSelect;
@@ -74,6 +76,16 @@ namespace BTKUILib
             CVR_MenuManager.Instance.quickMenu.View.BindCall("btkUI-TabChange", new Action<string>(OnTabChange));
             CVR_MenuManager.Instance.quickMenu.View.BindCall("btkUI-SelectedPlayer", new Action<string, string>(OnSelectedPlayer));
             CVR_MenuManager.Instance.quickMenu.View.BindCall("btkUI-UILoaded", new Action(OnMenuIsLoaded));
+            CVR_MenuManager.Instance.quickMenu.View.BindCall("btkUI-CollapseCategory", new Action<string, bool>(OnCollapseCategory));
+        }
+
+        private void OnCollapseCategory(string rowID, bool state)
+        {
+            if (!Categories.TryGetValue(rowID, out var category)) return;
+
+            category.Collapsed = state;
+
+            category.OnCollapse?.Invoke(state);
         }
 
         private void OnMenuIsLoaded()
@@ -182,15 +194,14 @@ namespace BTKUILib
                 SelectedRootPage.IsVisible = false;
 
                 //Catch orphaned of injected root pages
-                if (ModPages.TryGetValue(SelectedRootPage.ModName, out var modPages))
+                foreach (var page in GeneratedPages)
                 {
-                    foreach (var page in modPages)
-                    {
-                        page.DeleteInternal(true);
-                        if (page.RootPage == page)
-                            page.IsVisible = false;
-                    }
+                    page.DeleteInternal(true);
+                    if (page.RootPage == page)
+                        page.IsVisible = false;
                 }
+
+                GeneratedPages.Clear();
 
                 SelectedRootPage = null;
             }

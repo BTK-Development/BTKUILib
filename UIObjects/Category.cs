@@ -1,4 +1,4 @@
-﻿using ABI_RC.Core.InteractionSystem;
+﻿using System;
 using BTKUILib.UIObjects.Components;
 
 namespace BTKUILib.UIObjects
@@ -21,23 +21,31 @@ namespace BTKUILib.UIObjects
             }
         }
 
+        public Action<bool> OnCollapse;
+
         internal string ModName => _modName ?? LinkedPage.ModName;
 
         internal readonly Page LinkedPage;
+        internal bool Collapsed;
         private string _categoryName;
         private readonly string _modName;
         private bool _showHeader = false;
+        private bool _canCollapse;
 
-        internal Category(string categoryName, Page page, bool showHeader = true, string modName = null)
+        internal Category(string categoryName, Page page, bool showHeader = true, string modName = null, bool canCollapse = true, bool collapsed = false)
         {
             _categoryName = categoryName;
             LinkedPage = page;
             _showHeader = showHeader;
             _modName = modName;
+            Collapsed = collapsed;
+            _canCollapse = canCollapse;
 
             Parent = page;
             
             ElementID = "btkUI-Row-" + UUID;
+
+            UserInterface.Categories.Add(ElementID, this);
         }
         
         /// <summary>
@@ -184,6 +192,7 @@ namespace BTKUILib.UIObjects
             UIUtils.GetInternalView().TriggerEvent("btkDeleteElement", ElementID + "-HeaderRoot");
             
             base.Delete();
+
             if (Protected) return;
             LinkedPage.SubElements.Remove(this);
         }
@@ -206,7 +215,7 @@ namespace BTKUILib.UIObjects
             if (RootPage is { IsVisible: false }) return;
 
             if(!IsGenerated)
-                UIUtils.GetInternalView().TriggerEvent("btkCreateRow", LinkedPage.ElementID, UUID, true, _showHeader ? _categoryName : null);
+                UIUtils.GetInternalView().TriggerEvent("btkCreateRow", LinkedPage.ElementID, UUID, _canCollapse, Collapsed, _showHeader ? _categoryName : null);
             
             foreach(var element in SubElements)
                 element.GenerateCohtml();

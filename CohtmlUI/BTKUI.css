@@ -253,19 +253,19 @@
   background: url("images/Arrow Up.png");
   background-size: cover;
   background-repeat: no-repeat;
-  height: 100px;
-  width: 100px;
+  height: 90px;
+  width: 90px;
 }
 .btkUI .container-controls .icon-expand {
   background: url("images/Arrow Up.png");
   background-size: cover;
   background-repeat: no-repeat;
   transform: rotate(180deg);
-  height: 100px;
-  width: 100px;
+  height: 90px;
+  width: 90px;
 }
 .btkUI .container-controls .rowBorder {
-  border-bottom-color: white;
+  border-bottom-color: #D2D2D2;
   border-bottom-width: 4px;
   border-bottom-style: solid;
 }

@@ -162,7 +162,7 @@
       <Content Include="CohtmlUI\BTKUI.css.map" />
       <Content Include="CohtmlUI\BTKUI.less" />
       <Content Include="CohtmlUI\images\Arrow Left.png" />
-      <Content Include="CohtmlUI\images\ArrowUp.png" />
+      <Content Include="CohtmlUI\images\Arrow Up.png" />
       <Content Include="CohtmlUI\images\Checkmark.png" />
       <Content Include="CohtmlUI\images\Multiuser.png" />
       <Content Include="CohtmlUI\images\Settings.png" />
