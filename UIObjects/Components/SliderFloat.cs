@@ -126,19 +126,20 @@ namespace BTKUILib.UIObjects.Components
         private int _decimalPlaces;
         private float _defaultValue;
         private bool _allowDefaultReset;
-        private Page _page;
+        private bool _inCategoryMode;
 
-        internal SliderFloat(Page page, string sliderName, string sliderTooltip, float initalValue, float minValue = 0f, float maxValue = 10f, int decimalPlaces = 2, float defaultValue = 0f, bool allowDefaultReset = false)
+        internal SliderFloat(QMUIElement parent, string sliderName, string sliderTooltip, float initalValue, float minValue = 0f, float maxValue = 10f, int decimalPlaces = 2, float defaultValue = 0f, bool allowDefaultReset = false, bool inCategoryMode = false)
         {
             _sliderValue = initalValue;
             _sliderName = sliderName;
             _sliderTooltip = sliderTooltip;
             _minValue = minValue;
             _maxValue = maxValue;
-            _page = page;
             _decimalPlaces = decimalPlaces;
             _defaultValue = defaultValue;
             _allowDefaultReset = allowDefaultReset;
+            _inCategoryMode = inCategoryMode;
+            Parent = parent;
             
             UserInterface.Sliders.Add(UUID, this);
             
@@ -162,12 +163,14 @@ namespace BTKUILib.UIObjects.Components
             
             if (Protected) return;
             
-            _page.SubElements.Remove(this);
+            Parent.SubElements.Remove(this);
         }
 
         internal override void GenerateCohtml()
         {
             if (!UIUtils.IsQMReady()) return;
+
+            if (RootPage is { IsVisible: false }) return;
 
             if (!IsGenerated)
             {
@@ -182,9 +185,9 @@ namespace BTKUILib.UIObjects.Components
                     AllowDefaultReset = _allowDefaultReset
                 };
                 
-                UIUtils.GetInternalView().TriggerEvent("btkCreateSlider", _page.ElementID, UUID, _sliderValue, settings);
+                UIUtils.GetInternalView().TriggerEvent("btkCreateSlider", Parent.ElementID, UUID, _sliderValue, _inCategoryMode, settings);
             }
-            
+
             base.GenerateCohtml();
 
             IsGenerated = true;
@@ -192,6 +195,10 @@ namespace BTKUILib.UIObjects.Components
 
         private void UpdateSlider()
         {
+            if (!IsVisible) return;
+
+            if (!Parent.IsVisible) return;
+
             if (!UIUtils.IsQMReady()) return;
 
             var settings = new SliderSettings

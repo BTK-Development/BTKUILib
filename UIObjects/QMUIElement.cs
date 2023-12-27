@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using ABI_RC.Core.InteractionSystem;
-using cohtml;
 
 namespace BTKUILib.UIObjects
 {
@@ -26,6 +24,49 @@ namespace BTKUILib.UIObjects
         public bool IsGenerated;
 
         /// <summary>
+        /// Reference to the parent QMUIElement this element is a child of
+        /// Root pages will be null, so will global custom elements
+        /// </summary>
+        public QMUIElement Parent { get; internal set; }
+
+        /// <summary>
+        /// Returns the root page of this element by walking up the parents
+        /// </summary>
+        public QMUIElement RootPage
+        {
+            get
+            {
+                if (_cachedRootPage != null)
+                    return _cachedRootPage;
+
+                _cachedRootPage = this;
+
+                while (_cachedRootPage.Parent != null)
+                {
+                    _cachedRootPage = _cachedRootPage.Parent;
+                }
+
+                return _cachedRootPage;
+            }
+        }
+
+        /// <summary>
+        /// Returns the visibility state of this objects highest root page element
+        /// </summary>
+        public bool IsVisible
+        {
+            get
+            {
+                return RootPage != null ? RootPage._visible : _visible;
+            }
+            internal set
+            {
+                if(RootPage == this)
+                    _visible = value;
+            }
+        }
+
+        /// <summary>
         /// Disabled will block input and gray out the element it is set on
         /// </summary>
         public bool Disabled
@@ -35,13 +76,21 @@ namespace BTKUILib.UIObjects
             {
                 var thisType = GetType();
 
-                //Don't allow pages to be disabled
-                if (thisType == typeof(Page)) return;
+                var target = ElementID;
+
+                //Disabling page disables the subpage button if it's applicable
+                if (thisType == typeof(Page))
+                {
+                    var page = (Page)this;
+                    if(page.SubpageButton != null)
+                        page.SubpageButton.Disabled = value;
+                    return;
+                }
 
                 _disabled = value;
 
                 if (!UIUtils.IsQMReady()) return;
-                UIUtils.GetInternalView().TriggerEvent("btkSetDisabled", ElementID, value);
+                UIUtils.GetInternalView().TriggerEvent("btkSetDisabled", target, value);
             }
         }
 
@@ -56,6 +105,8 @@ namespace BTKUILib.UIObjects
         internal List<QMUIElement> SubElements = new();
 
         private bool _disabled;
+        private bool _visible;
+        private QMUIElement _cachedRootPage;
 
         internal QMUIElement()
         {
@@ -77,18 +128,23 @@ namespace BTKUILib.UIObjects
             DeleteInternal();
         }
 
-        internal virtual void DeleteInternal()
+        internal virtual void DeleteInternal(bool tabChange = false)
         {
-            UserInterface.QMElements.Remove(this);
+            if(!tabChange)
+                UserInterface.QMElements.Remove(this);
+
+            IsGenerated = false;
 
             //Recursively delete sub elements that need special handling
-            foreach (var element in SubElements)
+            foreach (var element in SubElements.ToArray())
             {
+                element.IsGenerated = false;
+
                 switch (element)
                 {
                     case Category:
                     case Page:
-                        element.DeleteInternal();
+                        element.DeleteInternal(tabChange);
                         break;
                 }
             }

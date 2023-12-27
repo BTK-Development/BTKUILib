@@ -21,6 +21,10 @@ namespace BTKUILib
         /// </summary>
         public static Action<CVR_MenuManager> OnMenuRegenerate;
         /// <summary>
+        /// Called after BTKUILib has finished generating all menu components and BTKUIReady is set
+        /// </summary>
+        public static Action<CVR_MenuManager> OnMenuGenerated;
+        /// <summary>
         /// Called when a user joins the instance, passes the complete CVRPlayerEntity object
         /// </summary>
         public static Action<CVRPlayerEntity> UserLeave;
@@ -75,7 +79,7 @@ namespace BTKUILib
                 //Create the page as needed
                 if (_miscTabPage == null)
                 {
-                    _miscTabPage = new Page("Misc", "Misc", true, "MiscIcon");
+                    _miscTabPage = Page.GetOrCreatePage("Misc", "Misc", true, "MiscIcon");
                     _miscTabPage.Protected = true;
                     _miscTabPage.MenuTitle = "Misc";
                     _miscTabPage.MenuSubtitle = "Miscellaneous mod elements be found here!";
@@ -116,6 +120,20 @@ namespace BTKUILib
         #endregion
         
         #region Utility Functions
+
+        /// <summary>
+        /// Injects your custom CSS Style into UILib, this will automatically be reapplied during a menu reload
+        /// </summary>
+        /// <param name="cssData"></param>
+        public static void InjectCSSStyle(string cssData)
+        {
+            UserInterface.CustomCSSStyles.Add(cssData);
+
+            if (!UIUtils.IsQMReady()) return;
+
+            //QM is loaded, let's apply the CSS right now
+            UIUtils.GetInternalView().TriggerEvent("btkSetCustomCSS", cssData);
+        }
 
         /// <summary>
         /// Get the MelonLoader prefs tab page for a specific mod, fetched by identifier
@@ -220,7 +238,7 @@ namespace BTKUILib
             if (!UIUtils.IsQMReady()) return;
             
             UserInterface.Instance.SelectedMultiSelect = multiSelection;
-            UIUtils.GetInternalView().TriggerEvent("btkOpenMultiSelect", multiSelection.Name, multiSelection.Options, multiSelection.SelectedOption);
+            UIUtils.GetInternalView().TriggerEvent("btkOpenMultiSelect", multiSelection.Name, multiSelection.Options, multiSelection.SelectedOption, UserInterface.IsInPlayerList);
         }
         
         /// <summary>

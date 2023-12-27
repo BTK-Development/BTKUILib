@@ -1,7 +1,7 @@
 cvr.menu.prototype.BTKUI = {
     uiRefBTK: {},
     breadcrumbsBTK: [],
-    currentPageBTK: "",
+    currentPageBTK: "CVRMainQM",
     currentDraggedSliderBTK: {},
     currentSliderBarBTK: {},
     currentSliderKnobBTK: {},
@@ -20,6 +20,10 @@ cvr.menu.prototype.BTKUI = {
     btkAlertShown: false,
     btkShowAlertFunc: {},
     btkGetImageBackgroundFunc: {},
+    btkKnownEngineFunctions: [],
+    btkLastTab: "",
+    btkMultiSelectPLMode: false,
+    btkCollapseCatFunc: {},
 
     info: function(){
         return {
@@ -68,8 +72,11 @@ cvr.menu.prototype.BTKUI = {
         btkAlertShown = false;
         btkShowAlertFunc = this.btkShowAlert;
         btkGetImageBackgroundFunc = this.btkGetImageBackground;
+        btkKnownEngineFunctions = [];
+        btkLastTab = "";
+        btkMultiSelectPLMode = false;
+        btkCollapseCatFunc = this.btkCollapseCategory;
 
-        menu.templates["btkUI-btn"] = {c: "btkUI-btn hide", s: [{c: "icon"}], x: "btkUI-pushPage", a:{"id" : "btkUI-UserMenu", "data-page": "btkUI-PlayerList"}};
         menu.templates["btkUI-shared"] = {c: "btkUI-shared hide", s:[
                 {c: "container btk-popup-container hide", a: {"id": "btkUI-PopupConfirm"}, s:[
                         {c: "row", s: [
@@ -90,18 +97,21 @@ cvr.menu.prototype.BTKUI = {
                                 {c:"col offset-4 align-self-center", s:[{c:"button", s:[{c:"text", h:"OK", a: {"id": "btkUI-PopupNoticeOK"}}], x:"btkUI-NoticeClose"}]}
                             ]},
                     ]},
-                {c: "container container-tabs", s:[
+                {c: "container container-tabs container-tabs-left", s:[
                         {c:"row", s:[
+                                {c: "col-md-2 justify-content-md-left tab", s:[
+                                        {c: "icon"}
+                                    ], a:{"id":"btkUI-UserMenu", "data-page": "btkUI-PlayerList"}, x: "btkUI-pushPage"},
                                 {c: "col-md-2 justify-content-md-left tab selected", s:[
                                         {c: "tab-content", a:{"id":"btkUI-Tab-CVRQM-Icon"}}
                                     ], a:{"id":"btkUI-Tab-CVRMainQM", "tabTarget": "CVRMainQM"}, x: "btkUI-TabChange"},
                                 {c: "col-md justify-content-md-center", s:[
-                                        {c:"scroll-bg hide", s:[{c:"scroll-overlay", a: {"id": "btkUI-TabScroll-Indicator"}}], a:{"id": "btkUI-TabScroll-Container"}},
+                                        {c:"scroll-bg scroll-bg-left hide", s:[{c:"scroll-overlay", a: {"id": "btkUI-TabScroll-Indicator"}}], a:{"id": "btkUI-TabScroll-Container"}},
                                         {c:"row btkUI-TabScroll", a: {"id": "btkUI-TabRoot"}, s: [
                                         ]},
                                     ]}
                             ]}
-                    ]},
+                    ], a: {"id": "btkUI-TabContainer"}},
                 {c: "container-tooltip hide", s:[{c:"content", h:"tooltip info", a:{"id": "btkUI-Tooltip"}}], a:{"id": "btkUI-TooltipContainer"}},
                 {c: "container-alertToast hide", s:[{c:"content", h:"toasty!", a:{"id": "btkUI-AlertToast"}}], a:{"id": "btkUI-AlertToastContainer"}, x:"btkUI-ToastDismiss"}
             ], a: {"id": "btkUI-SharedRoot"}};
@@ -157,8 +167,9 @@ cvr.menu.prototype.BTKUI = {
                             ]}, {c: "scroll-marker-v"}]}]},
                 {c: "container container-controls-playerlist hide", a:{"id": "btkUI-PlayerList"}, s:[
                         {c: "row header-section", s:[
-                                {c:"col-1", s:[{c: "icon-back", x: "btkUI-Home"}]},
-                                {c:"col", s:[{c:"header", h:"Player Selection | 0 Players in World", a: {"id": "btkUI-PlayerListHeaderText"}}]}
+                                {c:"col-1", s:[{c: "icon-back", x: "btkUI-Back"}]},
+                                {c:"col", s:[{c:"header", h:"Player Selection | 0 Players in World", a: {"id": "btkUI-PlayerListHeaderText"}}]},
+                                {c:"col-1", s:[{c: "icon-gear", a:{"data-page": "btkUI-SettingsPage"}, x: "btkUI-pushPage"}]}
                             ]},
                         {c: "scroll-view", s:[{c: "content-subpage scroll-content", s:[
                                     {c: "row", a:{"id": "btkUI-PlayerListContent"}}
@@ -171,23 +182,42 @@ cvr.menu.prototype.BTKUI = {
                         {c: "scroll-view", s:[{c: "content-subpage scroll-content", s: [
                                     {c: "row", a:{"id": "btkUI-PlayerSelectPage-Content"}},
                                 ]}, {c: "scroll-marker-v"}]}]},
+                {c: "container container-controls-playerlist hide", a:{"id": "btkUI-SettingsPage"}, s:[
+                    {c: "row header-section", s:[
+                            {c:"col-1", s:[{c: "icon-back", x: "btkUI-Back"}]},
+                            {c:"col", s:[{c:"header", h:"BTKUI Settings"}]}
+                        ]},
+                        {c: "scroll-view", s:[
+                                    {c: "content-subpage scroll-content", s:[], a:{"id": "btkUI-SettingsPage-Content"}},
+                                {c: "scroll-marker-v"}
+                            ]}
+                    ]},
+                {c: "container container-controls-playerlist hide", a:{"id": "btkUI-DropdownPagePL"}, s:[
+                        {c: "row header-section", s:[
+                                {c:"col-1", s:[{c: "icon-back", x: "btkUI-Back"}]},
+                                {c:"col", s:[{c:"header", h:"Dropdown", a:{"id": "btkUI-DropdownPLHeader"}}]}
+                            ]},
+                        {c: "scroll-view", s:[{c: "content-subpage scroll-content", s:[
+                                    {c:"row", a:{"id": "btkUI-DropdownPL-OptionRoot"}},
+                                ]}, {c: "scroll-marker-v"}]}]},
             ], a:{"id":"btkUI-Root"}};
 
-        menu.templates["btkUIRowContent"] = {c:"row justify-content-start", a:{"id": "btkUI-Row-[UUID]"}};
+        menu.templates["btkUIRowContent"] = {c:"row justify-content-start", a:{"id": "btkUI-Row-[UUID]", "data-collapsed": "false"}};
         menu.templates["btkSlider"] = {c:"slider-root row", s:[{c:"col-9", s:[{c:"text-title", h:"[slider-name] - [current-value]", a:{"id": "btkUI-SliderTitle-[slider-id]", "data-title": "[slider-name]"}}]}, {c:"col", s:[{c:"resetButton hide", x: "btkUI-SliderReset", s: [{c:"text", h:"Reset"}], a: {"id": "btkUI-SliderReset-[slider-id]", "data-sliderid": "[slider-id]", "data-defaultvalue": "[default-value]"}},]}, {c: "col-12", s:[{c:"slider", s:[{c:"sliderBar", s:[{c:"slider-knob", a:{"id": "btkUI-SliderKnob-[slider-id]"}}], a:{"id": "btkUI-SliderBar-[slider-id]"}}], a:{"id":"btkUI-Slider-[slider-id]", "data-slider-id": "[slider-id]", "data-slider-value": "[current-value]", "data-min": "[min-value]", "data-max": "[max-value]", "data-rounding": "[decimal-point]", "data-default": "[default-value]", "data-allow-reset": "[allow-reset]"}}], a:{"id":"btkUI-Slider-[slider-id]-Tooltip", "data-tooltip": "[tooltip-text]"}}]};
+        menu.templates["btkSliderCategory"] = {c:"slider-root col-12", s:[{c:"col-9", s:[{c:"text-title", h:"[slider-name] - [current-value]", a:{"id": "btkUI-SliderTitle-[slider-id]", "data-title": "[slider-name]"}}]}, {c:"col", s:[{c:"resetButton hide", x: "btkUI-SliderReset", s: [{c:"text", h:"Reset"}], a: {"id": "btkUI-SliderReset-[slider-id]", "data-sliderid": "[slider-id]", "data-defaultvalue": "[default-value]"}},]}, {c: "col-12", s:[{c:"slider", s:[{c:"sliderBar", s:[{c:"slider-knob", a:{"id": "btkUI-SliderKnob-[slider-id]"}}], a:{"id": "btkUI-SliderBar-[slider-id]"}}], a:{"id":"btkUI-Slider-[slider-id]", "data-slider-id": "[slider-id]", "data-slider-value": "[current-value]", "data-min": "[min-value]", "data-max": "[max-value]", "data-rounding": "[decimal-point]", "data-default": "[default-value]", "data-allow-reset": "[allow-reset]"}}], a:{"id":"btkUI-Slider-[slider-id]-Tooltip", "data-tooltip": "[tooltip-text]"}}]};
         menu.templates["btkToggle"] = {c:"col-3", a:{"id": "btkUI-Toggle-[toggle-id]-Root"}, s:[{c: "toggle", s:[{c:"row", s:[{c:"col align-content-start", s:[{c:"enable circle", a:{"id": "btkUI-toggle-enable"}}]}, {c:"col align-content-end", s:[{c:"disable circle active", a:{"id": "btkUI-toggle-disable"}}]}]},{c:"text-sm", h:"[toggle-name]", a:{"id": "btkUI-Toggle-[toggle-id]-Text"}}], x: "btkUI-Toggle", a:{"id": "btkUI-Toggle-[toggle-id]", "data-toggle": "[toggle-id]", "data-toggleState": "false", "data-tooltip": "[tooltip-data]"}}]};
         menu.templates["btkButton"] = {c:"col-3", a:{"id": "btkUI-Button-[UUID]"}, s:[{c: "button", s:[{c:"icon", a:{"id": "btkUI-Button-[UUID]-Image"}}, {c:"text", h:"[button-text]", a:{"id": "btkUI-Button-[UUID]-Text"}}], x: "btkUI-ButtonAction", a:{"id": "btkUI-Button-[UUID]-Tooltip","data-tooltip": "[button-tooltip]", "data-action": "[button-action]"}}]};
         menu.templates["btkButtonFullImage"] = {c:"col-3", a:{"id": "btkUI-Button-[UUID]"}, s:[{c: "button-fullImage", s:[{c:"text", h:"[button-text]", a:{"id": "btkUI-Button-[UUID]-Text"}}], x: "btkUI-ButtonAction", a:{"id": "btkUI-Button-[UUID]-Tooltip","data-tooltip": "[button-tooltip]", "data-action": "[button-action]"}}]};
         menu.templates["btkButtonTextOnly"] = {c:"col-3", a:{"id": "btkUI-Button-[UUID]"}, s:[{c: "button-textOnly", s:[{c:"text", h:"[button-text]", a:{"id": "btkUI-Button-[UUID]-Text"}}], x: "btkUI-ButtonAction", a:{"id": "btkUI-Button-[UUID]-Tooltip","data-tooltip": "[button-tooltip]", "data-action": "[button-action]"}}]};
         menu.templates["btkMultiSelectOption"] = {c:"col-12", s: [{c:"dropdown-option", s: [{c:"selection-icon"}, {c:"option-text", h: "[option-text]"}], a: {"id": "btkUI-DropdownOption-[option-index]", "data-index": "[option-index]"}, x: "btkUI-DropdownSelect"}]}
-        menu.templates["btkUIRootPage"] = {c: "container container-controls hide", a:{"id": "btkUI-[ModName]-MainPage"}, s:[{c: "scroll-view", s:[{c: "content scroll-content", s:[], a:{"id": "btkUI-[ModName]-MainPage-Content"}}, {c: "scroll-marker-v"}]}]};
+        menu.templates["btkUIRootPage"] = {c: "container container-controls hide", a:{"id": "btkUI-[ModName]-[ModPage]"}, s:[{c: "scroll-view", s:[{c: "content scroll-content", s:[], a:{"id": "btkUI-[ModName]-[ModPage]-Content"}}, {c: "scroll-marker-v"}]}]};
         menu.templates["btkUIPage"] = {c: "container container-controls hide", a:{"id": "btkUI-[ModName]-[ModPage]"}, s:[{c: "row header-section", s:[{c:"col-1", s:[{c: "icon-back", x: "btkUI-Back"}]}, {c:"col", s:[{c:"header", h:"[PageHeader]", a:{"id": "btkUI-[ModName]-[ModPage]-Header"}}]}]}, {c: "scroll-view", s:[{c: "content-subpage scroll-content", s:[], a:{"id": "btkUI-[ModName]-[ModPage]-Content"}}, {c: "scroll-marker-v"}]}]};
         menu.templates["btkUIPagePlayerlist"] = {c: "container container-controls-playerlist hide", a:{"id": "btkUI-[ModName]-[ModPage]"}, s:[{c: "row header-section", s:[{c:"col-1", s:[{c: "icon-back", x: "btkUI-Back"}]}, {c:"col", s:[{c:"header", h:"[PageHeader]", a:{"id": "btkUI-[ModName]-[ModPage]-Header"}}]}]}, {c: "scroll-view", s:[{c: "content-subpage scroll-content", s:[], a:{"id": "btkUI-[ModName]-[ModPage]-Content"}}, {c: "scroll-marker-v"}]}]};
-        menu.templates["btkUIRowHeader"] = {c: "row", a: {"id": "btkUI-Row-[UUID]-HeaderRoot"}, s:[{c:"col", s:[{c:"header", h:"[Header]", a:{"id": "btkUI-Row-[UUID]-HeaderText"}}]}]};
-        menu.templates["btkUITab"] = {c: "col-md-2 tab", s:[{c: "tab-content", a:{"id":"btkUI-Tab-[TabName]-Image"}}], a:{"id":"btkUI-Tab-[TabName]", "tabTarget": "btkUI-[TabName]-MainPage"}, x: "btkUI-TabChange"};
+        menu.templates["btkUIRowHeader"] = {c: "row rowBorder", a: {"id": "btkUI-Row-[UUID]-HeaderRoot"}, s:[{c:"col", s:[{c:"header", h:"[Header]", a:{"id": "btkUI-Row-[UUID]-HeaderText"}}]}]};
+        menu.templates["btkUIRowHeaderCollapsible"] = {c: "row rowBorder", x: "btkUI-Collapse", a: {"id": "btkUI-Row-[UUID]-HeaderRoot", "data-row": "btkUI-Row-[UUID]"}, s:[{c:"col", s:[{c:"header", h:"[Header]", a:{"id": "btkUI-Row-[UUID]-HeaderText"}}]}, {c: "col-2", s: [{c: "icon-collapse ml-auto", a: {"id": "btkUI-Row-[UUID]-Collapse"}}]}]};
+        menu.templates["btkUITab"] = {c: "col-md-2 tab", s:[{c: "tab-content", a:{"id":"btkUI-Tab-[TabName]-Image"}}], a:{"id":"btkUI-Tab-[TabName]", "tabTarget": "btkUI-[TabName]-[PageName]"}, x: "btkUI-TabChange"};
         menu.templates["btkPlayerListEntry"] = {c:"col-3", s:[{c:"button-fullImage", x:"btkUI-SelectPlayer", s:[{c:"text", h:"[player-name]"}], a:{"id": "btkUI-PlayerButton-[player-id]-Icon","data-id": "[player-id]", "data-name": "[player-name]", "data-tooltip": "Open up the player options for [player-name]"}}], a:{"id": "btkUI-PlayerButton-[player-id]"}};
 
-        menu.templates["core-quickmenu"].l.push("btkUI-btn");
         menu.templates["core-quickmenu"].l.push("btkUI-shared");
         menu.templates["core-quickmenu"].l.push("btkUI-menu");
 
@@ -209,6 +239,7 @@ cvr.menu.prototype.BTKUI = {
         uiRefBTK.actions["btkUI-SelectPlayer"] = this.actions.selectPlayer;
         uiRefBTK.actions["btkUI-ToastDismiss"] = this.actions.btkToastDismiss;
         uiRefBTK.actions["btkUI-SliderReset"] = this.actions.btkSliderReset;
+        uiRefBTK.actions["btkUI-Collapse"] = this.actions.btkRowCollapse;
 
         engine.on("btkModInit", this.btkUILibInit);
         engine.on("btkCreateToggle", this.btkCreateToggle);
@@ -237,6 +268,14 @@ cvr.menu.prototype.BTKUI = {
         engine.on("btkClearChildren", this.btkClearChildren);
         engine.on("btkSetDisabled", this.btkSetDisabled);
         engine.on("btkUpdatePageTitle", this.btkUpdatePageTitle);
+        engine.on("btkSetCustomCSS", this.btkSetCustomCSS);
+        engine.on("btkCreateCustomGlobal", this.btkCreateCustomGlobal);
+        engine.on("btkAddCustomAction", this.btkAddCustomAction);
+        engine.on("btkAddCustomEngineFunction", this.btkAddCustomEngineFunction);
+        engine.on("btkCreateCustomElementCategory", this.btkCreateCustomElementCategory);
+        engine.on("btkCreateTab", this.btkCreateTab);
+        engine.on("btkUpdateTab", this.btkUpdateTab);
+        engine.on("btkCollapseCategory", this.btkCollapseCategory);
     },
 
     init: function(menu){
@@ -292,9 +331,72 @@ cvr.menu.prototype.BTKUI = {
 
         cvr("#btkUI-TooltipContainer").hide();
     },
-    btkUILibInit: function () {
+    btkUILibInit: function (plButtonStyle) {
         cvr("#btkUI-UserMenu").show();
         cvr("#btkUI-SharedRoot").show();
+
+        if(plButtonStyle !== "Tab Bar"){
+            let tabCont = document.getElementById("btkUI-TabContainer");
+            if(tabCont !== null)
+                tabCont.classList.remove("container-tabs-left")
+            let scrollCont = document.getElementById("btkUI-TabScroll-Container");
+            if(scrollCont !== null)
+                scrollCont.classList.remove("scroll-bg-left");
+            cvr("#btkUI-UserMenu").hide();
+        }
+
+        switch(plButtonStyle){
+            case "Replace TTS":
+                let ttsElement = document.getElementsByClassName("button-tts");
+
+                if(ttsElement.length === 0){
+                    console.error("Couldn't find TTS element! Unable to replace!");
+                    return;
+                }
+
+                ttsElement = ttsElement[0];
+
+                ttsElement.classList.add("icon-multiuser");
+                ttsElement.style.backgroundImage = "url(mods/BTKUI/images/Multiuser.png)";
+                ttsElement.style.backgroundSize = "contain";
+                ttsElement.style.backgroundPositionY = "0";
+                ttsElement.style.backgroundPositionX = "0";
+
+                ttsElement.removeEventListener("click", uiRefBTK.actions["openTTSKeyboard"]);
+                ttsElement.addEventListener("click", uiRefBTK.actions["btkUI-pushPage"]);
+                ttsElement.setAttribute("data-x", "btkUI-pushPage");
+                ttsElement.setAttribute("data-page", "btkUI-PlayerList");
+                ttsElement.setAttribute("data-tooltip", "Opens the UILib PlayerList");
+                break;
+            case "Replace Events":
+                let eventButton = document.getElementsByClassName("events");
+
+                if(eventButton.length === 0){
+                    console.error("Couldn't find event button! Unable to replace!");
+                    return;
+                }
+
+                eventButton = eventButton[0];
+
+                eventButton.classList.remove("disabled");
+
+                eventButton.removeEventListener("click", uiRefBTK.actions["notImplementedPage"]);
+                eventButton.addEventListener("click", uiRefBTK.actions["btkUI-pushPage"]);
+                eventButton.setAttribute("data-x", "btkUI-pushPage");
+                eventButton.setAttribute("data-page", "btkUI-PlayerList");
+                eventButton.setAttribute("data-tooltip", "Opens the UILib PlayerList");
+
+                let icon = eventButton.querySelector('.icon');
+                icon.classList.add("icon-multiuser");
+                icon.style.backgroundImage = "url(mods/BTKUI/images/Multiuser.png)";
+                icon.style.backgroundSize = "contain";
+                icon.style.backgroundPositionY = "0";
+                icon.style.backgroundPositionX = "0";
+
+                let label = eventButton.querySelector('.label');
+                label.innerHTML = "Playerlist";
+                break;
+        }
     },
 
     btkAddPlayer: function(username, userid, userImage, playerCount){
@@ -331,25 +433,47 @@ cvr.menu.prototype.BTKUI = {
         plHeader.innerHTML = "Player Selection | 0 Players in World";
     },
 
-    btkCreateSlider: function(parent, sliderID, currentValue, settings){
-        let parentElement = cvr("#" + parent + "-Content");
+    btkCreateSlider: function(parent, sliderID, currentValue, categoryMode, settings){
+        let parentElement;
+
+        if(!categoryMode)
+            parentElement = cvr("#" + parent + "-Content");
+        else
+            parentElement = cvr("#" + parent);
 
         if(parentElement === null){
             console.error("parentElement wasn't found! Unable to create slider!")
             return;
         }
 
-        let slider = cvr.render(uiRefBTK.templates["btkSlider"], {
-            "[slider-name]": settings.SliderName,
-            "[slider-id]": sliderID,
-            "[current-value]": currentValue.toFixed(settings.DecimalPlaces),
-            "[min-value]": settings.MinValue,
-            "[max-value]": settings.MaxValue,
-            "[tooltip-text]": settings.SliderTooltip,
-            "[decimal-point]": settings.DecimalPlaces,
-            "[default-value]": settings.DefaultValue,
-            "[allow-reset]": settings.AllowDefaultReset
-        }, uiRefBTK.templates, uiRefBTK.actions);
+        let slider;
+
+        if(!categoryMode){
+            slider = cvr.render(uiRefBTK.templates["btkSlider"], {
+                "[slider-name]": settings.SliderName,
+                "[slider-id]": sliderID,
+                "[current-value]": currentValue.toFixed(settings.DecimalPlaces),
+                "[min-value]": settings.MinValue,
+                "[max-value]": settings.MaxValue,
+                "[tooltip-text]": settings.SliderTooltip,
+                "[decimal-point]": settings.DecimalPlaces,
+                "[default-value]": settings.DefaultValue,
+                "[allow-reset]": settings.AllowDefaultReset
+            }, uiRefBTK.templates, uiRefBTK.actions);
+        }
+        else{
+            slider = cvr.render(uiRefBTK.templates["btkSliderCategory"], {
+                "[slider-name]": settings.SliderName,
+                "[slider-id]": sliderID,
+                "[current-value]": currentValue.toFixed(settings.DecimalPlaces),
+                "[min-value]": settings.MinValue,
+                "[max-value]": settings.MaxValue,
+                "[tooltip-text]": settings.SliderTooltip,
+                "[decimal-point]": settings.DecimalPlaces,
+                "[default-value]": settings.DefaultValue,
+                "[allow-reset]": settings.AllowDefaultReset
+            }, uiRefBTK.templates, uiRefBTK.actions);
+        }
 
         parentElement.appendChild(slider);
 
@@ -669,8 +793,12 @@ cvr.menu.prototype.BTKUI = {
             button.style.backgroundSize = "cover";
         }
     },
-    btkOpenMultiSelect: function(name, options, selectedIndex){
+    btkOpenMultiSelect: function(name, options, selectedIndex, playerListMode = false){
+        btkMultiSelectPLMode = playerListMode;
+
         let element = cvr("#btkUI-Dropdown-OptionRoot");
+        if(playerListMode)
+            element = cvr("#btkUI-DropdownPL-OptionRoot");
         element.clear();
 
         for(let i=0; i<options.length; i++){
@@ -686,9 +814,15 @@ cvr.menu.prototype.BTKUI = {
                 optionIcon.classList.add("selected");
         }
 
-        cvr("#btkUI-DropdownHeader").innerHTML(name);
+        if(!playerListMode)
+            cvr("#btkUI-DropdownHeader").innerHTML(name);
+        else
+            cvr("#btkUI-DropdownPLHeader").innerHTML(name);
 
-        cvr("#btkUI-DropdownPage").show();
+        if(!playerListMode)
+            cvr("#btkUI-DropdownPage").show();
+        else
+            cvr("#btkUI-DropdownPagePL").show();
         cvr("#" + currentPageBTK).hide();
 
         breadcrumbsBTK.push(currentPageBTK);
@@ -696,6 +830,9 @@ cvr.menu.prototype.BTKUI = {
         engine.call("btkUI-OpenedPage", "DropdownPage", currentPageBTK);
 
         currentPageBTK = "btkUI-DropdownPage";
+
+        if(playerListMode)
+            currentPageBTK = "btkUI-DropdownPagePL";
     },
     btkOpenNumberInput: function(name, number) {
         let display = document.getElementById("btkUI-numDisplay");
@@ -753,26 +890,87 @@ cvr.menu.prototype.BTKUI = {
         element.innerHTML(text);
     },
 
-    btkCreateRow: function (parentID, rowUUID, rowHeader = null){
-        if(rowHeader != null){
-            cvr("#" + parentID + "-Content").appendChild(cvr.render(uiRefBTK.templates["btkUIRowHeader"], {
-                "[UUID]": rowUUID,
-                "[Header]": rowHeader
-            }, uiRefBTK.templates, uiRefBTK.actions))
+    btkCreateRow: function (parentID, rowUUID, collapsible, collapsed, rowHeader = null){
+        let headerGenerate = rowHeader !== null && rowHeader.match(/^ *$/) === null;
+
+        if(headerGenerate){
+            if(!collapsible) {
+                cvr("#" + parentID + "-Content").appendChild(cvr.render(uiRefBTK.templates["btkUIRowHeader"], {
+                    "[UUID]": rowUUID,
+                    "[Header]": rowHeader
+                }, uiRefBTK.templates, uiRefBTK.actions));
+            }
+            else {
+                cvr("#" + parentID + "-Content").appendChild(cvr.render(uiRefBTK.templates["btkUIRowHeaderCollapsible"], {
+                    "[UUID]": rowUUID,
+                    "[Header]": rowHeader
+                }, uiRefBTK.templates, uiRefBTK.actions));
+            }
         }
 
         cvr("#" + parentID + "-Content").appendChild(cvr.render(uiRefBTK.templates["btkUIRowContent"], {
             "[UUID]": rowUUID
-        }, uiRefBTK.templates, uiRefBTK.actions))
+        }, uiRefBTK.templates, uiRefBTK.actions));
+
+        if(headerGenerate && collapsed)
+            btkCollapseCatFunc("btkUI-Row-" + rowUUID, true);
+    },
+
+    btkCreateTab: function (pageName, modName, tabIcon, cleanedPageName){
+        //Check if tab exists to avoid generating duplicates
+        let element = document.getElementById("btkUI-Tab-" + modName);
+
+        if(element !== null){
+            console.error("Tab for " + modName + " already exists! Tell this mods dev to switch to Page.GetOrCreatePage to avoid creating duplicate root pages!");
+            return;
+        }
+
+        cvr("#btkUI-TabRoot").appendChild(cvr.render(uiRefBTK.templates["btkUITab"], {
+            "[TabName]": modName,
+            "[PageName]": cleanedPageName
+        }, uiRefBTK.templates, uiRefBTK.actions));
+
+        if (tabIcon !== null && tabIcon.length > 0) {
+            let tab = document.getElementById("btkUI-Tab-" + modName + "-Image");
+            tab.style.backgroundImage = "url('mods/BTKUI/images/" + modName + "/" + tabIcon + ".png')";
+            tab.style.backgroundRepeat = "no-repeat";
+            tab.style.backgroundSize = "contain";
+        } else {
+            let tab = document.getElementById("btkUI-Tab-" + modName + "-Image");
+            tab.style.backgroundImage = "url('mods/BTKUI/images/Placeholder.png')";
+            tab.style.backgroundRepeat = "no-repeat";
+            tab.style.backgroundSize = "contain";
+        }
+
+        let tabRoot = document.getElementById("btkUI-TabRoot");
+        tabRoot.scrollLeft = 0;
+
+        let scrollInd = document.getElementById("btkUI-TabScroll-Indicator");
+        scrollInd.style.width = "1%";
+
+        if(document.getElementById("btkUI-TabRoot").childElementCount >= 8)
+            cvr("#btkUI-TabScroll-Container").show();
+        else
+            cvr("#btkUI-TabScroll-Container").hide();
+    },
+
+    btkUpdateTab: function (modName, state){
+        let target = document.getElementById("btkUI-Tab-" + modName);
+
+        if(target === null) return;
+
+        if(state){
+            if(target.classList.contains("hide")) return;
+            target.classList.add("hide");
+        } else {
+            target.classList.remove("hide");
+        }
     },
 
     btkCreatePage: function (pageName, modName, tabIcon, elementID, rootPage, cleanedPageName, inPlayerlist){
         let elementCheck = null;
 
-        if(rootPage)
-            elementCheck = document.getElementById("btkUI-" + modName + "-MainPage");
-        else
-            elementCheck = document.getElementById(elementID);
+        elementCheck = document.getElementById(elementID);
 
         if(elementCheck !== null) return;
 
@@ -791,37 +989,10 @@ cvr.menu.prototype.BTKUI = {
             return;
         }
 
-        cvr("#btkUI-TabRoot").appendChild(cvr.render(uiRefBTK.templates["btkUITab"], {
-            "[TabName]": modName
-        }, uiRefBTK.templates, uiRefBTK.actions));
-
-        if(tabIcon !== null && tabIcon.length > 0) {
-            let tab = document.getElementById("btkUI-Tab-" + modName + "-Image");
-            tab.style.backgroundImage = "url('mods/BTKUI/images/" + modName + "/" + tabIcon + ".png')";
-            tab.style.backgroundRepeat = "no-repeat";
-            tab.style.backgroundSize = "contain";
-        }
-        else {
-            let tab = document.getElementById("btkUI-Tab-" + modName + "-Image");
-            tab.style.backgroundImage = "url('mods/BTKUI/images/Placeholder.png')";
-            tab.style.backgroundRepeat = "no-repeat";
-            tab.style.backgroundSize = "contain";
-        }
-
-        let tabRoot = document.getElementById("btkUI-TabRoot");
-        tabRoot.scrollLeft = 0;
-
-        let scrollInd = document.getElementById("btkUI-TabScroll-Indicator");
-        scrollInd.style.width = "1%";
-
         cvr("#btkUI-Root").appendChild(cvr.render(uiRefBTK.templates["btkUIRootPage"], {
-            "[ModName]": modName
+            "[ModName]": modName,
+            "[ModPage]": cleanedPageName,
         }, uiRefBTK.templates, uiRefBTK.actions));
-
-        if(document.getElementById("btkUI-TabRoot").childElementCount >= 8)
-            cvr("#btkUI-TabScroll-Container").show();
-        else
-            cvr("#btkUI-TabScroll-Container").hide();
     },
 
     btkUpdatePageTitle: function(elementID, title){
@@ -835,16 +1006,34 @@ cvr.menu.prototype.BTKUI = {
     btkChangeTab: function (rootTarget, rootMod, menuTitle, menuSubtitle){
         console.log("Setting to rootTarget " + rootTarget + " | currentMod = " + currentMod + " | rootMod = " + rootMod);
 
+        btkLastTab = rootTarget;
+
+        //Clean things up before changing roots
+        if(currentPageBTK.length > 0){
+            cvr("#" + currentPageBTK).hide();
+        }
+
         if(rootTarget === "CVRMainQM"){
             uiRefBTK.core.switchCategorySelected("quickmenu-home");
+            currentMod = "CVR";
+            currentPageBTK = "CVRMainQM";
             return;
         }
 
         uiRefBTK.core.switchCategorySelected("btkUI");
 
-        //Clean things up before changing roots
-        if(currentMod !== rootMod && currentPageBTK.length > 0){
-               cvr("#" + currentPageBTK).hide();
+        currentPageBTK = "";
+
+        let targetTab = document.getElementById("btkUI-Tab-" + rootMod);
+
+        if(targetTab !== null) {
+            var tabs = document.querySelectorAll(".container-tabs .tab");
+            for (let i = 0; i < tabs.length; i++) {
+                let tab = tabs[i];
+                tab.classList.remove("selected");
+            }
+
+            targetTab.classList.add("selected");
         }
 
         updateTitle(menuTitle, menuSubtitle);
@@ -860,10 +1049,7 @@ cvr.menu.prototype.BTKUI = {
     btkDeleteElement: function (elementID){
         let element = document.getElementById(elementID);
 
-        if(element === null) {
-            console.log("Unable to find element with ID " + elementID + " unable to delete!");
-            return;
-        }
+        if(element === null) return;
 
         element.parentElement.removeChild(element);
 
@@ -937,6 +1123,106 @@ cvr.menu.prototype.BTKUI = {
         }
     },
 
+    btkSetCustomCSS: function(cssData) {
+        let style = document.createElement('style');
+        style.appendChild(document.createTextNode(cssData));
+        document.getElementsByTagName('head')[0].appendChild(style);
+    },
+
+    //BTKUILib custom element functions
+
+    btkAddCustomEngineFunction: function(functionName, functionCode, functionParams){
+        if(btkKnownEngineFunctions.includes(functionName) || functionName.startsWith("btk")) return;
+
+        console.log("Creating custom function " + functionName + " with code " + functionCode + " that has " + functionParams.length + " parameters");
+
+        let createdFunction = null;
+
+        switch(functionParams.length){
+            case 0:
+                createdFunction = new Function(functionCode);
+                break;
+            case 1:
+                createdFunction = new Function(functionParams[0], functionCode);
+                break;
+            case 2:
+                createdFunction = new Function(functionParams[0], functionParams[1], functionCode);
+                break;
+            case 3:
+                createdFunction = new Function(functionParams[0], functionParams[1], functionParams[2], functionCode);
+                break;
+            case 4:
+                createdFunction = new Function(functionParams[0], functionParams[1], functionParams[2], functionParams[3], functionCode);
+                break;
+            case 5:
+                createdFunction = new Function(functionParams[0], functionParams[1], functionParams[2], functionParams[3], functionParams[4], functionCode);
+                break;
+            case 6:
+                createdFunction = new Function(functionParams[0], functionParams[1], functionParams[2], functionParams[3], functionParams[4], functionParams[5], functionCode);
+                break;
+            case 7:
+                createdFunction = new Function(functionParams[0], functionParams[1], functionParams[2], functionParams[3], functionParams[4], functionParams[5], functionParams[6], functionCode);
+                break;
+            case 8:
+                createdFunction = new Function(functionParams[0], functionParams[1], functionParams[2], functionParams[3], functionParams[4], functionParams[5], functionParams[6], functionParams[7], functionCode);
+                break;
+        }
+
+        engine.on(functionName, createdFunction);
+    },
+
+    btkAddCustomAction: function(actionName, actionCode){
+        if(uiRefBTK.actions.includes(actionName)) return;
+
+        console.log("Creating custom action " + actionName + " with code " + actionCode);
+
+        uiRefBTK.actions[actionName] = new Function("e", actionCode);
+    },
+
+    btkCreateCustomGlobal: function(uuid, template){
+          cvr("#btkUI-SharedRoot").appendChild(cvr.render(JSON.parse(template), {
+              "[UUID]": uuid
+          }, uiRefBTK.templates, uiRefBTK.actions));
+    },
+
+    btkCreateCustomElementCategory: function(parent, uuid, template){
+        if(parent == null) {
+            console.error("Attempted to create a custom element in a parent that doesn't exist! - " + parent);
+            return;
+        }
+
+        cvr("#" + parent).appendChild(cvr.render(JSON.parse(template), {
+            "[UUID]": uuid
+        }, uiRefBTK.templates, uiRefBTK.actions));
+    },
+
+    btkCollapseCategory: function(rowTarget, state = null){
+        let rowElement = document.getElementById(rowTarget);
+        let collapseElement = document.getElementById(rowTarget + "-Collapse");
+
+        if(rowTarget === null)
+            return;
+
+        if(state === null) {
+            state = (rowElement.getAttribute("data-collapsed") === 'true');
+            state = !state;
+        }
+
+        if (state) {
+            rowElement.classList.add("hide");
+            collapseElement.classList.add("icon-expand");
+            collapseElement.classList.remove("icon-collapse");
+        } else {
+            rowElement.classList.remove("hide");
+            collapseElement.classList.remove("icon-expand");
+            collapseElement.classList.add("icon-collapse");
+        }
+
+        rowElement.setAttribute("data-collapsed", state.toString());
+
+        engine.call("btkUI-CollapseCategory", rowTarget, state);
+    },
+
     actions: {
         btkOpen: function(){
             uiRefBTK.core.playSoundCore("Click");
@@ -975,8 +1261,14 @@ cvr.menu.prototype.BTKUI = {
 
             let target = breadcrumbsBTK.pop();
 
+            if(target === "")
+                target = "CVRMainQM";
+
             cvr("#" + target).show();
             cvr("#" + currentPageBTK).hide();
+
+            if(target === "CVRMainQM")
+                uiRefBTK.core.switchCategorySelected("quickmenu-home");
 
             engine.call("btkUI-BackAction", target, currentPageBTK);
 
@@ -1080,6 +1372,8 @@ cvr.menu.prototype.BTKUI = {
         btkDropdownSelect: function(e){
             uiRefBTK.core.playSoundCore("Click");
             let dropdown = document.getElementById("btkUI-Dropdown-OptionRoot");
+            if(btkMultiSelectPLMode)
+                dropdown = document.getElementById("btkUI-DropdownPL-OptionRoot");
             let options = dropdown.getElementsByClassName("dropdown-option");
             let index = parseInt(e.currentTarget.getAttribute("data-index"));
 
@@ -1134,6 +1428,13 @@ cvr.menu.prototype.BTKUI = {
         btkToastDismiss: function (){
             uiRefBTK.core.playSoundCore("Click");
             cvr("#btkUI-AlertToastContainer").hide();
+        },
+        btkRowCollapse: function (e) {
+            uiRefBTK.core.playSoundCore("Click");
+
+            let rowTarget = e.currentTarget.getAttribute("data-row");
+
+            btkCollapseCatFunc(rowTarget);
         }
     }
 }

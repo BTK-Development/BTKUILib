@@ -64,6 +64,8 @@ namespace BTKUILib.UIObjects.Components
             _toggleName = toggleText;
             _toggleTooltip = toggleTooltip;
             _category = category;
+
+            Parent = category;
             
             ElementID = $"btkUI-Toggle-{UUID}";
         }
@@ -98,6 +100,8 @@ namespace BTKUILib.UIObjects.Components
         {
             if (!UIUtils.IsQMReady()) return;
 
+            if (RootPage is { IsVisible: false }) return;
+
             if(!IsGenerated)
                 UIUtils.GetInternalView().TriggerEvent("btkCreateToggle", _category.ElementID, _toggleName, UUID, _toggleTooltip, _toggleValue);
             
@@ -108,6 +112,8 @@ namespace BTKUILib.UIObjects.Components
 
         private void UpdateToggle()
         {
+            if(!IsVisible) return;
+
             if (!BTKUILib.Instance.IsOnMainThread())
             {
                 BTKUILib.Instance.MainThreadQueue.Enqueue(UpdateToggle);

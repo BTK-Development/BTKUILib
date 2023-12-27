@@ -31,35 +31,6 @@
 }
 
 #quickmenu-wrapper {
-  .btkUI-btn {
-    background-color: rgba(41, 41, 41, 0);
-    width: 150px;
-    height: 150px;
-    border-radius: 10px;
-    font-size: 36px;
-    text-align: center;
-    position: absolute;
-    left: 1280px;
-    top: 485px;
-
-    &:hover {
-      filter: brightness(75%);
-    }
-
-    .icon {
-      background: url("images/Multiuser.png");
-      background-size: cover;
-      background-repeat: no-repeat;
-
-      height: 150px;
-      width: 150px;
-      position: absolute;
-      margin-bottom: 100px;
-      padding: 10px;
-      z-index: 0;
-    }
-  }
-
   .quick-buttons-container{
     left: 13px;
   }
@@ -71,6 +42,16 @@
   .game-rules {
     z-index: 1;
     margin-top: 10px;
+  }
+
+  .icon-multiuser {
+    background: url("mods/BTKUI/images/Multiuser.png");
+    background-size: contain;
+    background-repeat: no-repeat;
+    font-size: 2vw;
+    text-align: center;
+    margin-top: 10px;
+    height: 100%;
   }
 
   .container-tabs {
@@ -90,6 +71,10 @@
       position: absolute;
       left: 182px;
       top: -5px;
+    }
+
+    .scroll-bg-left {
+      left: 352px !important;
     }
 
     .scroll-overlay{
@@ -127,6 +112,17 @@
         background-size: contain;
         background-repeat: no-repeat;
       }
+
+      .icon {
+        background: url("images/Multiuser.png");
+        background-size: contain;
+        background-repeat: no-repeat;
+
+        font-size: 2vw;
+        text-align: center;
+        margin-top: 10px;
+        height: 100%;
+      }
     }
 
     .tab:hover {
@@ -138,6 +134,12 @@
     .selected {
       border: 4px solid @color-btn-primary;
     }
+  }
+
+  .container-tabs-left {
+    left: -170px;
+    width: 1610px !important;
+    max-width: 1610px !important;
   }
 
   .container-tooltip {
@@ -320,6 +322,29 @@
       width: 100px;
     }
 
+    .icon-collapse {
+      background: url("images/Arrow Up.png");
+      background-size: cover;
+      background-repeat: no-repeat;
+      height: 90px;
+      width: 90px;
+    }
+
+    .icon-expand {
+      background: url("images/Arrow Up.png");
+      background-size: cover;
+      background-repeat: no-repeat;
+      transform: rotate(180deg);
+      height: 90px;
+      width: 90px;
+    }
+
+    .rowBorder {
+      border-bottom-color: @standard-text-color;
+      border-bottom-width: 4px;
+      border-bottom-style: solid;
+    }
+
     .icon-close {
       background: url("images/BTK-Close.png");
       background-size: cover;
@@ -385,12 +410,51 @@
       width: 100px;
     }
 
+    .icon-gear {
+      background: url("images/Settings.png");
+      background-size: cover;
+      background-repeat: no-repeat;
+      height: 100px;
+      width: 100px;
+    }
+
+    .icon-list {
+      background: url("images/BTKList.png");
+      background-size: cover;
+      background-repeat: no-repeat;
+      height: 100px;
+      width: 100px;
+    }
+
     .icon-close {
       background: url("images/BTK-Close.png");
       background-size: cover;
       background-repeat: no-repeat;
       height: 100px;
       width: 100px;
+    }
+
+    .icon-collapse {
+      background: url("images/Arrow Up.png");
+      background-size: cover;
+      background-repeat: no-repeat;
+      height: 90px;
+      width: 90px;
+    }
+
+    .icon-expand {
+      background: url("images/Arrow Up.png");
+      background-size: cover;
+      background-repeat: no-repeat;
+      transform: rotate(180deg);
+      height: 90px;
+      width: 90px;
+    }
+
+    .rowBorder {
+      border-bottom-color: @standard-text-color;
+      border-bottom-width: 4px;
+      border-bottom-style: solid;
     }
 
     .category-row {

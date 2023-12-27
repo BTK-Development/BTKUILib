@@ -138,8 +138,10 @@
         <Compile Include="QuickMenuAPI.cs" />
         <Compile Include="UIObjects\Category.cs" />
         <Compile Include="UIObjects\Components\Button.cs" />
+        <Compile Include="UIObjects\Components\CustomElement.cs" />
         <Compile Include="UIObjects\Components\SliderFloat.cs" />
         <Compile Include="UIObjects\Components\ToggleButton.cs" />
+        <Compile Include="UIObjects\Objects\CustomEngineOnFunction.cs" />
         <Compile Include="UIObjects\Objects\MultiSelection.cs" />
         <Compile Include="UIObjects\Page.cs" />
         <Compile Include="UIObjects\QMInteractable.cs" />
@@ -160,11 +162,16 @@
       <Content Include="CohtmlUI\BTKUI.css.map" />
       <Content Include="CohtmlUI\BTKUI.less" />
       <Content Include="CohtmlUI\images\Arrow Left.png" />
+      <Content Include="CohtmlUI\images\Arrow Up.png" />
       <Content Include="CohtmlUI\images\Checkmark.png" />
       <Content Include="CohtmlUI\images\Multiuser.png" />
+      <Content Include="CohtmlUI\images\Settings.png" />
       <Content Include="CohtmlUI\mod.js" />
       <Content Include="LICENSE" />
       <Content Include="README.md" />
+    </ItemGroup>
+    <ItemGroup>
+      <EmbeddedResource Include="CohtmlUI\images\BTKUILib\BTKList.png" />
     </ItemGroup>
     <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
     <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

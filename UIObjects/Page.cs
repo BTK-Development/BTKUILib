@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using ABI_RC.Core.InteractionSystem;
 using BTKUILib.UIObjects.Components;
+// ReSharper disable MethodOverloadWithOptionalParameter
 
 namespace BTKUILib.UIObjects
 {
@@ -18,7 +20,7 @@ namespace BTKUILib.UIObjects
             set
             {
                 _menuTitle = value;
-                if(!Protected)
+                if(!Protected && IsVisible)
                     QuickMenuAPI.UpdateMenuTitle(_menuTitle, _menuSubtitle);
             }
         }
@@ -32,7 +34,7 @@ namespace BTKUILib.UIObjects
             set
             {
                 _menuSubtitle = value;
-                if(!Protected)
+                if(!Protected && IsVisible)
                     QuickMenuAPI.UpdateMenuTitle(_menuTitle, _menuSubtitle);
             }
         }
@@ -45,16 +47,38 @@ namespace BTKUILib.UIObjects
             get => _displayName;
             set
             {
-                if (RootPage)
+                if (IsRootPage)
                 {
                     BTKUILib.Log.Warning("Setting the DisplayName on a Root Page will do nothing!");
                     return;
                 }
                 _displayName = value;
 
-                if (!UIUtils.IsQMReady() || !IsGenerated) return;
+                if (!UIUtils.IsQMReady() || !IsGenerated || !IsVisible) return;
 
                 UIUtils.GetInternalView().TriggerEvent("btkUpdatePageTitle", ElementID, value);
+            }
+        }
+
+        /// <summary>
+        /// Sets if this pages tab is visible or not
+        /// </summary>
+        public bool HideTab
+        {
+            get => _hideTab;
+            set
+            {
+                if (!IsRootPage || _noTab)
+                {
+                    BTKUILib.Log.Warning($"Page \"{PageName}\" of mod \"{ModName}\" does not have an associated tab! Cannot update tab state!");
+                    return;
+                }
+
+                _hideTab = value;
+
+                if (!UIUtils.IsQMReady() || !TabGenerated) return;
+
+                UIUtils.GetInternalView().TriggerEvent("btkUpdateTab", ModName, value);
             }
         }
 
@@ -67,10 +91,11 @@ namespace BTKUILib.UIObjects
             internal set => _subpageButton = value;
         }
 
-        internal bool RootPage;
+        internal bool IsRootPage;
         internal string PageName = "MainPage";
         internal readonly string ModName;
         internal bool InPlayerlist = false;
+        internal bool TabGenerated = false;
         private Button _subpageButton;
 
         private string _displayName;
@@ -79,40 +104,53 @@ namespace BTKUILib.UIObjects
         private string _menuTitle;
         private Category _category;
         private string _tabID;
+        private bool _noTab;
+        private bool _hideTab;
 
         /// <summary>
         /// Create a new page object, this will automatically be created within Cohtml when it is ready
         /// </summary>
         /// <param name="modName">Name of your mod, you can use this to have multiple mods use the same root tab</param>
         /// <param name="pageName">Name of the page, this isn't visible anywhere</param>
-        /// <param name="rootPage">Sets if this page should also generate a tab</param>
+        /// <param name="isRootPage">Sets if this page should also generate a tab</param>
         /// <param name="tabIcon">Icon to be displayed on the tab</param>
         /// <param name="category">Only set if this page was created from a category</param>
-        public Page(string modName, string pageName, bool rootPage = false, string tabIcon = null, Category category = null)
+        public Page(string modName, string pageName, bool isRootPage = false, string tabIcon = null, Category category = null) : this(modName, pageName, isRootPage, tabIcon, category, false){}
+
+        /// <summary>
+        /// Create a new page object, this will automatically be created within Cohtml when it is ready
+        /// </summary>
+        /// <param name="modName">Name of your mod, you can use this to have multiple mods use the same root tab</param>
+        /// <param name="pageName">Name of the page, this isn't visible anywhere</param>
+        /// <param name="isRootPage">Sets if this page should also generate a tab</param>
+        /// <param name="tabIcon">Icon to be displayed on the tab</param>
+        /// <param name="category">Only set if this page was created from a category</param>
+        /// <param name="noTab">Sets if this page should not generate a tab, only functions for rootpages</param>
+        public Page(string modName, string pageName, bool isRootPage, string tabIcon, Category category, bool noTab)
         {
-            if (!rootPage)
-            {
-                PageName = pageName;
-                _displayName = pageName;
-            }
+            PageName = pageName;
+            _displayName = pageName;
 
             ModName = modName;
-            RootPage = rootPage;
+            IsRootPage = isRootPage;
             _tabIcon = tabIcon;
             _category = category;
+            _noTab = noTab;
 
-            if(!rootPage)
+            Parent = category;
+
+            ElementID = $"btkUI-{UIUtils.GetCleanString(modName)}-{UIUtils.GetCleanString(pageName)}";
+
+            if (isRootPage)
             {
-                ElementID = $"btkUI-{UIUtils.GetCleanString(modName)}-{UIUtils.GetCleanString(pageName)}";
-            }
-            else
-            {
-                ElementID = $"btkUI-{UIUtils.GetCleanString(modName)}-MainPage";
+                UserInterface.Instance.RegisterRootPage(this);
                 _tabID = $"btkUI-Tab-{UIUtils.GetCleanString(modName)}";
             }
-            
-            if (rootPage) 
-                UserInterface.Instance.RegisterRootPage(this);
+
+            if (UserInterface.Instance.AddModPage(modName, this))
+            {
+                BTKUILib.Log.Warning($"The page \"{pageName}\" of mod \"{modName}\" appears to have already been created! Tell the creator of this to switch to Page.GetOrCreatePage to ensure they use the existing page properly!");
+            }
         }
 
         /// <summary>
@@ -128,11 +166,47 @@ namespace BTKUILib.UIObjects
         }
 
         /// <summary>
+        /// Attempts to get an existing page matching the modName and pageName given, otherwise creates a new page
+        /// </summary>
+        /// <param name="modName">Name of your mod, you can use this to have multiple mods use the same root tab</param>
+        /// <param name="pageName">Name of the page, this isn't visible anywhere</param>
+        /// <param name="isRootPage">Sets if this page should also generate a tab</param>
+        /// <param name="tabIcon">Icon to be displayed on the tab</param>
+        /// <param name="category">Only set if this page was created from a category</param>
+        /// <param name="noTab">Sets if this page should not generate a tab, only functions for rootpages</param>
+        /// <returns>New or existing page object</returns>
+        public static Page GetOrCreatePage(string modName, string pageName, bool isRootPage = false, string tabIcon = null, Category category = null, bool noTab = false)
+        {
+            if (UserInterface.ModPages.TryGetValue(modName, out var pages))
+            {
+                var page = pages.FirstOrDefault(x => x.PageName == pageName);
+
+                if (page != null)
+                    return page;
+            }
+
+            return new Page(modName, pageName, isRootPage, tabIcon, category, noTab);
+        }
+
+        /// <summary>
         /// Opens this page in Cohtml
         /// </summary>
         public void OpenPage()
         {
-            if (!UIUtils.IsQMReady() || !IsGenerated) return;
+            if (!UIUtils.IsQMReady()) return;
+
+            if (!RootPage.IsVisible && (RootPage != this || IsRootPage))
+            {
+                //We need to trigger a tab change first!
+                UserInterface.Instance.OnTabChange(ElementID);
+            }
+
+            if (!IsVisible && RootPage == this && !IsRootPage)
+            {
+                //This is a standalone "subpage" rootpage, don't reset the breadcrumbs!
+                IsVisible = true;
+                GenerateCohtml();
+            }
             
             UIUtils.GetInternalView().TriggerEvent("btkPushPage", ElementID);
         }
@@ -155,7 +229,20 @@ namespace BTKUILib.UIObjects
         /// <returns></returns>
         public Category AddCategory(string categoryName, bool showHeader)
         {
-            var category = new Category(categoryName, this, showHeader);
+            return AddCategory(categoryName, showHeader, true, false);
+        }
+
+        /// <summary>
+        /// Add a new category (row) to this page
+        /// </summary>
+        /// <param name="categoryName">Name of the category, displayed at the top</param>
+        /// <param name="showHeader">Sets if the header of this category is visible</param>
+        /// <param name="canCollapse">Sets if this category can be collapsed</param>
+        /// <param name="collapsed">Sets if this category should be created as collapsed</param>
+        /// <returns></returns>
+        public Category AddCategory(string categoryName, bool showHeader, bool canCollapse = true, bool collapsed = false)
+        {
+            var category = new Category(categoryName, this, showHeader, null, canCollapse, collapsed);
             SubElements.Add(category);
 
             if (UIUtils.IsQMReady())
@@ -243,7 +330,7 @@ namespace BTKUILib.UIObjects
 
             if (Protected) return;
             
-            if (RootPage)
+            if (IsRootPage)
             {
                 UserInterface.RootPages.Remove(this);
                 UIUtils.GetInternalView().TriggerEvent("btkDeleteElement", _tabID);
@@ -259,14 +346,28 @@ namespace BTKUILib.UIObjects
         /// </summary>
         public void ClearChildren()
         {
+            if(!IsVisible) return;
             UIUtils.GetInternalView().TriggerEvent("btkClearChildren", ElementID + "-Content");
         }
 
-        internal override void DeleteInternal()
+        internal void GenerateTab()
         {
-            base.DeleteInternal();
-            
-            if (RootPage)
+            if (!UIUtils.IsQMReady() || TabGenerated || _noTab || !IsRootPage) return;
+
+            UIUtils.GetInternalView().TriggerEvent("btkCreateTab", _displayName, ModName, _tabIcon, UIUtils.GetCleanString(PageName));
+
+            TabGenerated = true;
+
+            UIUtils.GetInternalView().TriggerEvent("btkUpdateTab", ModName, HideTab);
+        }
+
+        internal override void DeleteInternal(bool tabChange = false)
+        {
+            base.DeleteInternal(tabChange);
+
+            if(tabChange) return;
+
+            if (IsRootPage)
             {
                 UserInterface.RootPages.Remove(this);
                 UIUtils.GetInternalView().TriggerEvent("btkDeleteElement", _tabID);
@@ -275,21 +376,52 @@ namespace BTKUILib.UIObjects
             //Remove this page from the category list
             if(_category != null && _category.SubElements.Contains(this))
                 _category.SubElements.Remove(this);
+
+            SubElements.Clear();
         }
         
         internal override void GenerateCohtml()
         {
             if (!UIUtils.IsQMReady()) return;
 
-            if(!IsGenerated)
-                UIUtils.GetInternalView().TriggerEvent("btkCreatePage", _displayName, ModName, _tabIcon, ElementID, RootPage, UIUtils.GetCleanString(PageName), InPlayerlist);
-            
+            if (RootPage is { IsVisible: false }) return;
+
+            if (!IsGenerated)
+            {
+                UIUtils.GetInternalView().TriggerEvent("btkCreatePage", _displayName, ModName, _tabIcon, ElementID, IsRootPage, UIUtils.GetCleanString(PageName), InPlayerlist, _noTab);
+
+                if(!Protected)
+                    UserInterface.GeneratedPages.Add(this);
+            }
+
             IsGenerated = true;
             
             foreach (var category in SubElements)
             {
                 category.GenerateCohtml();
             }
+        }
+
+        internal void TabChange()
+        {
+            IsGenerated = false;
+
+            //Recursively delete sub elements that need special handling
+            foreach (var element in SubElements)
+            {
+                element.IsGenerated = false;
+
+                switch (element)
+                {
+                    case Category:
+                    case Page:
+                        element.DeleteInternal(true);
+                        break;
+                }
+            }
+
+            if (!UIUtils.IsQMReady()) return;
+            UIUtils.GetInternalView().TriggerEvent("btkDeleteElement", ElementID);
         }
     }
 }

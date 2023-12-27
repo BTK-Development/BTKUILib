@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using BTKUILib.UIObjects;
+using BTKUILib.UIObjects.Objects;
 using MelonLoader;
 
 namespace BTKUILib
@@ -12,22 +13,26 @@ namespace BTKUILib
         public const string Name = "BTKUILib";
         public const string Author = "BTK Development Team";
         public const string Company = "BTK Development";
-        public const string Version = "1.2.4";
+        public const string Version = "2.0.0";
     }
     
     internal class BTKUILib : MelonMod
     {
         internal static MelonLogger.Instance Log;
         internal static BTKUILib Instance;
+        internal static Page UISettingsPage;
 
         internal UserInterface UI;
         internal Queue<Action> MainThreadQueue = new();
         internal Dictionary<string, Page> MLPrefsPages = new();
+        internal MelonPreferences_Entry<string> PlayerListStyle;
 
         private MelonPreferences_Entry<bool> _displayPrefsTab;
 
         private Thread _mainThread;
         private Page _mlPrefsPage;
+        private MultiSelection _playerListButtonStyle;
+        private string[] _playerListOptions = { "Tab Bar", "Replace TTS", "Replace Events" };
 
         public override void OnInitializeMelon()
         {
@@ -39,18 +44,13 @@ namespace BTKUILib
 
             MelonPreferences.CreateCategory("BTKUILib", "BTKUILib");
             _displayPrefsTab = MelonPreferences.CreateEntry("BTKUILib", "DisplayPrefsTab", false, "Display MelonPrefs Tab", "Sets if the MelonLoader Prefs tab should be displayed");
-            _displayPrefsTab.OnEntryValueChanged.Subscribe((_, b1) =>
+            _displayPrefsTab.OnEntryValueChanged.Subscribe((b1, _) =>
             {
-                if (!b1 && _mlPrefsPage != null)
-                {
-                    _mlPrefsPage.DeleteInternal();
-                    _mlPrefsPage = null;
-                }
-                else
-                {
-                    GenerateMlPrefsTab();
-                }
+                if (_mlPrefsPage != null)
+                    _mlPrefsPage.HideTab = b1;
             });
+
+            PlayerListStyle = MelonPreferences.CreateEntry("BTKUILib", "PlayerListPosition", "Tab Bar", "PlayerList Button Position", "Sets where the playerlist button will appear");
             
             Patches.Initialize(HarmonyInstance);
 
@@ -60,17 +60,42 @@ namespace BTKUILib
             QuickMenuAPI.PlayerSelectPage = new Page("btkUI-PlayerSelectPage");
         }
 
+        internal void GenerateSettingsPage()
+        {
+            if (UISettingsPage != null) return;
+
+            UISettingsPage = new Page("btkUI-SettingsPage");
+            var mainCat = UISettingsPage.AddCategory("Main", false);
+
+            var prefsTabDisplay = mainCat.AddToggle("Show ML Prefs Tab", "Displays the MelonLoader prefs tab", _displayPrefsTab.Value);
+            prefsTabDisplay.OnValueUpdated += b =>
+            {
+                _displayPrefsTab.Value = b;
+            };
+
+            var openListStyle = mainCat.AddButton("Playerlist Button Position", "BTKList", "Change the position of the playerlist button");
+            openListStyle.OnPress += () =>
+            {
+                QuickMenuAPI.OpenMultiSelect(_playerListButtonStyle);
+            };
+
+            _playerListButtonStyle = new MultiSelection("PlayerList Button Position", _playerListOptions, Array.FindIndex(_playerListOptions, x => x.Contains(PlayerListStyle.Value)));
+            _playerListButtonStyle.OnOptionUpdated += i =>
+            {
+                QuickMenuAPI.ShowAlertToast("You must restart ChilloutVR for this change to apply!");
+                PlayerListStyle.Value = _playerListOptions[i];
+            };
+        }
+
         internal void GenerateMlPrefsTab()
         {
             if(_mlPrefsPage != null) return;
-            if (!_displayPrefsTab.Value) return;
 
-            _mlPrefsPage = new Page("MelonLoader", "Prefs", true, "Settings");
+            _mlPrefsPage = Page.GetOrCreatePage("MelonLoader", "Prefs", true, "Settings");
             _mlPrefsPage.MenuTitle = "MelonLoader Preferences";
             _mlPrefsPage.MenuSubtitle = "Control your MelonLoader Preferences from other mods!";
             _mlPrefsPage.Protected = true;
-            
-            _mlPrefsPage.GenerateCohtml();
+            _mlPrefsPage.HideTab = !_displayPrefsTab.Value;
 
             var prefCat = _mlPrefsPage.AddCategory("Categories");
 

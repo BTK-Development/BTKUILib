@@ -8,7 +8,6 @@ using ABI_RC.Core.Player;
 using BTKUILib.UIObjects;
 using BTKUILib.UIObjects.Components;
 using BTKUILib.UIObjects.Objects;
-using cohtml;
 using MelonLoader;
 using MelonLoader.ICSharpCode.SharpZipLib.Zip;
 
@@ -22,8 +21,15 @@ namespace BTKUILib
         internal static List<QMUIElement> QMElements = new();
         internal static Dictionary<string, SliderFloat> Sliders = new();
         internal static Dictionary<string, QMInteractable> Interactables = new();
-        internal static bool BTKUIReady; 
+        internal static List<string> CustomCSSStyles = new();
+        internal static List<CustomElement> CustomElements = new();
+        internal static Dictionary<string, List<Page>> ModPages = new();
+        internal static Dictionary<string, Category> Categories = new();
+        internal static List<Page> GeneratedPages = new();
+        internal static bool BTKUIReady;
+        internal static bool IsInPlayerList;
         internal MultiSelection SelectedMultiSelect;
+        internal static Page SelectedRootPage;
 
         private string _lastTab = "CVRMainQM";
 
@@ -46,8 +52,16 @@ namespace BTKUILib
             BTKUIReady = false;
 
             foreach (var element in QMElements)
+            {
                 element.IsGenerated = false;
-            
+                element.IsVisible = false;
+            }
+
+            foreach (var root in RootPages)
+            {
+                root.TabGenerated = false;
+            }
+
             CVR_MenuManager.Instance.quickMenu.View.BindCall("btkUI-ButtonAction", new Action<string>(HandleButtonAction));
             CVR_MenuManager.Instance.quickMenu.View.BindCall("btkUI-Toggle", new Action<string, bool>(OnToggle));
             CVR_MenuManager.Instance.quickMenu.View.BindCall("btkUI-PopupConfirmOK", new Action(ConfirmOK));
@@ -62,6 +76,16 @@ namespace BTKUILib
             CVR_MenuManager.Instance.quickMenu.View.BindCall("btkUI-TabChange", new Action<string>(OnTabChange));
             CVR_MenuManager.Instance.quickMenu.View.BindCall("btkUI-SelectedPlayer", new Action<string, string>(OnSelectedPlayer));
             CVR_MenuManager.Instance.quickMenu.View.BindCall("btkUI-UILoaded", new Action(OnMenuIsLoaded));
+            CVR_MenuManager.Instance.quickMenu.View.BindCall("btkUI-CollapseCategory", new Action<string, bool>(OnCollapseCategory));
+        }
+
+        private void OnCollapseCategory(string rowID, bool state)
+        {
+            if (!Categories.TryGetValue(rowID, out var category)) return;
+
+            category.Collapsed = state;
+
+            category.OnCollapse?.Invoke(state);
         }
 
         private void OnMenuIsLoaded()
@@ -69,23 +93,43 @@ namespace BTKUILib
             MelonDebug.Msg("BTKUILib menu is loaded, setting up!");
             
             QuickMenuAPI.OnMenuRegenerate?.Invoke(CVR_MenuManager.Instance);
+
+            foreach(var css in CustomCSSStyles)
+                UIUtils.GetInternalView().TriggerEvent("btkSetCustomCSS", css);
             
-            UIUtils.GetInternalView().TriggerEvent("btkModInit");
+            UIUtils.GetInternalView().TriggerEvent("btkModInit", BTKUILib.Instance.PlayerListStyle.Value);
 
             //Run the ml prefs tab generation
             BTKUILib.Instance.GenerateMlPrefsTab();
 
+            //Generate our settings page
+            BTKUILib.Instance.GenerateSettingsPage();
+
             //Set BTKUIReady before creating elements, but after generated MLPrefs tab to ensure ordering isn't weird
             BTKUIReady = true;
+            IsInPlayerList = false;
             
             //Begin creating the UI elements!
             foreach (var root in RootPages)
             {
                 MelonDebug.Msg($"Creating root page | Name: {root.PageName} | ModName: {root.ModName} | ElementID: {root.ElementID}");
-                root.GenerateCohtml();
+                root.GenerateTab();
             }
+
+            //Generate custom elements
+            foreach (var custom in CustomElements.Where(x => x.ElementType == ElementType.GlobalElement))
+            {
+                custom.GenerateCohtml();
+            }
+
+            QuickMenuAPI.PlayerSelectPage.IsVisible = true;
+            QuickMenuAPI.PlayerSelectPage.GenerateCohtml();
+            BTKUILib.UISettingsPage.IsVisible = true;
+            BTKUILib.UISettingsPage.GenerateCohtml();
+
+            QuickMenuAPI.OnMenuGenerated?.Invoke(CVR_MenuManager.Instance);
             
-            BTKUILib.Log.Msg($"Setup {RootPages.Count} root pages! BTKUILib is ready!");
+            BTKUILib.Log.Msg($"Setup {RootPages.Count} root pages and {CustomElements.Count} custom elements! BTKUILib is ready!");
         }
 
         internal void RegisterRootPage(Page rootPage)
@@ -95,7 +139,25 @@ namespace BTKUILib
             if (!UIUtils.IsQMReady()) return;
             
             MelonDebug.Msg($"Creating root page | Name: {rootPage.PageName} | ModName: {rootPage.ModName} | ElementID: {rootPage.ElementID}");
-            rootPage.GenerateCohtml();
+            rootPage.GenerateTab();
+        }
+
+        //Store all pages connected to a specific mod name to catch unintended cases like orphaned pages
+        internal bool AddModPage(string modName, Page page)
+        {
+            bool duplicate = false;
+
+            var modPageList = ModPages.TryGetValue(modName, out var pageList) ? pageList : new List<Page>();
+
+            if (modPageList.Any(x => x.PageName == page.PageName))
+                duplicate = true;
+
+            modPageList.Add(page);
+
+            if(!ModPages.ContainsKey(modName))
+                ModPages.Add(modName, modPageList);
+
+            return duplicate;
         }
 
         private void UserLeave(CVRPlayerEntity obj)
@@ -121,9 +183,29 @@ namespace BTKUILib
             QuickMenuAPI.SelectedPlayerID = playerID;
             QuickMenuAPI.OnPlayerSelected?.Invoke(playerName, playerID);
         }
-        
-        private void OnTabChange(string tabTarget)
+
+        internal void OnTabChange(string tabTarget)
         {
+            IsInPlayerList = false;
+
+            if (SelectedRootPage != null && SelectedRootPage.ElementID != tabTarget)
+            {
+                SelectedRootPage.TabChange();
+                SelectedRootPage.IsVisible = false;
+
+                //Catch orphaned of injected root pages
+                foreach (var page in GeneratedPages)
+                {
+                    page.DeleteInternal(true);
+                    if (page.RootPage == page)
+                        page.IsVisible = false;
+                }
+
+                GeneratedPages.Clear();
+
+                SelectedRootPage = null;
+            }
+
             if (tabTarget == "CVRMainQM")
             {
                 UIUtils.GetInternalView().TriggerEvent("btkChangeTab", tabTarget, "CVR", "", "");
@@ -138,6 +220,23 @@ namespace BTKUILib
             {
                 BTKUILib.Log.Error("RootPage was not found! Cannot switch tabs!");
                 return;
+            }
+
+            SelectedRootPage = root;
+
+            root.IsVisible = true;
+            root.GenerateCohtml();
+
+            if (ModPages.TryGetValue(root.ModName, out var pages))
+            {
+                foreach (var page in pages)
+                {
+                    //Hacky, make sure disconnected root pages get IsVisible set correctly
+                    if (page.RootPage == page)
+                        page.IsVisible = true;
+                    if(!page.IsGenerated)
+                        page.GenerateCohtml();
+                }
             }
             
             UIUtils.GetInternalView().TriggerEvent("btkChangeTab", tabTarget, root.ModName, root.MenuTitle, root.MenuSubtitle);
@@ -184,11 +283,19 @@ namespace BTKUILib
         
         private void OnBackActionEvent(string targetPage, string lastPage)
         {
+            if (targetPage == "btkUI-PlayerList")
+                IsInPlayerList = true;
+            if (lastPage == "btkUI-PlayerList")
+                IsInPlayerList = false;
+
             QuickMenuAPI.OnBackAction?.Invoke(targetPage, lastPage);
         }
 
         private void OnOpenedPageEvent(string targetPage, string lastPage)
         {
+            if (targetPage == "btkUI-PlayerList")
+                IsInPlayerList = true;
+
             QuickMenuAPI.OnOpenedPage?.Invoke(targetPage, lastPage);
         }
         
