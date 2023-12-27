@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using ABI_RC.Core.InteractionSystem;
 using BTKUILib.UIObjects.Components;
@@ -280,6 +281,7 @@ namespace BTKUILib.UIObjects
         /// <param name="minValue">Minimum value that the slider can slide to</param>
         /// <param name="maxValue">Maximum value the slider can slide to</param>
         /// <returns></returns>
+        [Obsolete("You should move to using Category.AddSlider instead of Page.AddSlider! This function may be removed in future versions of UILib!")]
         public SliderFloat AddSlider(string sliderName, string sliderTooltip, float initialValue, float minValue, float maxValue)
         {
             return AddSlider(sliderName, sliderTooltip, initialValue, minValue, maxValue, 2, 0f, false);
@@ -295,6 +297,7 @@ namespace BTKUILib.UIObjects
         /// <param name="maxValue">Maximum value the slider can slide to</param>
         /// <param name="decimalPlaces">Set the number of decimal places displayed on the slider</param>
         /// <returns></returns>
+        [Obsolete("You should move to using Category.AddSlider instead of Page.AddSlider! This function may be removed in future versions of UILib!")]
         public SliderFloat AddSlider(string sliderName, string sliderTooltip, float initialValue, float minValue, float maxValue, int decimalPlaces)
         {
             return AddSlider(sliderName, sliderTooltip, initialValue, minValue, maxValue, decimalPlaces, 0f, false);
@@ -312,6 +315,7 @@ namespace BTKUILib.UIObjects
         /// <param name="defaultValue">Default value for this slider</param>
         /// <param name="allowReset">Allow this slider to be reset using the reset button</param>
         /// <returns></returns>
+        [Obsolete("You should move to using Category.AddSlider instead of Page.AddSlider! This function may be removed in future versions of UILib!")]
         public SliderFloat AddSlider(string sliderName, string sliderTooltip, float initialValue, float minValue, float maxValue, int decimalPlaces, float defaultValue, bool allowReset)
         {
             var slider = new SliderFloat(this, sliderName, sliderTooltip, initialValue, minValue, maxValue, decimalPlaces, defaultValue, allowReset);
