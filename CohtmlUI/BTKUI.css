@@ -345,6 +345,26 @@
   height: 100px;
   width: 100px;
 }
+.btkUI .container-controls-playerlist .icon-collapse {
+  background: url("images/Arrow Up.png");
+  background-size: cover;
+  background-repeat: no-repeat;
+  height: 90px;
+  width: 90px;
+}
+.btkUI .container-controls-playerlist .icon-expand {
+  background: url("images/Arrow Up.png");
+  background-size: cover;
+  background-repeat: no-repeat;
+  transform: rotate(180deg);
+  height: 90px;
+  width: 90px;
+}
+.btkUI .container-controls-playerlist .rowBorder {
+  border-bottom-color: #D2D2D2;
+  border-bottom-width: 4px;
+  border-bottom-style: solid;
+}
 .btkUI .container-controls-playerlist .category-row {
   margin-top: 10px;
   margin-bottom: 10px;
