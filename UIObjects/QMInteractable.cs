@@ -15,5 +15,12 @@
         {
 
         }
+
+        internal override void DeleteInternal(bool tabChange = false)
+        {
+            base.DeleteInternal(tabChange);
+
+            UserInterface.Interactables.Remove(UUID);
+        }
     }
 }

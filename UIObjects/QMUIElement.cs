@@ -98,6 +98,10 @@ namespace BTKUILib.UIObjects
         /// Set to prevent changes to some elements (Internal use)
         /// </summary>
         internal bool Protected;
+        /// <summary>
+        /// Set to keep track of deleted elements during a ClearChildren
+        /// </summary>
+        internal bool Deleted;
 
         /// <summary>
         /// This list contains elements that are children of this element (categories/pages)
@@ -148,6 +152,8 @@ namespace BTKUILib.UIObjects
                         break;
                 }
             }
+
+            Deleted = true;
 
             if (!UIUtils.IsQMReady()) return;
             UIUtils.GetInternalView().TriggerEvent("btkDeleteElement", ElementID);

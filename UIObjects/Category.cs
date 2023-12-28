@@ -202,6 +202,24 @@ namespace BTKUILib.UIObjects
         /// </summary>
         public void ClearChildren()
         {
+            //Iterate through each subelement and ensure ClearChildren and Delete is fired
+            foreach (var subElement in SubElements.ToArray())
+            {
+                if(subElement.Deleted) continue;
+
+                switch (subElement)
+                {
+                    case Page page:
+                        page.ClearChildren();
+                        break;
+                    case Category cat:
+                        cat.ClearChildren();
+                        break;
+                }
+
+                subElement.Delete();
+            }
+
             SubElements.Clear();
 
             if(UIUtils.IsQMReady() && IsVisible)
