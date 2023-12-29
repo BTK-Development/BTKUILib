@@ -67,7 +67,7 @@ namespace BTKUILib
             CVR_MenuManager.Instance.quickMenu.View.BindCall("btkUI-PopupConfirmOK", new Action(ConfirmOK));
             CVR_MenuManager.Instance.quickMenu.View.BindCall("btkUI-PopupConfirmNo", new Action(ConfirmNo));
             CVR_MenuManager.Instance.quickMenu.View.BindCall("btkUI-PopupNoticeOK", new Action(NoticeClose));
-            CVR_MenuManager.Instance.quickMenu.View.BindCall("btkUI-SliderValueUpdated", new Action<string, string>(OnSliderUpdated));
+            CVR_MenuManager.Instance.quickMenu.View.BindCall("btkUI-SliderValueUpdated", new Action<string, string, bool>(OnSliderUpdated));
             CVR_MenuManager.Instance.quickMenu.View.BindCall("btkUI-OpenedPage", new Action<string, string>(OnOpenedPageEvent));
             CVR_MenuManager.Instance.quickMenu.View.BindCall("btkUI-BackAction", new Action<string, string>(OnBackActionEvent));
             CVR_MenuManager.Instance.quickMenu.View.BindCall("btkUI-DropdownSelected", new Action<int>(DropdownSelected));
@@ -299,7 +299,7 @@ namespace BTKUILib
             QuickMenuAPI.OnOpenedPage?.Invoke(targetPage, lastPage);
         }
         
-        private void OnSliderUpdated(string sliderID, string value)
+        private void OnSliderUpdated(string sliderID, string value, bool resetFired)
         {
             if (!float.TryParse(value, out var valueFloat))
                 return;
@@ -307,6 +307,10 @@ namespace BTKUILib
             if (!Sliders.ContainsKey(sliderID)) return;
 
             Sliders[sliderID].SliderValue = valueFloat;
+
+            if (!resetFired) return;
+
+            Sliders[sliderID].OnSliderReset?.Invoke();
         }
 
         private void OnToggle(string toggleID, bool state)

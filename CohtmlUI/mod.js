@@ -580,7 +580,7 @@ cvr.menu.prototype.BTKUI = {
             cvr("#btkUI-SliderReset-" + sliderID).hide();
         }
 
-        engine.call("btkUI-SliderValueUpdated", sliderID, newValue);
+        engine.call("btkUI-SliderValueUpdated", sliderID, newValue, false);
     },
 
     btkSliderSetValue: function (sliderID, value){
@@ -1351,7 +1351,7 @@ cvr.menu.prototype.BTKUI = {
             let defaultValue = e.currentTarget.getAttribute("data-defaultvalue");
 
             setSliderFunctionBTK(sliderID, defaultValue);
-            engine.call("btkUI-SliderValueUpdated", sliderID, defaultValue);
+            engine.call("btkUI-SliderValueUpdated", sliderID, defaultValue, true);
         },
         btkDropdownSelect: function(e){
             uiRefBTK.core.playSoundCore("Click");

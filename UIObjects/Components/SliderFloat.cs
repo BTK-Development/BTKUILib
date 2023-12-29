@@ -117,6 +117,10 @@ namespace BTKUILib.UIObjects.Components
         /// Action to listen for changes of the value for the slider
         /// </summary>
         public Action<float> OnValueUpdated;
+        /// <summary>
+        /// Fired when the reset button is used on a slider
+        /// </summary>
+        public Action OnSliderReset;
 
         private float _sliderValue;
         private string _sliderName;
