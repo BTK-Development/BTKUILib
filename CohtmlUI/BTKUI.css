@@ -412,6 +412,9 @@
   font-size: 36px;
   display: inline;
 }
+.btkUI .slider-root {
+  padding-top: 10px;
+}
 .btkUI .slider-root .resetButton {
   border: 3px solid #D2D2D2;
   border-radius: 10px;
