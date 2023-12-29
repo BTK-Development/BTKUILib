@@ -21,6 +21,9 @@ namespace BTKUILib.UIObjects
             }
         }
 
+        /// <summary>
+        /// Fired when a category is collapsed or expanded
+        /// </summary>
         public Action<bool> OnCollapse;
 
         internal string ModName => _modName ?? LinkedPage.ModName;
