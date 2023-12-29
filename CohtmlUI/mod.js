@@ -204,7 +204,6 @@ cvr.menu.prototype.BTKUI = {
 
         menu.templates["btkUIRowContent"] = {c:"row justify-content-start", a:{"id": "btkUI-Row-[UUID]", "data-collapsed": "false"}};
         menu.templates["btkSlider"] = {c:"slider-root row", s:[{c:"col-9", s:[{c:"text-title", h:"[slider-name] - [current-value]", a:{"id": "btkUI-SliderTitle-[slider-id]", "data-title": "[slider-name]"}}]}, {c:"col", s:[{c:"resetButton hide", x: "btkUI-SliderReset", s: [{c:"text", h:"Reset"}], a: {"id": "btkUI-SliderReset-[slider-id]", "data-sliderid": "[slider-id]", "data-defaultvalue": "[default-value]"}},]}, {c: "col-12", s:[{c:"slider", s:[{c:"sliderBar", s:[{c:"slider-knob", a:{"id": "btkUI-SliderKnob-[slider-id]"}}], a:{"id": "btkUI-SliderBar-[slider-id]"}}], a:{"id":"btkUI-Slider-[slider-id]", "data-slider-id": "[slider-id]", "data-slider-value": "[current-value]", "data-min": "[min-value]", "data-max": "[max-value]", "data-rounding": "[decimal-point]", "data-default": "[default-value]", "data-allow-reset": "[allow-reset]"}}], a:{"id":"btkUI-Slider-[slider-id]-Tooltip", "data-tooltip": "[tooltip-text]"}}]};
-        menu.templates["btkSliderCategory"] = {c:"slider-root col-12", s:[{c:"col-9", s:[{c:"text-title", h:"[slider-name] - [current-value]", a:{"id": "btkUI-SliderTitle-[slider-id]", "data-title": "[slider-name]"}}]}, {c:"col", s:[{c:"resetButton hide", x: "btkUI-SliderReset", s: [{c:"text", h:"Reset"}], a: {"id": "btkUI-SliderReset-[slider-id]", "data-sliderid": "[slider-id]", "data-defaultvalue": "[default-value]"}},]}, {c: "col-12", s:[{c:"slider", s:[{c:"sliderBar", s:[{c:"slider-knob", a:{"id": "btkUI-SliderKnob-[slider-id]"}}], a:{"id": "btkUI-SliderBar-[slider-id]"}}], a:{"id":"btkUI-Slider-[slider-id]", "data-slider-id": "[slider-id]", "data-slider-value": "[current-value]", "data-min": "[min-value]", "data-max": "[max-value]", "data-rounding": "[decimal-point]", "data-default": "[default-value]", "data-allow-reset": "[allow-reset]"}}], a:{"id":"btkUI-Slider-[slider-id]-Tooltip", "data-tooltip": "[tooltip-text]"}}]};
         menu.templates["btkToggle"] = {c:"col-3", a:{"id": "btkUI-Toggle-[toggle-id]-Root"}, s:[{c: "toggle", s:[{c:"row", s:[{c:"col align-content-start", s:[{c:"enable circle", a:{"id": "btkUI-toggle-enable"}}]}, {c:"col align-content-end", s:[{c:"disable circle active", a:{"id": "btkUI-toggle-disable"}}]}]},{c:"text-sm", h:"[toggle-name]", a:{"id": "btkUI-Toggle-[toggle-id]-Text"}}], x: "btkUI-Toggle", a:{"id": "btkUI-Toggle-[toggle-id]", "data-toggle": "[toggle-id]", "data-toggleState": "false", "data-tooltip": "[tooltip-data]"}}]};
         menu.templates["btkButton"] = {c:"col-3", a:{"id": "btkUI-Button-[UUID]"}, s:[{c: "button", s:[{c:"icon", a:{"id": "btkUI-Button-[UUID]-Image"}}, {c:"text", h:"[button-text]", a:{"id": "btkUI-Button-[UUID]-Text"}}], x: "btkUI-ButtonAction", a:{"id": "btkUI-Button-[UUID]-Tooltip","data-tooltip": "[button-tooltip]", "data-action": "[button-action]"}}]};
         menu.templates["btkButtonFullImage"] = {c:"col-3", a:{"id": "btkUI-Button-[UUID]"}, s:[{c: "button-fullImage", s:[{c:"text", h:"[button-text]", a:{"id": "btkUI-Button-[UUID]-Text"}}], x: "btkUI-ButtonAction", a:{"id": "btkUI-Button-[UUID]-Tooltip","data-tooltip": "[button-tooltip]", "data-action": "[button-action]"}}]};
@@ -446,34 +445,17 @@ cvr.menu.prototype.BTKUI = {
             return;
         }
 
-        let slider;
-
-        if(!categoryMode){
-            slider = cvr.render(uiRefBTK.templates["btkSlider"], {
-                "[slider-name]": settings.SliderName,
-                "[slider-id]": sliderID,
-                "[current-value]": currentValue.toFixed(settings.DecimalPlaces),
-                "[min-value]": settings.MinValue,
-                "[max-value]": settings.MaxValue,
-                "[tooltip-text]": settings.SliderTooltip,
-                "[decimal-point]": settings.DecimalPlaces,
-                "[default-value]": settings.DefaultValue,
-                "[allow-reset]": settings.AllowDefaultReset
-            }, uiRefBTK.templates, uiRefBTK.actions);
-        }
-        else{
-            slider = cvr.render(uiRefBTK.templates["btkSliderCategory"], {
-                "[slider-name]": settings.SliderName,
-                "[slider-id]": sliderID,
-                "[current-value]": currentValue.toFixed(settings.DecimalPlaces),
-                "[min-value]": settings.MinValue,
-                "[max-value]": settings.MaxValue,
-                "[tooltip-text]": settings.SliderTooltip,
-                "[decimal-point]": settings.DecimalPlaces,
-                "[default-value]": settings.DefaultValue,
-                "[allow-reset]": settings.AllowDefaultReset
-            }, uiRefBTK.templates, uiRefBTK.actions);
-        }
+        let slider = cvr.render(uiRefBTK.templates["btkSlider"], {
+            "[slider-name]": settings.SliderName,
+            "[slider-id]": sliderID,
+            "[current-value]": currentValue.toFixed(settings.DecimalPlaces),
+            "[min-value]": settings.MinValue,
+            "[max-value]": settings.MaxValue,
+            "[tooltip-text]": settings.SliderTooltip,
+            "[decimal-point]": settings.DecimalPlaces,
+            "[default-value]": settings.DefaultValue,
+            "[allow-reset]": settings.AllowDefaultReset
+        }, uiRefBTK.templates, uiRefBTK.actions);
 
         parentElement.appendChild(slider);
 
@@ -574,8 +556,8 @@ cvr.menu.prototype.BTKUI = {
         currentSliderKnobBTK.style.left = current + 'px';
 
         //Update the slider value
-        let sliderMin = parseInt(currentDraggedSliderBTK.getAttribute("data-min"));
-        let sliderMax = parseInt(currentDraggedSliderBTK.getAttribute("data-max"));
+        let sliderMin = parseFloat(currentDraggedSliderBTK.getAttribute("data-min"));
+        let sliderMax = parseFloat(currentDraggedSliderBTK.getAttribute("data-max"));
         let decimalPoint = parseInt(currentDraggedSliderBTK.getAttribute("data-rounding"));
         let defaultValue = parseFloat(currentDraggedSliderBTK.getAttribute("data-default"));
         let allowReset = (currentDraggedSliderBTK.getAttribute("data-allow-reset") === 'true');
@@ -612,8 +594,8 @@ cvr.menu.prototype.BTKUI = {
             return;
         }
 
-        let sliderMin = parseInt(slider.getAttribute("data-min"));
-        let sliderMax = parseInt(slider.getAttribute("data-max"));
+        let sliderMin = parseFloat(slider.getAttribute("data-min"));
+        let sliderMax = parseFloat(slider.getAttribute("data-max"));
         let decimalPoint = parseInt(slider.getAttribute("data-rounding"));
         let defaultValue = parseFloat(slider.getAttribute("data-default"));
         let allowReset = (slider.getAttribute("data-allow-reset") === 'true');
@@ -647,6 +629,7 @@ cvr.menu.prototype.BTKUI = {
           let sliderText = document.getElementById("btkUI-SliderTitle-" + sliderID);
           let sliderData = document.getElementById("btkUI-Slider-" + sliderID);
           let sliderTT = document.getElementById("btkUI-Slider-" + sliderID + "-Tooltip");
+          let sliderReset = document.getElementById("btkUI-SliderReset-" + sliderID);
 
           sliderText.setAttribute("data-title", settings.SliderName);
           sliderData.setAttribute("data-min", settings.MinValue);
@@ -654,6 +637,7 @@ cvr.menu.prototype.BTKUI = {
           sliderTT.setAttribute("data-tooltip", settings.SliderTooltip);
           sliderData.setAttribute("data-rounding", settings.DecimalPlaces);
           sliderData.setAttribute("data-default", settings.DefaultValue);
+          sliderReset.setAttribute("data-defaultvalue", settings.DefaultValue);
 
           let value = Number(sliderData.getAttribute("data-slider-value"));
 
