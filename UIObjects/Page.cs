@@ -189,10 +189,15 @@ namespace BTKUILib.UIObjects
             return new Page(modName, pageName, isRootPage, tabIcon, category, noTab);
         }
 
+        public void OpenPage()
+        {
+            OpenPage(false);
+        }
+
         /// <summary>
         /// Opens this page in Cohtml
         /// </summary>
-        public void OpenPage()
+        public void OpenPage(bool resetBreadcrumbs)
         {
             if (!UIUtils.IsQMReady()) return;
 
@@ -207,6 +212,12 @@ namespace BTKUILib.UIObjects
                 //This is a standalone "subpage" rootpage, don't reset the breadcrumbs!
                 IsVisible = true;
                 GenerateCohtml();
+            }
+
+            if (resetBreadcrumbs)
+            {
+                UIUtils.GetInternalView().TriggerEvent("btkPushPage", ElementID, RootPage.ElementID, true);
+                return;
             }
             
             UIUtils.GetInternalView().TriggerEvent("btkPushPage", ElementID);
