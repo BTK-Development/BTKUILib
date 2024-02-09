@@ -331,6 +331,13 @@
   height: 100px;
   width: 100px;
 }
+.btkUI .container-controls-playerlist .icon-close {
+  background: url("images/BTKClose.png");
+  background-size: cover;
+  background-repeat: no-repeat;
+  height: 100px;
+  width: 100px;
+}
 .btkUI .container-controls-playerlist .icon-list {
   background: url("images/BTKList.png");
   background-size: cover;

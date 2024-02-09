@@ -25,6 +25,7 @@ cvr.menu.prototype.BTKUI = {
     btkMultiSelectPLMode: false,
     btkCollapseCatFunc: {},
     btkBackFunc: {},
+    btkRootPageTarget: "",
 
     info: function(){
         return {
@@ -78,6 +79,7 @@ cvr.menu.prototype.BTKUI = {
         btkMultiSelectPLMode = false;
         btkCollapseCatFunc = this.btkCollapseCategory;
         btkBackFunc = this.btkBackFunction;
+        btkRootPageTarget = "";
 
         menu.templates["btkUI-shared"] = {c: "btkUI-shared hide", s:[
                 {c: "container btk-popup-container hide", a: {"id": "btkUI-PopupConfirm"}, s:[
@@ -98,6 +100,16 @@ cvr.menu.prototype.BTKUI = {
                         {c:"row justify-content-center", s:[
                                 {c:"col offset-4 align-self-center", s:[{c:"button", s:[{c:"text", h:"OK", a: {"id": "btkUI-PopupNoticeOK"}}], x:"btkUI-NoticeClose"}]}
                             ]},
+                    ]},
+                {c: "container btk-popup-container hide", a: {"id": "btkUI-ContextMenu"}, s:[
+                        {c:"row", s:[
+                                {c:"col align-self-center", s:[{c:"header", h:"Context Menu", a: {"id": "btkUI-ContextMenuHeader"}}]},
+                                {c:"col-1", s:[{c: "icon-close", x: "btkUI-closeContext"}]}
+                            ]},
+                        {c: "scroll-view", s:[
+                                {c: "content scroll-content", s:[], a:{"id": "btkUI-ContextMenu-Content"}},
+                                {c: "scroll-marker-v"}
+                            ]}
                     ]},
                 {c: "container container-tabs container-tabs-left", s:[
                         {c:"row", s:[
@@ -841,7 +853,7 @@ cvr.menu.prototype.BTKUI = {
         currentPageBTK = "btkUI-NumberEntry";
     },
 
-    btkPushPage: function (targetPage, modPage = currentMod, resetBreadcrumbs = false){
+    btkPushPage: function (targetPage, resetBreadcrumbs = false, modPage = currentMod){
         if(currentPageBTK === targetPage)
             return;
 
@@ -863,8 +875,10 @@ cvr.menu.prototype.BTKUI = {
 
             breadcrumbsBTK.length = 0;
 
-            if(resetBreadcrumbs)
-                breadcrumbsBTK.push(currentMod);
+            if(resetBreadcrumbs) {
+                breadcrumbsBTK.push(btkRootPageTarget);
+                return;
+            }
 
             breadcrumbsBTK.push(targetPage);
         }
@@ -1014,6 +1028,7 @@ cvr.menu.prototype.BTKUI = {
         uiRefBTK.core.switchCategorySelected("btkUI");
 
         currentPageBTK = "";
+        btkRootPageTarget = rootTarget;
 
         let targetTab = document.getElementById("btkUI-Tab-" + rootMod);
 
@@ -1029,7 +1044,7 @@ cvr.menu.prototype.BTKUI = {
 
         updateTitle(menuTitle, menuSubtitle);
 
-        pushPageBTK(rootTarget, rootMod);
+        pushPageBTK(rootTarget, false, rootMod);
     },
 
     btkUpdateTitle: function (menuTitle, menuSubtitle){
