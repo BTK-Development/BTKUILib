@@ -70,6 +70,11 @@ namespace BTKUILib
         public static Page PlayerSelectPage { get; internal set; }
 
         /// <summary>
+        /// Contains the currently opened page element ID
+        /// </summary>
+        public static string CurrentPageID { get; internal set; } = "CVRMainQM";
+
+        /// <summary>
         /// Creates or returns a basic Misc tab page for use by mods not requiring a full tab
         /// </summary>
         public static Page MiscTabPage
@@ -265,6 +270,14 @@ namespace BTKUILib
             if (!UIUtils.IsQMReady()) return;
             
             UIUtils.GetInternalView().TriggerEvent("btkAlertToast", message, delay);
+        }
+
+
+        public static void GoBack()
+        {
+            if (!UIUtils.IsQMReady()) return;
+
+            UIUtils.GetInternalView().TriggerEvent("btkBack");
         }
 
         /// <summary>

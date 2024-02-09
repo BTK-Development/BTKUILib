@@ -24,6 +24,7 @@ cvr.menu.prototype.BTKUI = {
     btkLastTab: "",
     btkMultiSelectPLMode: false,
     btkCollapseCatFunc: {},
+    btkBackFunc: {},
 
     info: function(){
         return {
@@ -76,6 +77,7 @@ cvr.menu.prototype.BTKUI = {
         btkLastTab = "";
         btkMultiSelectPLMode = false;
         btkCollapseCatFunc = this.btkCollapseCategory;
+        btkBackFunc = this.btkBackFunction;
 
         menu.templates["btkUI-shared"] = {c: "btkUI-shared hide", s:[
                 {c: "container btk-popup-container hide", a: {"id": "btkUI-PopupConfirm"}, s:[
@@ -275,6 +277,7 @@ cvr.menu.prototype.BTKUI = {
         engine.on("btkCreateTab", this.btkCreateTab);
         engine.on("btkUpdateTab", this.btkUpdateTab);
         engine.on("btkCollapseCategory", this.btkCollapseCategory);
+        engine.on("btkBack", this.btkBackFunction);
     },
 
     init: function(menu){
@@ -838,7 +841,7 @@ cvr.menu.prototype.BTKUI = {
         currentPageBTK = "btkUI-NumberEntry";
     },
 
-    btkPushPage: function (targetPage, modPage = currentMod){
+    btkPushPage: function (targetPage, modPage = currentMod, resetBreadcrumbs = false){
         if(currentPageBTK === targetPage)
             return;
 
@@ -854,11 +857,15 @@ cvr.menu.prototype.BTKUI = {
 
         currentPageBTK = targetPage;
 
-        if(modPage !== currentMod){
+        if(modPage !== currentMod || resetBreadcrumbs){
             //We're going to a new root page, clear the breadcrumbs
             currentMod = modPage;
 
             breadcrumbsBTK.length = 0;
+
+            if(resetBreadcrumbs)
+                breadcrumbsBTK.push(currentMod);
+
             breadcrumbsBTK.push(targetPage);
         }
     },
@@ -1207,6 +1214,23 @@ cvr.menu.prototype.BTKUI = {
         engine.call("btkUI-CollapseCategory", rowTarget, state);
     },
 
+    btkBackFunction: function(){
+        let target = breadcrumbsBTK.pop();
+
+        if(target === "")
+            target = "CVRMainQM";
+
+        cvr("#" + target).show();
+        cvr("#" + currentPageBTK).hide();
+
+        if(target === "CVRMainQM")
+            uiRefBTK.core.switchCategorySelected("quickmenu-home");
+
+        engine.call("btkUI-BackAction", target, currentPageBTK);
+
+        currentPageBTK = target;
+    },
+
     actions: {
         btkOpen: function(){
             uiRefBTK.core.playSoundCore("Click");
@@ -1243,20 +1267,7 @@ cvr.menu.prototype.BTKUI = {
         btkBack: function (){
             uiRefBTK.core.playSoundCore("Click");
 
-            let target = breadcrumbsBTK.pop();
-
-            if(target === "")
-                target = "CVRMainQM";
-
-            cvr("#" + target).show();
-            cvr("#" + currentPageBTK).hide();
-
-            if(target === "CVRMainQM")
-                uiRefBTK.core.switchCategorySelected("quickmenu-home");
-
-            engine.call("btkUI-BackAction", target, currentPageBTK);
-
-            currentPageBTK = target;
+            btkBackFunc();
         },
         btkHome: function (){
             uiRefBTK.core.playSoundCore("Click");

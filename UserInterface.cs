@@ -288,6 +288,8 @@ namespace BTKUILib
             if (lastPage == "btkUI-PlayerList")
                 IsInPlayerList = false;
 
+            QuickMenuAPI.CurrentPageID = targetPage;
+
             QuickMenuAPI.OnBackAction?.Invoke(targetPage, lastPage);
         }
 
@@ -295,6 +297,8 @@ namespace BTKUILib
         {
             if (targetPage == "btkUI-PlayerList")
                 IsInPlayerList = true;
+
+            QuickMenuAPI.CurrentPageID = targetPage;
 
             QuickMenuAPI.OnOpenedPage?.Invoke(targetPage, lastPage);
         }
