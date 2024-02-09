@@ -216,7 +216,7 @@ namespace BTKUILib.UIObjects
 
             if (resetBreadcrumbs)
             {
-                UIUtils.GetInternalView().TriggerEvent("btkPushPage", ElementID, RootPage.ElementID, true);
+                UIUtils.GetInternalView().TriggerEvent("btkPushPage", ElementID, true);
                 return;
             }
             
