@@ -136,10 +136,20 @@
   box-shadow: 20px 20px 100px black;
   z-index: 2;
 }
+#quickmenu-wrapper .btk-popup-container .rowBorder {
+  border-bottom-color: #D2D2D2;
+  border-bottom-width: 4px;
+  border-bottom-style: solid;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+#quickmenu-wrapper .btk-popup-container .header-sm {
+  font-size: 24px;
+  text-align: center;
+}
 #quickmenu-wrapper .btk-popup-container .header {
   font-size: 48px;
   text-align: center;
-  margin-top: 20px;
 }
 #quickmenu-wrapper .btk-popup-container .notice-text {
   font-size: 32px;
@@ -149,14 +159,125 @@
 #quickmenu-wrapper .btk-popup-container .notice-text p {
   margin-bottom: 20px;
 }
+#quickmenu-wrapper .btk-popup-container .header-section {
+  height: 100px;
+  width: 100%;
+  margin-top: 20px;
+  margin-bottom: 100px;
+  padding-right: 20px;
+  padding-left: 20px;
+}
+#quickmenu-wrapper .btk-popup-container .icon-close {
+  background: url("images/BTK-Close.png");
+  background-size: cover;
+  background-repeat: no-repeat;
+  height: 80px;
+  width: 80px;
+}
+#quickmenu-wrapper .btk-popup-container .button-context {
+  border: 3px solid #D2D2D2;
+  border-radius: 10px;
+  background: transparent;
+  padding: 3px;
+  height: 90px;
+  color: #D2D2D2;
+  font-size: 36px;
+  margin-bottom: 10px;
+  align-content: center;
+}
+#quickmenu-wrapper .btk-popup-container .button-context:hover {
+  filter: brightness(75%);
+}
+#quickmenu-wrapper .btk-popup-container .button-context:active {
+  border: 3px solid #1664BE;
+}
+#quickmenu-wrapper .btk-popup-container .button-context .text {
+  text-align: center;
+  margin-left: auto;
+  margin-right: auto;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+  max-height: 100%;
+  overflow-wrap: break-word;
+  font-size: 32px;
+}
+#quickmenu-wrapper .btk-popup-container .toggle-context {
+  border: 3px solid #D2D2D2;
+  border-radius: 10px;
+  background: transparent;
+  padding: 3px;
+  height: 90px;
+  color: #D2D2D2;
+  font-size: 36px;
+  margin-bottom: 10px;
+  align-content: center;
+}
+#quickmenu-wrapper .btk-popup-container .toggle-context:hover {
+  filter: brightness(75%);
+}
+#quickmenu-wrapper .btk-popup-container .toggle-context .text-sm {
+  text-align: center;
+  vertical-align: bottom;
+  margin-left: auto;
+  margin-right: auto;
+  font-size: 32px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+  overflow-wrap: break-word;
+}
+#quickmenu-wrapper .btk-popup-container .toggle-context .enable {
+  background: url("images/Checkmark.png");
+  background-size: cover;
+  background-repeat: no-repeat;
+  height: 60px;
+  width: 60px;
+  margin-left: 15px;
+  margin-top: 15px;
+  margin-bottom: 15px;
+}
+#quickmenu-wrapper .btk-popup-container .toggle-context .disable {
+  background: url("images/BTK-Close.png");
+  background-size: cover;
+  background-repeat: no-repeat;
+  height: 60px;
+  width: 60px;
+  margin-right: 15px;
+  margin-top: 15px;
+}
+#quickmenu-wrapper .btk-popup-container .toggle-context .circle {
+  border-radius: 50%;
+  height: 70px;
+  width: 70px;
+  border: 4px solid;
+  border-color: #FFFFFF;
+  margin-top: 5px;
+  filter: brightness(40%);
+}
+#quickmenu-wrapper .btk-popup-container .toggle-context .active {
+  border-color: #0a53be;
+  filter: brightness(100%);
+}
+#quickmenu-wrapper .btk-popup-container .scroll-view {
+  bottom: 0;
+  left: 0;
+  right: 0;
+  top: 0;
+  position: relative;
+}
 #quickmenu-wrapper .btk-popup-container .control-row {
   margin-left: 84px;
   horiz-align: center;
   display: flex;
 }
+#quickmenu-wrapper .btk-popup-container .content-context {
+  position: relative;
+}
 #quickmenu-wrapper .btk-popup-container .content {
   width: 100%;
   height: 75%;
+  position: relative;
 }
 #quickmenu-wrapper .btk-popup-container .button {
   border: 3px solid #D2D2D2;

@@ -104,10 +104,10 @@ cvr.menu.prototype.BTKUI = {
                 {c: "container btk-popup-container hide", a: {"id": "btkUI-ContextMenu"}, s:[
                         {c:"row", s:[
                                 {c:"col align-self-center", s:[{c:"header", h:"Context Menu", a: {"id": "btkUI-ContextMenuHeader"}}]},
-                                {c:"col-1", s:[{c: "icon-close", x: "btkUI-closeContext"}]}
+                                {c:"col-2", s:[{c: "icon-close align-self-center", x: "btkUI-ContextClose"}]}
                             ]},
                         {c: "scroll-view", s:[
-                                {c: "content scroll-content", s:[], a:{"id": "btkUI-ContextMenu-Content"}},
+                                {c: "content-context scroll-content", s:[], a:{"id": "btkUI-ContextMenu-Content"}},
                                 {c: "scroll-marker-v"}
                             ]}
                     ]},
@@ -230,6 +230,9 @@ cvr.menu.prototype.BTKUI = {
         menu.templates["btkUIRowHeaderCollapsible"] = {c: "row rowBorder", x: "btkUI-Collapse", a: {"id": "btkUI-Row-[UUID]-HeaderRoot", "data-row": "btkUI-Row-[UUID]"}, s:[{c:"col", s:[{c:"header", h:"[Header]", a:{"id": "btkUI-Row-[UUID]-HeaderText"}}]}, {c: "col-2", s: [{c: "icon-collapse ml-auto", a: {"id": "btkUI-Row-[UUID]-Collapse"}}]}]};
         menu.templates["btkUITab"] = {c: "col-md-2 tab", s:[{c: "tab-content", a:{"id":"btkUI-Tab-[TabName]-Image"}}], a:{"id":"btkUI-Tab-[TabName]", "tabTarget": "btkUI-[TabName]-[PageName]"}, x: "btkUI-TabChange"};
         menu.templates["btkPlayerListEntry"] = {c:"col-3", s:[{c:"button-fullImage", x:"btkUI-SelectPlayer", s:[{c:"text", h:"[player-name]"}], a:{"id": "btkUI-PlayerButton-[player-id]-Icon","data-id": "[player-id]", "data-name": "[player-name]", "data-tooltip": "Open up the player options for [player-name]"}}], a:{"id": "btkUI-PlayerButton-[player-id]"}};
+        menu.templates["btkContextButton"] = {c:"col-12", a:{"id": "btkUI-ContextButton-[UUID]"}, s:[{c: "button-context", s:[{c:"text", h:"[button-text]", a:{"id": "btkUI-ContextButton-[UUID]-Text"}}], x: "btkUI-ButtonContextAction", a:{"id": "btkUI-ContextButton-[UUID]-Tooltip","data-tooltip": "[button-tooltip]", "data-action": "[button-action]"}}]};
+        menu.templates["btkContextToggle"] = {c:"col-12", a:{"id": "btkUI-ContextToggle-[toggle-id]-Root"}, s:[{c: "toggle-context", s:[{c:"row", s:[{c:"col-9 text-sm", h:"[toggle-name]", a:{"id": "btkUI-ContextToggle-[toggle-id]-Text"}}, {c:"col align-content-end", s:[{c:"enable circle", a:{"id": "btkUI-ContextToggle-Enable"}}]}, {c:"col align-content-end", s:[{c:"disable circle active", a:{"id": "btkUI-ContextToggle-Disable"}}]}]}], x: "btkUI-ToggleContextAction", a:{"id": "btkUI-ContextToggle-[toggle-id]", "data-toggle": "[toggle-id]", "data-toggleState": "false", "data-tooltip": "[tooltip-data]"}}]};
+        menu.templates["btkContextSeparator"] = {C:"col-12", a:{"id": "btkUI-ContextSeparator-[UUID]"}, s:[{c:"rowBorder header-sm", h:"[separator-text]"}]};
 
         menu.templates["core-quickmenu"].l.push("btkUI-shared");
         menu.templates["core-quickmenu"].l.push("btkUI-menu");
@@ -253,6 +256,9 @@ cvr.menu.prototype.BTKUI = {
         uiRefBTK.actions["btkUI-ToastDismiss"] = this.actions.btkToastDismiss;
         uiRefBTK.actions["btkUI-SliderReset"] = this.actions.btkSliderReset;
         uiRefBTK.actions["btkUI-Collapse"] = this.actions.btkRowCollapse;
+        uiRefBTK.actions["btkUI-ButtonContextAction"] = this.actions.btkButtonContextAction;
+        uiRefBTK.actions["btkUI-ContextClose"] = this.actions.btkContextMenuClose;
+        uiRefBTK.actions["btkUI-ToggleContextAction"] = this.actions.btkToggleContextAction;
 
         engine.on("btkModInit", this.btkUILibInit);
         engine.on("btkCreateToggle", this.btkCreateToggle);
@@ -290,6 +296,8 @@ cvr.menu.prototype.BTKUI = {
         engine.on("btkUpdateTab", this.btkUpdateTab);
         engine.on("btkCollapseCategory", this.btkCollapseCategory);
         engine.on("btkBack", this.btkBackFunction);
+        engine.on("btkOpenContextMenu", this.btkOpenContextMenu);
+        engine.on("btkCloseContextMenu", this.btkCloseContextMenu);
     },
 
     init: function(menu){
@@ -1246,6 +1254,71 @@ cvr.menu.prototype.BTKUI = {
         currentPageBTK = target;
     },
 
+    btkOpenContextMenu: function(menuTitle, contextMenuOptionsJson){
+        let contextElement = document.getElementById("btkUI-ContextMenu");
+        let optionRoot = cvr("#btkUI-ContextMenu-Content");
+        cvr("#btkUI-ContextMenuHeader").innerHTML(menuTitle);
+        optionRoot.clear();
+
+        let contextMenuOptions = JSON.parse(contextMenuOptionsJson);
+
+        for(let i= 0; i<contextMenuOptions.length; i++){
+            let option = contextMenuOptions[i];
+
+            console.log("Option  " + option.OptionName + " with type " + option.OptionType);
+
+            switch(option.OptionType){
+                case 0:
+                    optionRoot.appendChild(cvr.render(uiRefBTK.templates["btkContextButton"], {
+                        "[button-text]": option.OptionName,
+                        "[button-tooltip]": option.OptionTooltip,
+                        "[button-action]": option.OptionUUID,
+                        "[UUID]": option.OptionUUID,
+                    }, uiRefBTK.templates, uiRefBTK.actions));
+                    break;
+                case 1:
+
+                    optionRoot.appendChild(cvr.render(uiRefBTK.templates["btkContextToggle"], {
+                        "[toggle-name]": option.OptionName,
+                        "[toggle-id]": option.OptionUUID,
+                        "[tooltip-data]": option.OptionTooltip,
+                    }, uiRefBTK.templates, uiRefBTK.actions));
+
+                    let newToggle = document.getElementById("btkUI-ContextToggle-" + option.OptionUUID);
+
+                    let enabled = newToggle.querySelector("#btkUI-ContextToggle-Enable");
+                    let disabled = newToggle.querySelector("#btkUI-ContextToggle-Disable");
+
+                    if(option.OptionState){
+                        enabled.classList.add("active");
+                        disabled.classList.remove("active");
+                    }
+                    else{
+                        enabled.classList.remove("active");
+                        disabled.classList.add("active");
+                    }
+
+                    newToggle.setAttribute("data-toggleState", option.OptionState.toString());
+                    break;
+                case 2:
+                    optionRoot.appendChild(cvr.render(uiRefBTK.templates["btkContextSeparator"], {
+                        "[UUID]": option.OptionUUID,
+                        "[separator-text]": option.OptionName
+                    }));
+                    break;
+            }
+        }
+
+        contextElement.classList.remove("hide");
+    },
+
+    btkCloseContextMenu: function(){
+        let contextElement = document.getElementById("btkUI-ContextMenu");
+
+        if(contextElement.classList.contains("hide")) return;
+            contextElement.classList.add("hide");
+    },
+
     actions: {
         btkOpen: function(){
             uiRefBTK.core.playSoundCore("Click");
@@ -1445,6 +1518,42 @@ cvr.menu.prototype.BTKUI = {
             let rowTarget = e.currentTarget.getAttribute("data-row");
 
             btkCollapseCatFunc(rowTarget);
+        },
+        btkButtonContextAction: function (e){
+            uiRefBTK.core.playSoundCore("Click");
+            let action = e.currentTarget.getAttribute("data-action");
+
+            if(action != null){
+                engine.call("btkUI-ButtonContextAction", action);
+            }
+        },
+        btkToggleContextAction: function(e) {
+            uiRefBTK.core.playSoundCore("Click");
+
+            let enabled = e.currentTarget.querySelector("#btkUI-ContextToggle-Enable");
+            let disabled = e.currentTarget.querySelector("#btkUI-ContextToggle-Disable");
+
+            let toggleID = e.currentTarget.getAttribute("data-toggle");
+            let state = (e.currentTarget.getAttribute("data-toggleState") === 'true');
+
+            state = !state;
+
+            if(state){
+                enabled.classList.add("active");
+                disabled.classList.remove("active");
+            }
+            else{
+                enabled.classList.remove("active");
+                disabled.classList.add("active");
+            }
+
+            e.currentTarget.setAttribute("data-toggleState", state.toString());
+
+            engine.call("btkUI-ToggleContextAction", toggleID, state);
+        },
+        btkContextMenuClose: function () {
+            uiRefBTK.core.playSoundCore("Click");
+            cvr("#btkUI-ContextMenu").hide();
         }
     }
 }

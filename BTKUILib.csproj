@@ -102,10 +102,6 @@
           <HintPath>..\3rdparty\Managed\UnityEngine.InputModule.dll</HintPath>
           <Private>False</Private>
         </Reference>
-        <Reference Include="UnityEngine.TextCoreModule">
-          <HintPath>..\3rdparty\Managed\UnityEngine.TextCoreModule.dll</HintPath>
-          <Private>False</Private>
-        </Reference>
         <Reference Include="UnityEngine.TextRenderingModule">
           <HintPath>..\3rdparty\Managed\UnityEngine.TextRenderingModule.dll</HintPath>
           <Private>False</Private>
@@ -141,6 +137,7 @@
         <Compile Include="UIObjects\Components\CustomElement.cs" />
         <Compile Include="UIObjects\Components\SliderFloat.cs" />
         <Compile Include="UIObjects\Components\ToggleButton.cs" />
+        <Compile Include="UIObjects\Objects\ContextMenu.cs" />
         <Compile Include="UIObjects\Objects\CustomEngineOnFunction.cs" />
         <Compile Include="UIObjects\Objects\MultiSelection.cs" />
         <Compile Include="UIObjects\Page.cs" />

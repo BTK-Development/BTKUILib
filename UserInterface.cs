@@ -30,6 +30,7 @@ namespace BTKUILib
         internal static bool IsInPlayerList;
         internal MultiSelection SelectedMultiSelect;
         internal static Page SelectedRootPage;
+        internal ContextMenu SelectedContextMenu;
 
         private string _lastTab = "CVRMainQM";
 
@@ -77,6 +78,22 @@ namespace BTKUILib
             CVR_MenuManager.Instance.quickMenu.View.BindCall("btkUI-SelectedPlayer", new Action<string, string>(OnSelectedPlayer));
             CVR_MenuManager.Instance.quickMenu.View.BindCall("btkUI-UILoaded", new Action(OnMenuIsLoaded));
             CVR_MenuManager.Instance.quickMenu.View.BindCall("btkUI-CollapseCategory", new Action<string, bool>(OnCollapseCategory));
+            CVR_MenuManager.Instance.quickMenu.View.BindCall("btkUI-ButtonContextAction", new Action<string>(ContextButtonAction));
+            CVR_MenuManager.Instance.quickMenu.View.BindCall("btkUI-ToggleContextAction", new Action<string, bool>(ContextToggleAction));
+        }
+
+        private void ContextToggleAction(string actionUuid, bool state)
+        {
+            if (SelectedContextMenu == null || SelectedContextMenu.MenuOptions.Count == 0) return;
+
+            SelectedContextMenu.ActionTriggered(actionUuid, state);
+        }
+
+        private void ContextButtonAction(string actionUuid)
+        {
+            if (SelectedContextMenu == null || SelectedContextMenu.MenuOptions.Count == 0) return;
+
+            SelectedContextMenu.ActionTriggered(actionUuid, false);
         }
 
         private void OnCollapseCategory(string rowID, bool state)
