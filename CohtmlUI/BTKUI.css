@@ -144,7 +144,7 @@
   margin-bottom: 10px;
 }
 #quickmenu-wrapper .btk-popup-container .header-sm {
-  font-size: 24px;
+  font-size: 40px;
   text-align: center;
 }
 #quickmenu-wrapper .btk-popup-container .header {
@@ -296,6 +296,65 @@
   text-align: center;
   position: relative;
   top: 10%;
+}
+#quickmenu-wrapper .slider-root {
+  padding-top: 10px;
+}
+#quickmenu-wrapper .slider-root .resetButton {
+  border: 3px solid #D2D2D2;
+  border-radius: 10px;
+  background: transparent;
+  padding: 3px;
+  width: 120px;
+  height: 54px;
+  color: #D2D2D2;
+  font-size: 24px;
+  align-content: center;
+}
+#quickmenu-wrapper .slider-root .resetButton:hover {
+  filter: brightness(75%);
+}
+#quickmenu-wrapper .slider-root .resetButton:active {
+  border: 3px solid #1664BE;
+}
+#quickmenu-wrapper .slider-root .resetButton .text {
+  text-align: center;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+  height: 100%;
+  overflow-wrap: break-word;
+  font-size: 34px;
+}
+#quickmenu-wrapper .slider-root .text-title {
+  padding: 5px;
+}
+#quickmenu-wrapper .slider-root .slider {
+  width: 90%;
+  height: 75px;
+  margin-bottom: 30px;
+}
+#quickmenu-wrapper .slider-root .slider .sliderBar {
+  top: 35px;
+  position: relative;
+  margin-left: auto;
+  margin-right: auto;
+  height: 20px;
+  border: 3px solid #FFFFFF;
+  border-radius: 10px;
+}
+#quickmenu-wrapper .slider-root .slider .slider-knob {
+  height: 100px;
+  width: 100px;
+  position: relative;
+  top: -40px;
+  background-color: #323232;
+  border: 3px solid #FFFFFF;
+  border-radius: 90px;
+  display: inline-block;
+}
+#quickmenu-wrapper .slider-root .slider .slider-knob:hover {
+  filter: brightness(75%);
 }
 .btkUI .disabled {
   filter: brightness(40%);
@@ -539,65 +598,6 @@
   margin-left: 20px;
   font-size: 36px;
   display: inline;
-}
-.btkUI .slider-root {
-  padding-top: 10px;
-}
-.btkUI .slider-root .resetButton {
-  border: 3px solid #D2D2D2;
-  border-radius: 10px;
-  background: transparent;
-  padding: 3px;
-  width: 120px;
-  height: 54px;
-  color: #D2D2D2;
-  font-size: 24px;
-  align-content: center;
-}
-.btkUI .slider-root .resetButton:hover {
-  filter: brightness(75%);
-}
-.btkUI .slider-root .resetButton:active {
-  border: 3px solid #1664BE;
-}
-.btkUI .slider-root .resetButton .text {
-  text-align: center;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  max-width: 100%;
-  height: 100%;
-  overflow-wrap: break-word;
-  font-size: 34px;
-}
-.btkUI .slider-root .text-title {
-  padding: 5px;
-}
-.btkUI .slider-root .slider {
-  width: 90%;
-  height: 75px;
-  margin-bottom: 30px;
-}
-.btkUI .slider-root .slider .sliderBar {
-  top: 35px;
-  position: relative;
-  margin-left: auto;
-  margin-right: auto;
-  height: 20px;
-  border: 3px solid #FFFFFF;
-  border-radius: 10px;
-}
-.btkUI .slider-root .slider .slider-knob {
-  height: 100px;
-  width: 100px;
-  position: relative;
-  top: -40px;
-  background-color: #323232;
-  border: 3px solid #FFFFFF;
-  border-radius: 90px;
-  display: inline-block;
-}
-.btkUI .slider-root .slider .slider-knob:hover {
-  filter: brightness(75%);
 }
 .btkUI .toggle {
   border: 3px solid #D2D2D2;

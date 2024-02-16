@@ -197,7 +197,7 @@
     }
 
     .header-sm {
-      font-size: @font-size-nrm;
+      font-size: 40px;
       text-align: center;
     }
 
@@ -374,6 +374,75 @@
         text-align: center;
         position: relative;
         top: 10%;
+      }
+    }
+  }
+
+  .slider-root {
+    padding-top: 10px;
+
+    .resetButton{
+      border: 3px solid @standard-text-color;
+      border-radius: 10px;
+      background: transparent;
+      padding: 3px;
+      width: 120px;
+      height: 54px;
+      color: @standard-text-color;
+      font-size: @font-size-nrm;
+      align-content: center;
+
+      &:hover {
+        filter: brightness(75%);
+      }
+
+      &:active {
+        border: 3px solid @color-btn-primary;
+      }
+
+      .text {
+        text-align: center;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 100%;
+        height: 100%;
+        overflow-wrap: break-word;
+        font-size: 34px;
+      }
+    }
+
+    .text-title {
+      padding: 5px;
+    }
+
+    .slider {
+      width: 90%;
+      height: 75px;
+      margin-bottom: 30px;
+
+      .sliderBar {
+        top: 35px;
+        position: relative;
+        margin-left: auto;
+        margin-right: auto;
+        height: 20px;
+        border: 3px solid @color-btn-border;
+        border-radius: @button-border-radius;
+      }
+
+      .slider-knob {
+        height: 100px;
+        width: 100px;
+        position: relative;
+        top: -40px;
+        background-color: @color-btn;
+        border: 3px solid @color-btn-border;
+        border-radius: 90px;
+        display: inline-block;
+
+        &:hover {
+          filter: brightness(75%);
+        }
       }
     }
   }
@@ -661,75 +730,6 @@
       margin-left: 20px;
       font-size: @font-size-big;
       display: inline;
-    }
-  }
-
-  .slider-root {
-    padding-top: 10px;
-
-    .resetButton{
-      border: 3px solid @standard-text-color;
-      border-radius: 10px;
-      background: transparent;
-      padding: 3px;
-      width: 120px;
-      height: 54px;
-      color: @standard-text-color;
-      font-size: @font-size-nrm;
-      align-content: center;
-
-      &:hover {
-        filter: brightness(75%);
-      }
-
-      &:active {
-        border: 3px solid @color-btn-primary;
-      }
-
-      .text {
-        text-align: center;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        max-width: 100%;
-        height: 100%;
-        overflow-wrap: break-word;
-        font-size: 34px;
-      }
-    }
-
-    .text-title {
-      padding: 5px;
-    }
-
-    .slider {
-      width: 90%;
-      height: 75px;
-      margin-bottom: 30px;
-
-      .sliderBar {
-        top: 35px;
-        position: relative;
-        margin-left: auto;
-        margin-right: auto;
-        height: 20px;
-        border: 3px solid @color-btn-border;
-        border-radius: @button-border-radius;
-      }
-
-      .slider-knob {
-        height: 100px;
-        width: 100px;
-        position: relative;
-        top: -40px;
-        background-color: @color-btn;
-        border: 3px solid @color-btn-border;
-        border-radius: 90px;
-        display: inline-block;
-
-        &:hover {
-          filter: brightness(75%);
-        }
-      }
     }
   }
 

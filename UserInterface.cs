@@ -86,14 +86,14 @@ namespace BTKUILib
         {
             if (SelectedContextMenu == null || SelectedContextMenu.MenuOptions.Count == 0) return;
 
-            SelectedContextMenu.ActionTriggered(actionUuid, state);
+            SelectedContextMenu.ActionTriggered(actionUuid, state ? 1f : 0f);
         }
 
         private void ContextButtonAction(string actionUuid)
         {
             if (SelectedContextMenu == null || SelectedContextMenu.MenuOptions.Count == 0) return;
 
-            SelectedContextMenu.ActionTriggered(actionUuid, false);
+            SelectedContextMenu.ActionTriggered(actionUuid, 0f);
         }
 
         private void OnCollapseCategory(string rowID, bool state)

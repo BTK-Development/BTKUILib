@@ -26,6 +26,7 @@ cvr.menu.prototype.BTKUI = {
     btkCollapseCatFunc: {},
     btkBackFunc: {},
     btkRootPageTarget: "",
+    btkCreateSliderFunc: {},
 
     info: function(){
         return {
@@ -80,6 +81,7 @@ cvr.menu.prototype.BTKUI = {
         btkCollapseCatFunc = this.btkCollapseCategory;
         btkBackFunc = this.btkBackFunction;
         btkRootPageTarget = "";
+        btkCreateSLiderFunc = this.btkCreateSlider;
 
         menu.templates["btkUI-shared"] = {c: "btkUI-shared hide", s:[
                 {c: "container btk-popup-container hide", a: {"id": "btkUI-PopupConfirm"}, s:[
@@ -650,6 +652,9 @@ cvr.menu.prototype.BTKUI = {
 
     btkSliderUpdateSettings: function(sliderID, settings){
           let sliderText = document.getElementById("btkUI-SliderTitle-" + sliderID);
+
+          if(sliderText === null) return;
+
           let sliderData = document.getElementById("btkUI-Slider-" + sliderID);
           let sliderTT = document.getElementById("btkUI-Slider-" + sliderID + "-Tooltip");
           let sliderReset = document.getElementById("btkUI-SliderReset-" + sliderID);
@@ -1265,8 +1270,6 @@ cvr.menu.prototype.BTKUI = {
         for(let i= 0; i<contextMenuOptions.length; i++){
             let option = contextMenuOptions[i];
 
-            console.log("Option  " + option.OptionName + " with type " + option.OptionType);
-
             switch(option.OptionType){
                 case 0:
                     optionRoot.appendChild(cvr.render(uiRefBTK.templates["btkContextButton"], {
@@ -1289,7 +1292,7 @@ cvr.menu.prototype.BTKUI = {
                     let enabled = newToggle.querySelector("#btkUI-ContextToggle-Enable");
                     let disabled = newToggle.querySelector("#btkUI-ContextToggle-Disable");
 
-                    if(option.OptionState){
+                    if(option.OptionValue > 0.5){
                         enabled.classList.add("active");
                         disabled.classList.remove("active");
                     }
@@ -1298,13 +1301,17 @@ cvr.menu.prototype.BTKUI = {
                         disabled.classList.add("active");
                     }
 
-                    newToggle.setAttribute("data-toggleState", option.OptionState.toString());
+                    newToggle.setAttribute("data-toggleState", (option.OptionValue > 0.5).toString());
                     break;
                 case 2:
                     optionRoot.appendChild(cvr.render(uiRefBTK.templates["btkContextSeparator"], {
                         "[UUID]": option.OptionUUID,
                         "[separator-text]": option.OptionName
                     }));
+                    break;
+                case 3:
+                    //Slider generation
+                    btkCreateSLiderFunc("btkUI-ContextMenu", option.OptionUUID, option.OptionValue, false, option.OptionSliderSettings);
                     break;
             }
         }
