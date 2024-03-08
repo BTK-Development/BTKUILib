@@ -272,7 +272,9 @@ namespace BTKUILib
             UIUtils.GetInternalView().TriggerEvent("btkAlertToast", message, delay);
         }
 
-
+        /// <summary>
+        /// Calls the back function, moves back 1 page in the breadcrumbs
+        /// </summary>
         public static void GoBack()
         {
             if (!UIUtils.IsQMReady()) return;

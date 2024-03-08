@@ -215,13 +215,17 @@ namespace BTKUILib.UIObjects
             return new Page(modName, pageName, isRootPage, tabIcon, category, noTab);
         }
 
+        /// <summary>
+        /// Opens this page in cohtml
+        /// </summary>
         public void OpenPage()
         {
             OpenPage(false);
         }
 
         /// <summary>
-        /// Opens this page in Cohtml
+        /// Opens this page in Cohtml with optional resetBreadcrumbs param
+        /// <param name="resetBreadcrumbs">Set this true to reset the breadcrumbs back to the root page</param>
         /// </summary>
         public void OpenPage(bool resetBreadcrumbs)
         {

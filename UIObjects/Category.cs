@@ -21,6 +21,7 @@ namespace BTKUILib.UIObjects
             }
         }
 
+        /// <inheritdoc />
         public override bool Hidden
         {
             get => base.Hidden;
