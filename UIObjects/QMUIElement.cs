@@ -67,30 +67,32 @@ namespace BTKUILib.UIObjects
         }
 
         /// <summary>
+        /// Hidden entirely hides the target element, if set on a page it'll hide the page button too
+        /// </summary>
+        public virtual bool Hidden
+        {
+            get => _hidden;
+            set
+            {
+                _hidden = value;
+
+                if (!UIUtils.IsQMReady()) return;
+                UIUtils.GetInternalView().TriggerEvent("btkSetHidden", ElementID, value);
+            }
+        }
+
+        /// <summary>
         /// Disabled will block input and gray out the element it is set on
         /// </summary>
-        public bool Disabled
+        public virtual bool Disabled
         {
             get => _disabled;
             set
             {
-                var thisType = GetType();
-
-                var target = ElementID;
-
-                //Disabling page disables the subpage button if it's applicable
-                if (thisType == typeof(Page))
-                {
-                    var page = (Page)this;
-                    if(page.SubpageButton != null)
-                        page.SubpageButton.Disabled = value;
-                    return;
-                }
-
                 _disabled = value;
 
                 if (!UIUtils.IsQMReady()) return;
-                UIUtils.GetInternalView().TriggerEvent("btkSetDisabled", target, value);
+                UIUtils.GetInternalView().TriggerEvent("btkSetDisabled", ElementID, value);
             }
         }
 
@@ -110,6 +112,7 @@ namespace BTKUILib.UIObjects
 
         private bool _disabled;
         private bool _visible;
+        private bool _hidden;
         private QMUIElement _cachedRootPage;
 
         internal QMUIElement()
@@ -164,8 +167,8 @@ namespace BTKUILib.UIObjects
         /// </summary>
         internal virtual void GenerateCohtml()
         {
-            if (!UIUtils.IsQMReady()) return;
-            UIUtils.GetInternalView().TriggerEvent("btkSetDisabled", ElementID, _disabled);
+            Hidden = _hidden;
+            Disabled = _disabled;
         }
     }
 }

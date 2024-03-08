@@ -21,6 +21,18 @@ namespace BTKUILib.UIObjects
             }
         }
 
+        public override bool Hidden
+        {
+            get => base.Hidden;
+            set
+            {
+                base.Hidden = value;
+
+                if (!UIUtils.IsQMReady()) return;
+                UIUtils.GetInternalView().TriggerEvent("btkSetHidden", $"{ElementID}-HeaderRoot", value);
+            }
+        }
+
         /// <summary>
         /// Fired when a category is collapsed or expanded
         /// </summary>
@@ -188,6 +200,24 @@ namespace BTKUILib.UIObjects
             return page;
         }
 
+        /// <summary>
+        /// Add a custom element to this category
+        /// </summary>
+        /// <param name="element"></param>
+        public void AddCustomElement(CustomElement element)
+        {
+            if (element.ElementType != ElementType.InCategoryElement)
+            {
+                BTKUILib.Log.Error($"You cannot add a {element.ElementType} custom element to a Category!");
+                return;
+            }
+
+            SubElements.Add(element);
+
+            if(UIUtils.IsQMReady())
+                element.GenerateCohtml();
+        }
+
         /// <inheritdoc />
         public override void Delete()
         {
@@ -240,6 +270,8 @@ namespace BTKUILib.UIObjects
             
             foreach(var element in SubElements)
                 element.GenerateCohtml();
+
+            base.GenerateCohtml();
 
             IsGenerated = true;
         }

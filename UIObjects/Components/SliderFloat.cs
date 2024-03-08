@@ -113,6 +113,19 @@ namespace BTKUILib.UIObjects.Components
             }
         }
 
+        /// <inheritdoc />
+        public override bool Hidden
+        {
+            get => base.Hidden;
+            set
+            {
+                base.Hidden = value;
+
+                if (!UIUtils.IsQMReady()) return;
+                UIUtils.GetInternalView().TriggerEvent("btkSetHidden", $"{ElementID}-Root", value);
+            }
+        }
+
         /// <summary>
         /// Action to listen for changes of the value for the slider
         /// </summary>

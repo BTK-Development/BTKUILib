@@ -83,6 +83,32 @@ namespace BTKUILib.UIObjects
             }
         }
 
+        /// <inheritdoc />
+        public override bool Hidden
+        {
+            get => base.Hidden;
+            set
+            {
+                if (SubpageButton != null)
+                    SubpageButton.Hidden = value;
+
+                base.Hidden = value;
+            }
+        }
+
+        /// <inheritdoc />
+        public override bool Disabled
+        {
+            get => base.Disabled;
+            set
+            {
+                if (SubpageButton != null)
+                    SubpageButton.Disabled = value;
+
+                base.Disabled = value;
+            }
+        }
+
         /// <summary>
         /// Reference to the button that opens this subpage
         /// </summary>

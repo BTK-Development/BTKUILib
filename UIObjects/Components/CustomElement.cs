@@ -11,6 +11,11 @@ namespace BTKUILib.UIObjects.Components;
 /// </summary>
 public class CustomElement : QMUIElement
 {
+    /// <summary>
+    /// Called when the custom element has completed its GenerateCohtml function, you can safely use engineOn functions from here
+    /// </summary>
+    public Action OnElementGenerated { get; set; }
+
     //btkUI-Custom-[UUID] required in "id" of root
     internal ElementType ElementType;
 
@@ -117,6 +122,13 @@ public class CustomElement : QMUIElement
         _engineOnFunctions.Clear();
     }
 
+    internal override void DeleteInternal(bool tabChange = false)
+    {
+        UserInterface.CustomElements.Remove(this);
+
+        base.DeleteInternal(tabChange);
+    }
+
     internal override void GenerateCohtml()
     {
         if (!UIUtils.IsQMReady()) return;
@@ -149,6 +161,8 @@ public class CustomElement : QMUIElement
                 default:
                     throw new ArgumentOutOfRangeException();
             }
+
+            OnElementGenerated?.Invoke();
         }
 
         base.GenerateCohtml();
