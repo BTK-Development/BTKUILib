@@ -13,7 +13,7 @@ namespace BTKUILib
         public const string Name = "BTKUILib";
         public const string Author = "BTK Development Team";
         public const string Company = "BTK Development";
-        public const string Version = "2.1.1";
+        public const string Version = "2.1.2";
     }
     
     internal class BTKUILib : MelonMod
@@ -32,7 +32,7 @@ namespace BTKUILib
         private Thread _mainThread;
         private Page _mlPrefsPage;
         private MultiSelection _playerListButtonStyle;
-        private string[] _playerListOptions = { "Tab Bar", "Replace TTS", "Replace Events" };
+        private string[] _playerListOptions = { "Tab Bar", "Right Bar", "Replace Events" };
 
         public override void OnInitializeMelon()
         {

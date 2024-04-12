@@ -81,6 +81,7 @@ cvr.menu.prototype.BTKUI = {
         btkBackFunc = this.btkBackFunction;
         btkRootPageTarget = "";
 
+        menu.templates["btkUI-btn"] = {c: "btkUI-btn hide", s: [{c: "icon"}], x: "btkUI-pushPage", a:{"id" : "btkUI-UserMenuRightBar", "data-page": "btkUI-PlayerList"}};
         menu.templates["btkUI-shared"] = {c: "btkUI-shared hide", s:[
                 {c: "container btk-popup-container hide", a: {"id": "btkUI-PopupConfirm"}, s:[
                         {c: "row", s: [
@@ -231,6 +232,7 @@ cvr.menu.prototype.BTKUI = {
         menu.templates["btkUITab"] = {c: "col-md-2 tab", s:[{c: "tab-content", a:{"id":"btkUI-Tab-[TabName]-Image"}}], a:{"id":"btkUI-Tab-[TabName]", "tabTarget": "btkUI-[TabName]-[PageName]"}, x: "btkUI-TabChange"};
         menu.templates["btkPlayerListEntry"] = {c:"col-3", s:[{c:"button-fullImage", x:"btkUI-SelectPlayer", s:[{c:"text", h:"[player-name]"}], a:{"id": "btkUI-PlayerButton-[player-id]-Icon","data-id": "[player-id]", "data-name": "[player-name]", "data-tooltip": "Open up the player options for [player-name]"}}], a:{"id": "btkUI-PlayerButton-[player-id]"}};
 
+        menu.templates["core-quickmenu"].l.push("btkUI-btn")
         menu.templates["core-quickmenu"].l.push("btkUI-shared");
         menu.templates["core-quickmenu"].l.push("btkUI-menu");
 
@@ -362,7 +364,9 @@ cvr.menu.prototype.BTKUI = {
 
         switch(plButtonStyle){
             case "Replace TTS":
-                let ttsElement = document.getElementsByClassName("button-tts");
+            case "Right Bar":
+                cvr("#btkUI-UserMenuRightBar").show();
+                /*let ttsElement = document.getElementsByClassName("button-tts");
 
                 if(ttsElement.length === 0){
                     console.error("Couldn't find TTS element! Unable to replace!");
@@ -381,7 +385,7 @@ cvr.menu.prototype.BTKUI = {
                 ttsElement.addEventListener("click", uiRefBTK.actions["btkUI-pushPage"]);
                 ttsElement.setAttribute("data-x", "btkUI-pushPage");
                 ttsElement.setAttribute("data-page", "btkUI-PlayerList");
-                ttsElement.setAttribute("data-tooltip", "Opens the UILib PlayerList");
+                ttsElement.setAttribute("data-tooltip", "Opens the UILib PlayerList");*/
                 break;
             case "Replace Events":
                 let eventButton = document.getElementsByClassName("events");

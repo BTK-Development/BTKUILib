@@ -1,4 +1,29 @@
 @import "bootstrap-grid.min.css";
+#quickmenu-wrapper .btkUI-btn {
+  background-color: rgba(41, 41, 41, 0);
+  width: 150px;
+  height: 150px;
+  border-radius: 10px;
+  font-size: 36px;
+  text-align: center;
+  position: absolute;
+  left: 1280px;
+  top: 485px;
+}
+#quickmenu-wrapper .btkUI-btn:hover {
+  filter: brightness(75%);
+}
+#quickmenu-wrapper .btkUI-btn .icon {
+  background: url("mods/BTKUI/images/Multiuser.png");
+  background-size: cover;
+  background-repeat: no-repeat;
+  height: 150px;
+  width: 150px;
+  position: absolute;
+  margin-bottom: 100px;
+  padding: 10px;
+  z-index: 0;
+}
 #quickmenu-wrapper .quick-buttons-container {
   left: 13px;
 }

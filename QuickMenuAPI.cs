@@ -160,6 +160,12 @@ namespace BTKUILib
         /// <param name="resourceStream">Stream containing your image data</param>
         public static void PrepareIcon(string modName, string iconName, Stream resourceStream)
         {
+            if (resourceStream == null)
+            {
+                BTKUILib.Log.Error($"Mod {modName} attempted to prepare {iconName} but the resource stream was null! Yell at the mod author to fix this!");
+                return;
+            }
+
             var directory = $"ChilloutVR_Data\\StreamingAssets\\Cohtml\\UIResources\\GameUI\\mods\\BTKUI\\images\\{modName}";
 
             if (!Directory.Exists(directory))
