@@ -165,6 +165,7 @@ namespace BTKUILib
                 BTKUILib.Log.Error($"Mod {modName} attempted to prepare {iconName} but the resource stream was null! Yell at the mod author to fix this!");
                 return;
             }
+            modName = UIUtils.GetCleanString(modName);
 
             var directory = $"ChilloutVR_Data\\StreamingAssets\\Cohtml\\UIResources\\GameUI\\mods\\BTKUI\\images\\{modName}";
 
@@ -187,6 +188,7 @@ namespace BTKUILib
         /// <returns></returns>
         public static bool DoesIconExist(string modName, string iconName)
         {
+            modName = UIUtils.GetCleanString(modName);
             var directory = $"ChilloutVR_Data\\StreamingAssets\\Cohtml\\UIResources\\GameUI\\mods\\BTKUI\\images\\{modName}";
 
             return Directory.Exists(directory) && File.Exists($"{directory}\\{iconName}.png");

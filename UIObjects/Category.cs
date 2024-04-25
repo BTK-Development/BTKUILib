@@ -53,7 +53,7 @@ namespace BTKUILib.UIObjects
             _categoryName = categoryName;
             LinkedPage = page;
             _showHeader = showHeader;
-            _modName = modName;
+            _modName = UIUtils.GetCleanString(modName);
             Collapsed = collapsed;
             _canCollapse = canCollapse;
 
@@ -175,6 +175,7 @@ namespace BTKUILib.UIObjects
         /// <returns>Newly created page object with SubpageButton set to the created button</returns>
         public Page AddPage(string pageName, string pageIcon, string pageTooltip, string modName)
         {
+            modName = UIUtils.GetCleanString(modName);
             var page = Page.GetOrCreatePage(modName, pageName, category: this);
             SubElements.Add(page);
 
