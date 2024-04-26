@@ -145,6 +145,7 @@ namespace BTKUILib
         //Store all pages connected to a specific mod name to catch unintended cases like orphaned pages
         internal bool AddModPage(string modName, Page page)
         {
+            modName = UIUtils.GetCleanString(modName);
             bool duplicate = false;
 
             var modPageList = ModPages.TryGetValue(modName, out var pageList) ? pageList : new List<Page>();

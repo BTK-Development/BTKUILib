@@ -147,7 +147,7 @@ namespace BTKUILib.UIObjects
         /// <summary>
         /// Create a new page object, this will automatically be created within Cohtml when it is ready
         /// </summary>
-        /// <param name="modName">Name of your mod, you can use this to have multiple mods use the same root tab</param>
+        /// <param name="modName">Name of your mod, you can use this to have multiple mods use the same root tab. Only alpha numeric characters work!</param>
         /// <param name="pageName">Name of the page, this isn't visible anywhere</param>
         /// <param name="isRootPage">Sets if this page should also generate a tab</param>
         /// <param name="tabIcon">Icon to be displayed on the tab</param>
@@ -158,7 +158,7 @@ namespace BTKUILib.UIObjects
             PageName = pageName;
             _displayName = pageName;
 
-            ModName = modName;
+            ModName = UIUtils.GetCleanString(modName);
             IsRootPage = isRootPage;
             _tabIcon = tabIcon;
             _category = category;
@@ -166,17 +166,17 @@ namespace BTKUILib.UIObjects
 
             Parent = category;
 
-            ElementID = $"btkUI-{UIUtils.GetCleanString(modName)}-{UIUtils.GetCleanString(pageName)}";
+            ElementID = $"btkUI-{ModName}-{UIUtils.GetCleanString(pageName)}";
 
             if (isRootPage)
             {
                 UserInterface.Instance.RegisterRootPage(this);
-                _tabID = $"btkUI-Tab-{UIUtils.GetCleanString(modName)}";
+                _tabID = $"btkUI-Tab-{ModName}";
             }
 
-            if (UserInterface.Instance.AddModPage(modName, this))
+            if (UserInterface.Instance.AddModPage(ModName, this))
             {
-                BTKUILib.Log.Warning($"The page \"{pageName}\" of mod \"{modName}\" appears to have already been created! Tell the creator of this to switch to Page.GetOrCreatePage to ensure they use the existing page properly!");
+                BTKUILib.Log.Warning($"The page \"{pageName}\" of mod \"{ModName}\" appears to have already been created! Tell the creator of this to switch to Page.GetOrCreatePage to ensure they use the existing page properly!");
             }
         }
 
@@ -204,6 +204,7 @@ namespace BTKUILib.UIObjects
         /// <returns>New or existing page object</returns>
         public static Page GetOrCreatePage(string modName, string pageName, bool isRootPage = false, string tabIcon = null, Category category = null, bool noTab = false)
         {
+            modName = UIUtils.GetCleanString(modName);
             if (UserInterface.ModPages.TryGetValue(modName, out var pages))
             {
                 var page = pages.FirstOrDefault(x => x.PageName == pageName);
@@ -301,6 +302,8 @@ namespace BTKUILib.UIObjects
             if(!Protected && modName != null)
                 BTKUILib.Log.Warning("You should not be using AddCategory(categoryName, modName, showHeader, canCollapse, collapsed) on your created pages! This is only intended for special protected pages! (PlayerSelectPage and Misc page)");
 
+            modName = UIUtils.GetCleanString(modName);
+            
             var category = new Category(categoryName, this, showHeader, modName, canCollapse, collapsed);
             SubElements.Add(category);
 
@@ -320,6 +323,8 @@ namespace BTKUILib.UIObjects
         {
             if(!Protected)
                 BTKUILib.Log.Warning("You should not be using AddCategory(categoryName, modName) on your created pages! This is only intended for special protected pages! (PlayerSelectPage and Misc page)");
+            
+            modName = UIUtils.GetCleanString(modName);
             
             var category = new Category(categoryName, this, true, modName);
             SubElements.Add(category);
