@@ -14,7 +14,7 @@
   filter: brightness(75%);
 }
 #quickmenu-wrapper .btkUI-btn .icon {
-  background: url("mods/BTKUI/images/Multiuser.png");
+  background: url("images/Multiuser.png");
   background-size: cover;
   background-repeat: no-repeat;
   height: 150px;
