@@ -1,6 +1,7 @@
 ﻿using System;
 using ABI_RC.Core.InteractionSystem;
 using ABI_RC.Core.Player;
+using ABI_RC.Core.Savior;
 using ABI_RC.Systems.GameEventSystem;
 using HarmonyLib;
 using MelonLoader;
@@ -19,6 +20,11 @@ namespace BTKUILib
             ApplyPatches(typeof(CVRMenuManagerPatch));
             ApplyPatches(typeof(ViewManagerPatches));
 
+            CVRGameEventSystem.Authentication.OnLogin.AddListener(response =>
+            {
+                BTKUILib.Instance.AuthResponse = response;
+            });
+
             CVRGameEventSystem.Instance.OnConnectionLost.AddListener((message) =>
             {
                 try
@@ -36,6 +42,30 @@ namespace BTKUILib
                 try
                 {
                     QuickMenuAPI.OnWorldLeave?.Invoke();
+                }
+                catch (Exception e)
+                {
+                    BTKUILib.Log.Error(e);
+                }
+            });
+
+            CVRGameEventSystem.Instance.OnConnected.AddListener(s =>
+            {
+                try
+                {
+                    UserInterface.Instance.AddLocalUser();
+                }
+                catch (Exception e)
+                {
+                    BTKUILib.Log.Error(e);
+                }
+            });
+
+            CVRGameEventSystem.Instance.OnConnectionRecovered.AddListener(s =>
+            {
+                try
+                {
+                    UserInterface.Instance.AddLocalUser();
                 }
                 catch (Exception e)
                 {
@@ -102,6 +132,8 @@ namespace BTKUILib
             try
             {
                 UserInterface.Instance?.OnMenuRegenerate();
+                //BTKUILib.Log.Msg("Attempting to fetch our user");
+                //BTKUILib.Instance.FetchOurUser(MetaPort.Instance.ownerId);
             }
             catch (Exception e)
             {

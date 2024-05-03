@@ -5,6 +5,7 @@ using System.Linq;
 using System.Reflection;
 using ABI_RC.Core.InteractionSystem;
 using ABI_RC.Core.Player;
+using ABI_RC.Core.Savior;
 using BTKUILib.UIObjects;
 using BTKUILib.UIObjects.Components;
 using BTKUILib.UIObjects.Objects;
@@ -167,7 +168,12 @@ namespace BTKUILib
 
         private void UserJoin(CVRPlayerEntity obj)
         {
-            UIUtils.GetInternalView().TriggerEvent("btkAddPlayer", obj.Username, obj.Uuid, obj.ApiProfileImageUrl, CVRPlayerManager.Instance.NetworkPlayers.Count);
+            UIUtils.GetInternalView().TriggerEvent("btkAddPlayer", obj.Username, obj.Uuid, obj.ApiProfileImageUrl, CVRPlayerManager.Instance.NetworkPlayers.Count+1);
+        }
+
+        public void AddLocalUser()
+        {
+            UIUtils.GetInternalView().TriggerEvent("btkAddPlayer", BTKUILib.Instance.AuthResponse.Username, BTKUILib.Instance.AuthResponse.UserId, "", CVRPlayerManager.Instance.NetworkPlayers.Count+1);
         }
         
         private void OnWorldLeave()

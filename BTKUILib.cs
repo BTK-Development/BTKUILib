@@ -2,6 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
+using ABI_RC.Core.Networking.API;
+using ABI_RC.Core.Networking.API.Responses;
+using ABI_RC.Core.Savior;
 using BTKUILib.UIObjects;
 using BTKUILib.UIObjects.Objects;
 using MelonLoader;
@@ -26,6 +30,8 @@ namespace BTKUILib
         internal Queue<Action> MainThreadQueue = new();
         internal Dictionary<string, Page> MLPrefsPages = new();
         internal MelonPreferences_Entry<string> PlayerListStyle;
+        internal UserAuthResponse AuthResponse;
+        //internal UserDetailsResponse OurUserInfo;
 
         private MelonPreferences_Entry<bool> _displayPrefsTab;
 
@@ -132,6 +138,25 @@ namespace BTKUILib
                 }
             }
         }
+
+        /*internal void FetchOurUser(string id)
+        {
+            Task.Run(async () =>
+            {
+                Log.Msg($"Running user fetch for ID: {id}");
+                var response = await ApiConnection.MakeRequest<UserDetailsResponse>(ApiConnection.ApiOperation.UserDetails, new { id }, null, false);
+                Log.Msg("Await passed");
+                if (response == null) return;
+                Log.Msg($"Got response {response.Data.ImageUrl}");
+                OurUserInfo = response.Data;
+            }).ContinueWith(t =>
+            {
+                Log.Msg($"User Fetch Done {t.IsCompleted}");
+                if (!t.IsFaulted) return;
+                Log.Error("Unable to retrieve our user information!");
+                Log.Error(t.Exception);
+            });
+        }*/
 
         internal bool IsOnMainThread(Thread thread = null)
         {
