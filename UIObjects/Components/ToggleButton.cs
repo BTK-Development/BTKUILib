@@ -123,7 +123,7 @@ namespace BTKUILib.UIObjects.Components
             if (!UIUtils.IsQMReady()) return;
             
             UIUtils.GetInternalView().TriggerEvent("btkSetToggleState", ElementID, _toggleValue);
-            UIUtils.GetInternalView().TriggerEvent("btkUpdateTooltip", $"{ElementID}-Tooltip", _toggleTooltip);
+            UIUtils.GetInternalView().TriggerEvent("btkUpdateTooltip", $"{ElementID}-Root", _toggleTooltip);
             UIUtils.GetInternalView().TriggerEvent("btkUpdateText", $"{ElementID}-Text", _toggleName);
         }
     }

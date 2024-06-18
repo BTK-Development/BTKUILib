@@ -112,8 +112,8 @@ namespace BTKUILib.UIObjects.Components
             }
 
             if(_style != ButtonStyle.TextOnly)
-                UIUtils.GetInternalView().TriggerEvent("btkUpdateIcon", ElementID, _category.ModName, _buttonIcon, _style == ButtonStyle.TextWithIcon ? "Image" : "Tooltip");
-            UIUtils.GetInternalView().TriggerEvent("btkUpdateTooltip", $"{ElementID}-Tooltip", _buttonTooltip);
+                UIUtils.GetInternalView().TriggerEvent("btkUpdateIcon", ElementID, _category.ModName, _buttonIcon, _style == ButtonStyle.TextWithIcon ? "Image" : "");
+            UIUtils.GetInternalView().TriggerEvent("btkUpdateTooltip", $"{ElementID}-Root", _buttonTooltip);
             UIUtils.GetInternalView().TriggerEvent("btkUpdateText", $"{ElementID}-Text", _buttonText);
         }
     }

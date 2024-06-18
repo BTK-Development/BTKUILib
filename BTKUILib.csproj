@@ -73,10 +73,6 @@
       <HintPath>..\3rdparty\Managed\UnityEngine.InputModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="UnityEngine.TextCoreModule">
-      <HintPath>..\3rdparty\Managed\UnityEngine.TextCoreModule.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
     <Reference Include="UnityEngine.TextRenderingModule">
       <HintPath>..\3rdparty\Managed\UnityEngine.TextRenderingModule.dll</HintPath>
       <Private>False</Private>

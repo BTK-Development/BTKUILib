@@ -36,7 +36,7 @@ namespace BTKUILib
         /// <returns>Cleaned string</returns>
         public static string GetCleanString(string input)
         {
-            return Regex.Replace(Regex.Replace(input, "<.*?>", string.Empty), @"[^0-9a-zA-Z_]+", string.Empty);
+            return input == null ? null : Regex.Replace(Regex.Replace(input, "<.*?>", string.Empty), @"[^0-9a-zA-Z_]+", string.Empty);
         }
         
         internal static string CreateMD5(string input)
