@@ -48,30 +48,30 @@ namespace BTKUILib
                 if (_firstOnLoadComplete) return;
 
                 _firstOnLoadComplete = true;
-                
-                CVRPlayerManager.Instance.OnPlayerEntityCreated += entity =>
+
+                CVRGameEventSystem.Player.OnJoinEntity.AddListener(entity =>
                 {
                     try
                     {
-                        QuickMenuAPI.UserJoin?.Invoke(entity);                
+                        QuickMenuAPI.UserJoin?.Invoke(entity);
                     }
                     catch (Exception e)
                     {
                         BTKUILib.Log.Error(e);
                     }
-                };
-            
-                CVRPlayerManager.Instance.OnPlayerEntityRecycled += entity =>
+                });
+
+                CVRGameEventSystem.Player.OnLeaveEntity.AddListener(entity =>
                 {
                     try
                     {
-                        QuickMenuAPI.UserLeave?.Invoke(entity);                
+                        QuickMenuAPI.UserLeave?.Invoke(entity);
                     }
                     catch (Exception e)
                     {
                         BTKUILib.Log.Error(e);
                     }
-                }; 
+                });
             });
 
             BTKUILib.Log.Msg("Applied patches!");

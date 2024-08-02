@@ -4,10 +4,12 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using ABI_RC.Core.InteractionSystem;
+using ABI_RC.Core.Networking;
 using ABI_RC.Core.Player;
 using BTKUILib.UIObjects;
 using BTKUILib.UIObjects.Components;
 using BTKUILib.UIObjects.Objects;
+using DarkRift;
 using MelonLoader;
 using MelonLoader.ICSharpCode.SharpZipLib.Zip;
 
@@ -130,6 +132,16 @@ namespace BTKUILib
             QuickMenuAPI.OnMenuGenerated?.Invoke(CVR_MenuManager.Instance);
             
             BTKUILib.Log.Msg($"Setup {RootPages.Count} root pages and {CustomElements.Count} custom elements! BTKUILib is ready!");
+
+            if (NetworkManager.Instance.GameNetwork.ConnectionState != ConnectionState.Connected || CVRPlayerManager.Instance.NetworkPlayers.Count <= 0) return;
+
+            BTKUILib.Log.Msg("We're currently connected to an instance, populating playerlist with existing players...");
+
+            //Create the players that existed before cohtml was ready
+            foreach (var player in CVRPlayerManager.Instance.NetworkPlayers)
+            {
+                UserJoin(player);
+            }
         }
 
         internal void RegisterRootPage(Page rootPage)
@@ -163,16 +175,22 @@ namespace BTKUILib
 
         private void UserLeave(CVRPlayerEntity obj)
         {
+            if (!UIUtils.IsQMReady()) return;
+
             UIUtils.GetInternalView().TriggerEvent("btkRemovePlayer", obj.Uuid, CVRPlayerManager.Instance.NetworkPlayers.Count);
         }
 
         private void UserJoin(CVRPlayerEntity obj)
         {
+            if (!UIUtils.IsQMReady()) return;
+
             UIUtils.GetInternalView().TriggerEvent("btkAddPlayer", obj.Username, obj.Uuid, obj.ApiProfileImageUrl, CVRPlayerManager.Instance.NetworkPlayers.Count);
         }
         
         private void OnWorldLeave()
         {
+            if (!UIUtils.IsQMReady()) return;
+
             UIUtils.GetInternalView().TriggerEvent("btkLeaveWorld");
         }
 
