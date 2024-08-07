@@ -118,10 +118,26 @@ namespace BTKUILib.UIObjects
             internal set => _subpageButton = value;
         }
 
+        /// <summary>
+        ///
+        /// </summary>
+        public bool InPlayerlist
+        {
+            get => InPlayerlist;
+            set
+            {
+                _inPlayerlist = value;
+
+                if (!UIUtils.IsQMReady() || !TabGenerated) return;
+
+                UIUtils.GetInternalView().TriggerEvent("btkUpdateInPlayerlist", ElementID, value);
+            }
+        }
+
         internal bool IsRootPage;
         internal string PageName = "MainPage";
         internal readonly string ModName;
-        internal bool InPlayerlist = false;
+        private bool _inPlayerlist = false;
         internal bool TabGenerated = false;
         private Button _subpageButton;
 
@@ -475,7 +491,7 @@ namespace BTKUILib.UIObjects
 
             if (!IsGenerated)
             {
-                UIUtils.GetInternalView().TriggerEvent("btkCreatePage", _displayName, ModName, _tabIcon, ElementID, IsRootPage, UIUtils.GetCleanString(PageName), InPlayerlist, _noTab);
+                UIUtils.GetInternalView().TriggerEvent("btkCreatePage", _displayName, ModName, _tabIcon, ElementID, IsRootPage, UIUtils.GetCleanString(PageName), _inPlayerlist, _noTab);
 
                 if(!Protected)
                     UserInterface.GeneratedPages.Add(this);

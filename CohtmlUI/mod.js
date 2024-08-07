@@ -295,6 +295,7 @@ cvr.menu.prototype.BTKUI = {
         engine.on("btkCollapseCategory", this.btkCollapseCategory);
         engine.on("btkBack", this.btkBackFunction);
         engine.on("btkSetHidden", this.btkSetHidden);
+        engine.on("btkUpdateInPlayerlist", this.btkUpdateInPlayerlist);
     },
 
     init: function(menu){
@@ -1274,6 +1275,20 @@ cvr.menu.prototype.BTKUI = {
         engine.call("btkUI-BackAction", target, currentPageBTK);
 
         currentPageBTK = target;
+    },
+
+    btkUpdateInPlayerlist: function (elementID, state) {
+        let targetPage = document.getElementById(elementID);
+
+        targetPage.classList.remove("container-controls");
+        targetPage.classList.remove("container-controls-playerlist");
+
+        if(state){
+            targetPage.classList.add("container-controls-playerlist");
+        }
+        else{
+            targetPage.classList.add("container-controls");
+        }
     },
 
     actions: {

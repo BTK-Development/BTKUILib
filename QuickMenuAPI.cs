@@ -8,6 +8,7 @@ using BTKUILib.UIObjects;
 using BTKUILib.UIObjects.Components;
 using BTKUILib.UIObjects.Objects;
 using cohtml;
+using UnityEngine;
 
 namespace BTKUILib
 {
@@ -252,6 +253,38 @@ namespace BTKUILib
             
             UserInterface.Instance.SelectedMultiSelect = multiSelection;
             UIUtils.GetInternalView().TriggerEvent("btkOpenMultiSelect", multiSelection.Name, multiSelection.Options, multiSelection.SelectedOption, UserInterface.IsInPlayerList);
+        }
+
+        /// <summary>
+        /// Opens the colour picker panel, you can optionally enable live updating of your callback action.
+        /// </summary>
+        /// <param name="currentColour">Current colour represented as a HTML colour code</param>
+        /// <param name="callback">Callback action to be fired when user saves colour, optionally anytime a slider moves if liveUpdate is true. Returns UnityEngine.Color and string HTML colour code</param>
+        /// <param name="liveUpdate">Toggle to set callback to be called anytime a slider moves</param>
+        public static void OpenColourPicker(string currentColour, Action<Color, string> callback, bool liveUpdate = false)
+        {
+            if (!UIUtils.IsQMReady()) return;
+
+            if (!ColorUtility.TryParseHtmlString(currentColour, out var parsedColour))
+            {
+                BTKUILib.Log.Warning("OpenColourPicker - CurrentColour is not a valid HTML colour code!");
+                parsedColour = Color.white;
+            }
+
+            OpenColourPicker(parsedColour, callback, liveUpdate);
+        }
+
+        /// <summary>
+        /// Opens the colour picker panel, you can optionally enable live updating of your callback action.
+        /// </summary>
+        /// <param name="currentColour">Current colour represented as a UnityEngine color object</param>
+        /// <param name="callback">Callback action to be fired when user saves colour, optionally anytime a slider moves if liveUpdate is true. Returns UnityEngine.Color and string HTML colour code</param>
+        /// <param name="liveUpdate">Toggle to set callback to be called anytime a slider moves</param>
+        public static void OpenColourPicker(Color currentColour, Action<Color, string> callback, bool liveUpdate = false)
+        {
+            if (!UIUtils.IsQMReady()) return;
+
+            ColourPicker.Instance.OpenColourPicker(currentColour, callback, liveUpdate);
         }
         
         /// <summary>
