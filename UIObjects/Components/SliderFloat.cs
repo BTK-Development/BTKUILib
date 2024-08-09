@@ -144,8 +144,9 @@ namespace BTKUILib.UIObjects.Components
         private float _defaultValue;
         private bool _allowDefaultReset;
         private bool _inCategoryMode;
+        private bool _noTitle;
 
-        internal SliderFloat(QMUIElement parent, string sliderName, string sliderTooltip, float initalValue, float minValue = 0f, float maxValue = 10f, int decimalPlaces = 2, float defaultValue = 0f, bool allowDefaultReset = false, bool inCategoryMode = false)
+        internal SliderFloat(QMUIElement parent, string sliderName, string sliderTooltip, float initalValue, float minValue = 0f, float maxValue = 10f, int decimalPlaces = 2, float defaultValue = 0f, bool allowDefaultReset = false, bool inCategoryMode = false, bool noTitle = false)
         {
             _sliderValue = initalValue;
             _sliderName = sliderName;
@@ -156,6 +157,7 @@ namespace BTKUILib.UIObjects.Components
             _defaultValue = defaultValue;
             _allowDefaultReset = allowDefaultReset;
             _inCategoryMode = inCategoryMode;
+            _noTitle = noTitle;
             Parent = parent;
             
             UserInterface.Sliders.Add(UUID, this);
@@ -199,7 +201,8 @@ namespace BTKUILib.UIObjects.Components
                     MaxValue = _maxValue,
                     DecimalPlaces = _decimalPlaces,
                     DefaultValue = _defaultValue,
-                    AllowDefaultReset = _allowDefaultReset
+                    AllowDefaultReset = _allowDefaultReset,
+                    NoTitleMode = _noTitle
                 };
                 
                 UIUtils.GetInternalView().TriggerEvent("btkCreateSlider", Parent.ElementID, UUID, _sliderValue, _inCategoryMode, settings);
@@ -243,5 +246,6 @@ namespace BTKUILib.UIObjects.Components
         public float DecimalPlaces;
         public float DefaultValue;
         public bool AllowDefaultReset;
+        public bool NoTitleMode;
     }
 }

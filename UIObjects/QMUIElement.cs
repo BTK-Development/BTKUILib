@@ -97,6 +97,28 @@ namespace BTKUILib.UIObjects
         }
 
         /// <summary>
+        /// Controls the column count for a given object, you can go between 0 and 12
+        /// </summary>
+        public virtual int? ColumnCount
+        {
+            get => _columnCount;
+            set
+            {
+                if (value == null)
+                    return;
+                if (value < 1)
+                    _columnCount = 1;
+                if (value > 12)
+                    _columnCount = 12;
+
+                _columnCount = value;
+
+                if (!UIUtils.IsQMReady()) return;
+                UIUtils.GetInternalView().TriggerEvent("btkSetColumnCount", ElementID, _columnCount.Value);
+            }
+        }
+
+        /// <summary>
         /// Set to prevent changes to some elements (Internal use)
         /// </summary>
         internal bool Protected;
@@ -113,6 +135,7 @@ namespace BTKUILib.UIObjects
         private bool _disabled;
         private bool _visible;
         private bool _hidden;
+        private int? _columnCount;
         private QMUIElement _cachedRootPage;
 
         internal QMUIElement()
@@ -169,6 +192,7 @@ namespace BTKUILib.UIObjects
         {
             Hidden = _hidden;
             Disabled = _disabled;
+            ColumnCount = _columnCount;
         }
     }
 }

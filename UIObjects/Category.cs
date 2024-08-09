@@ -1,5 +1,7 @@
 ﻿using System;
 using BTKUILib.UIObjects.Components;
+using UnityEngine.UI;
+using Button = BTKUILib.UIObjects.Components.Button;
 
 namespace BTKUILib.UIObjects
 {
@@ -124,7 +126,7 @@ namespace BTKUILib.UIObjects
         /// <returns></returns>
         public SliderFloat AddSlider(string sliderName, string sliderTooltip, float initialValue, float minValue, float maxValue)
         {
-            return AddSlider(sliderName, sliderTooltip, initialValue, minValue, maxValue, 2, 0f, false);
+            return AddSlider(sliderName, sliderTooltip, initialValue, minValue, maxValue, 2, 0f, false, false);
         }
 
         /// <summary>
@@ -139,7 +141,7 @@ namespace BTKUILib.UIObjects
         /// <returns></returns>
         public SliderFloat AddSlider(string sliderName, string sliderTooltip, float initialValue, float minValue, float maxValue, int decimalPlaces)
         {
-            return AddSlider(sliderName, sliderTooltip, initialValue, minValue, maxValue, decimalPlaces, 0f, false);
+            return AddSlider(sliderName, sliderTooltip, initialValue, minValue, maxValue, decimalPlaces, 0f, false, false);
         }
 
         /// <summary>
@@ -156,7 +158,25 @@ namespace BTKUILib.UIObjects
         /// <returns></returns>
         public SliderFloat AddSlider(string sliderName, string sliderTooltip, float initialValue, float minValue, float maxValue, int decimalPlaces, float defaultValue, bool allowReset)
         {
-            var slider = new SliderFloat(this, sliderName, sliderTooltip, initialValue, minValue, maxValue, decimalPlaces, defaultValue, allowReset, true);
+            return AddSlider(sliderName, sliderTooltip, initialValue, minValue, maxValue, decimalPlaces, defaultValue, allowReset, false);
+        }
+
+        /// <summary>
+        /// Create a slider on the page
+        /// </summary>
+        /// <param name="sliderName">Name of the slider, displayed above the slider</param>
+        /// <param name="sliderTooltip">Tooltip displayed when hovering on the slider</param>
+        /// <param name="initialValue">Initial value of the slider</param>
+        /// <param name="minValue">Minimum value that the slider can slide to</param>
+        /// <param name="maxValue">Maximum value the slider can slide to</param>
+        /// <param name="decimalPlaces">Set the number of decimal places displayed on the slider</param>
+        /// <param name="defaultValue">Default value for this slider</param>
+        /// <param name="allowReset">Allow this slider to be reset using the reset button</param>
+        /// <param name="noTitle">Disables the title component of this slider, this also disables the reset button!</param>
+        /// <returns></returns>
+        public SliderFloat AddSlider(string sliderName, string sliderTooltip, float initialValue, float minValue, float maxValue, int decimalPlaces, float defaultValue, bool allowReset, bool noTitle)
+        {
+            var slider = new SliderFloat(this, sliderName, sliderTooltip, initialValue, minValue, maxValue, decimalPlaces, defaultValue, allowReset, true, noTitle);
             SubElements.Add(slider);
 
             if(UIUtils.IsQMReady())
@@ -218,6 +238,18 @@ namespace BTKUILib.UIObjects
 
             if(UIUtils.IsQMReady())
                 element.GenerateCohtml();
+        }
+
+        public TextBlock AddTextBlock(string text)
+        {
+            var block = new TextBlock(text, this);
+
+            SubElements.Add(block);
+
+            if(UIUtils.IsQMReady())
+                block.GenerateCohtml();
+
+            return block;
         }
 
         /// <inheritdoc />
