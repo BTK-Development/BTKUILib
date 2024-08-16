@@ -223,7 +223,7 @@ cvr.menu.prototype.BTKUI = {
         menu.templates["btkSlider"] = {c:"slider-root row", s:[{c:"col-9", s:[{c:"text-title", h:"[slider-name] - [current-value]", a:{"id": "btkUI-SliderTitle-[slider-id]", "data-title": "[slider-name]"}}]}, {c:"col", s:[{c:"resetButton hide", x: "btkUI-SliderReset", s: [{c:"text", h:"Reset"}], a: {"id": "btkUI-SliderReset-[slider-id]", "data-sliderid": "[slider-id]", "data-defaultvalue": "[default-value]"}},]}, {c: "col-12", s:[{c:"slider", s:[{c:"sliderBar", s:[{c:"slider-knob", a:{"id": "btkUI-SliderKnob-[slider-id]"}}], a:{"id": "btkUI-SliderBar-[slider-id]"}}], a:{"id":"btkUI-Slider-[slider-id]", "data-slider-id": "[slider-id]", "data-slider-value": "[current-value]", "data-min": "[min-value]", "data-max": "[max-value]", "data-rounding": "[decimal-point]", "data-default": "[default-value]", "data-allow-reset": "[allow-reset]"}}], a:{"id":"btkUI-Slider-[slider-id]-Container"}}], a: {"id":"btkUI-Slider-[slider-id]-Root", "data-tooltip": "[tooltip-text]"}};
         menu.templates["btkSliderNoTitle"] = {c:"slider-root row", s:[{c: "col-12", s:[{c:"slider", s:[{c:"sliderBar", s:[{c:"slider-knob", a:{"id": "btkUI-SliderKnob-[slider-id]"}}], a:{"id": "btkUI-SliderBar-[slider-id]"}}], a:{"id":"btkUI-Slider-[slider-id]", "data-slider-id": "[slider-id]", "data-slider-value": "[current-value]", "data-min": "[min-value]", "data-max": "[max-value]", "data-rounding": "[decimal-point]", "data-default": "[default-value]", "data-allow-reset": "[allow-reset]"}}], a:{"id":"btkUI-Slider-[slider-id]-Container"}}], a: {"id":"btkUI-Slider-[slider-id]-Root", "data-tooltip": "[tooltip-text]"}};
         menu.templates["btkToggle"] = {c:"col-3", a:{"id": "btkUI-Toggle-[toggle-id]-Root", "data-tooltip": "[tooltip-data]"}, s:[{c: "toggle", s:[{c:"row", s:[{c:"col align-content-start", s:[{c:"enable circle", a:{"id": "btkUI-toggle-enable"}}]}, {c:"col align-content-end", s:[{c:"disable circle active", a:{"id": "btkUI-toggle-disable"}}]}]},{c:"text-sm", h:"[toggle-name]", a:{"id": "btkUI-Toggle-[toggle-id]-Text"}}], x: "btkUI-Toggle", a:{"id": "btkUI-Toggle-[toggle-id]", "data-toggle": "[toggle-id]", "data-toggleState": "false"}}]};
-        menu.templates["btkButton"] = {c:"col-3", a:{"id": "btkUI-Button-[UUID]-Root", "data-tooltip": "[button-tooltip]"}, s:[{c: "button", s:[{c:"icon", a:{"id": "btkUI-Button-[UUID]-Image"}}, {c:"text", h:"[button-text]", a:{"id": "btkUI-Button-[UUID]-Text"}}], x: "btkUI-ButtonAction", a:{"id": "btkUI-Button-[UUID]", "data-action": "[button-action]"}}]};
+        menu.templates["btkButton"] = {c:"col-3", a:{"id": "btkUI-Button-[UUID]-Root", "data-tooltip": "[button-tooltip]"}, s:[{c: "button", s:[{c:"icon align-self-center", a:{"id": "btkUI-Button-[UUID]-Image"}}, {c:"text", h:"[button-text]", a:{"id": "btkUI-Button-[UUID]-Text"}}], x: "btkUI-ButtonAction", a:{"id": "btkUI-Button-[UUID]", "data-action": "[button-action]"}}]};
         menu.templates["btkButtonFullImage"] = {c:"col-3", a:{"id": "btkUI-Button-[UUID]-Root", "data-tooltip": "[button-tooltip]"}, s:[{c: "button-fullImage", s:[{c:"text", h:"[button-text]", a:{"id": "btkUI-Button-[UUID]-Text"}}], x: "btkUI-ButtonAction", a:{"id": "btkUI-Button-[UUID]", "data-action": "[button-action]"}}]};
         menu.templates["btkButtonTextOnly"] = {c:"col-3", a:{"id": "btkUI-Button-[UUID]-Root", "data-tooltip": "[button-tooltip]"}, s:[{c: "button-textOnly", s:[{c:"text", h:"[button-text]", a:{"id": "btkUI-Button-[UUID]-Text"}}], x: "btkUI-ButtonAction", a:{"id": "btkUI-Button-[UUID]", "data-action": "[button-action]"}}]};
         menu.templates["btkMultiSelectOption"] = {c:"col-12", s: [{c:"dropdown-option", s: [{c:"selection-icon"}, {c:"option-text", h: "[option-text]"}], a: {"id": "btkUI-DropdownOption-[option-index]", "data-index": "[option-index]"}, x: "btkUI-DropdownSelect"}]}
@@ -234,7 +234,8 @@ cvr.menu.prototype.BTKUI = {
         menu.templates["btkUIRowHeaderCollapsible"] = {c: "row rowBorder", x: "btkUI-Collapse", a: {"id": "btkUI-Row-[UUID]-HeaderRoot", "data-row": "btkUI-Row-[UUID]"}, s:[{c:"col", s:[{c:"header", h:"[Header]", a:{"id": "btkUI-Row-[UUID]-HeaderText"}}]}, {c: "col-2", s: [{c: "icon-collapse ml-auto", a: {"id": "btkUI-Row-[UUID]-Collapse"}}]}]};
         menu.templates["btkUITab"] = {c: "col-md-2 tab", s:[{c: "tab-content", a:{"id":"btkUI-Tab-[TabName]-Image"}}], a:{"id":"btkUI-Tab-[TabName]", "tabTarget": "btkUI-[TabName]-[PageName]"}, x: "btkUI-TabChange"};
         menu.templates["btkPlayerListEntry"] = {c:"col-3", s:[{c:"button-fullImage", x:"btkUI-SelectPlayer", s:[{c:"text", h:"[player-name]"}], a:{"id": "btkUI-PlayerButton-[player-id]-Icon","data-id": "[player-id]", "data-name": "[player-name]", "data-tooltip": "Open up the player options for [player-name]"}}], a:{"id": "btkUI-PlayerButton-[player-id]"}};
-        menu.templates["btkTextBlock"] = {c: "col-12", h: "[text]", a:{"id": "btkUI-TextBlock-[UUID]-Root"}};
+        menu.templates["btkTextBlock"] = {c: "col-12 align-self-center", h: "[text]", a:{"id": "btkUI-TextBlock-[UUID]-Root"}};
+        menu.templates["btkTextInput"] = {c: "col-12 textInput", x: "btkUI-TextInputClick", a:{"id": "btkUI-TextInput-[UUID]-Root", "data-input": "btkUI-TextInput-[UUID]"}, s:[{h:"[text]", a:{"id": "btkUI-TextInput-[UUID]"}}, {c:"text-placeholder", h:"[placeholder]", a:{"id": "btkUI-TextInput-[UUID]-Placeholder"}}]};
 
         menu.templates["core-quickmenu"].l.push("btkUI-btn")
         menu.templates["core-quickmenu"].l.push("btkUI-shared");
@@ -259,6 +260,7 @@ cvr.menu.prototype.BTKUI = {
         uiRefBTK.actions["btkUI-ToastDismiss"] = this.actions.btkToastDismiss;
         uiRefBTK.actions["btkUI-SliderReset"] = this.actions.btkSliderReset;
         uiRefBTK.actions["btkUI-Collapse"] = this.actions.btkRowCollapse;
+        uiRefBTK.actions["btkUI-TextInputClick"] = this.actions.btkTextInputClick;
 
         engine.on("btkModInit", this.btkUILibInit);
         engine.on("btkCreateToggle", this.btkCreateToggle);
@@ -300,6 +302,7 @@ cvr.menu.prototype.BTKUI = {
         engine.on("btkUpdateInPlayerlist", this.btkUpdateInPlayerlist);
         engine.on("btkSetColumnCount", this.btkSetColumnCount);
         engine.on("btkCreateTextBlock", this.btkCreateTextBlock);
+        engine.on("btkCreateTextInput", this.btkCreateTextInput);
     },
 
     init: function(menu){
@@ -936,6 +939,17 @@ cvr.menu.prototype.BTKUI = {
         }
 
         element.innerHTML(text);
+
+        if(elementID.includes("TextInput")) {
+            let placeholder = document.getElementById(elementID + "-Placeholder");
+
+            if (text.length > 0 && !placeholder.classList.contains("hidden")) {
+                placeholder.classList.add("hidden");
+            }
+            else{
+                placeholder.classList.remove("hidden");
+            }
+        }
     },
 
     btkCreateRow: function (parentID, rowUUID, collapsible, collapsed, rowHeader = null){
@@ -1328,6 +1342,19 @@ cvr.menu.prototype.BTKUI = {
         }, uiRefBTK.templates, uiRefBTK.actions));
     },
 
+    btkCreateTextInput: function(parent, uuid, text, placeholder, type, additionalClasses){
+        cvr("#" + parent).appendChild(cvr.render(uiRefBTK.templates["btkTextInput"], {
+            "[UUID]": uuid,
+            "[text]": text,
+            "[placeholder]": placeholder
+        }, uiRefBTK.templates, uiRefBTK.actions));
+
+        if(text.length > 0){
+            let placeholderObject = document.getElementById("btkUI-TextInput-" + uuid + "-Placeholder");
+            placeholderObject.classList.add("hidden");
+        }
+    },
+
     btkSetColumnCount: function(elementID, count){
         let target = document.getElementById(elementID + "-Root");
 
@@ -1338,7 +1365,7 @@ cvr.menu.prototype.BTKUI = {
             return;
 
         target.classList.remove("col");
-        target.className = target.className.replace(/\bcol-.+/g, '');
+        target.className = target.className.replace(/(?:col-\d+)/g, '');
 
         target.classList.add("col-" + count);
     },
@@ -1542,6 +1569,13 @@ cvr.menu.prototype.BTKUI = {
             let rowTarget = e.currentTarget.getAttribute("data-row");
 
             btkCollapseCatFunc(rowTarget);
+        },
+        btkTextInputClick: function(e) {
+            uiRefBTK.core.playSoundCore("Click");
+
+            let inputTarget = e.currentTarget.getAttribute("data-input");
+
+            engine.call("btkUI-TextInputClick", inputTarget);
         }
     }
 }

@@ -1,7 +1,13 @@
 namespace BTKUILib.UIObjects.Components;
 
+/// <summary>
+/// TextBlock element
+/// </summary>
 public class TextBlock : QMUIElement
 {
+    /// <summary>
+    /// Text property of this TextBlock, changing this will update on the fly
+    /// </summary>
     public string Text
     {
         get => _text;
@@ -13,10 +19,12 @@ public class TextBlock : QMUIElement
     }
 
     private string _text;
+    private string[] _additionalCSSClasses;
 
-    internal TextBlock(string text, Category category)
+    internal TextBlock(string text, Category category, params string[] additionalCSSClasses)
     {
         _text = text;
+        _additionalCSSClasses = additionalCSSClasses;
 
         Parent = category;
 

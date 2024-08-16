@@ -240,6 +240,11 @@ namespace BTKUILib.UIObjects
                 element.GenerateCohtml();
         }
 
+        /// <summary>
+        /// Creates a textblock in this category
+        /// </summary>
+        /// <param name="text">Text to be set in the text block</param>
+        /// <returns>TextBlock object, you can use this to configure the textblock further or update it down the road</returns>
         public TextBlock AddTextBlock(string text)
         {
             var block = new TextBlock(text, this);
@@ -250,6 +255,25 @@ namespace BTKUILib.UIObjects
                 block.GenerateCohtml();
 
             return block;
+        }
+
+        /// <summary>
+        /// Creates a TextInput in this category
+        /// </summary>
+        /// <param name="text">Initial text to be set in the TextInput</param>
+        /// <param name="placeholder">Placeholder text to be displayed when no text is entered</param>
+        /// <param name="type">Type of TextInput (most not implemented)</param>
+        /// <returns></returns>
+        public TextInput AddTextInput(string text, string placeholder = "", InputType type = InputType.Text)
+        {
+            var input = new TextInput(text, placeholder, type, this);
+
+            SubElements.Add(input);
+
+            if(UIUtils.IsQMReady())
+                input.GenerateCohtml();
+
+            return input;
         }
 
         /// <inheritdoc />

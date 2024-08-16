@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace BTKUILib;
 
-public class ColourPicker
+internal class ColourPicker
 {
     internal static ColourPicker Instance;
 
@@ -16,7 +16,9 @@ public class ColourPicker
     private SliderFloat _rSlider;
     private SliderFloat _gSlider;
     private SliderFloat _bSlider;
-    private SliderFloat _aSlider;
+    private TextInput _rInput;
+    private TextInput _gInput;
+    private TextInput _bInput;
 
     private CustomEngineOnFunction _colourPreviewUpdate;
     private Color _currentColour = Color.white;
@@ -68,14 +70,30 @@ public class ColourPicker
 
         var save = mainCategory.AddButton("Save", "Checkmark", "Save this colour");
         save.OnPress += SaveColour;
+        save.ColumnCount = 6;
 
-        _rSlider = mainCategory.AddSlider("Red", "Adjusts the red level for this colour", _currentColour.r, 0, 1);
-        _gSlider = mainCategory.AddSlider("Green", "Adjusts the green level for this colour", _currentColour.g, 0, 1);
-        _bSlider = mainCategory.AddSlider("Blue", "Adjusts the blue level for this colour", _currentColour.b, 0, 1);
+        var rTitle = mainCategory.AddTextBlock("Red: ");
+        rTitle.ColumnCount = 2;
+        _rInput = mainCategory.AddTextInput(_currentColour.r.ToString("0.00"));
+        _rInput.ColumnCount = 2;
+        _rSlider = mainCategory.AddSlider("Red", "Adjusts the red level for this colour", _currentColour.r, 0, 1, 2, 0, false, true);
+        var gTitle= mainCategory.AddTextBlock("Blue: ");
+        gTitle.ColumnCount = 2;
+        _gInput = mainCategory.AddTextInput(_currentColour.g.ToString("0.00"));
+        _gInput.ColumnCount = 2;
+        _gSlider = mainCategory.AddSlider("Green", "Adjusts the green level for this colour", _currentColour.g, 0, 1, 2, 0, false, true);
+        var bTitle = mainCategory.AddTextBlock("Green: ");
+        bTitle.ColumnCount = 2;
+        _bInput = mainCategory.AddTextInput(_currentColour.b.ToString("0.00"));
+        _bInput.ColumnCount = 2;
+        _bSlider = mainCategory.AddSlider("Blue", "Adjusts the blue level for this colour", _currentColour.b, 0, 1, 2, 0, false, true);
 
         _rSlider.OnValueUpdated += f => OnColorChanged();
         _gSlider.OnValueUpdated += f => OnColorChanged();
         _bSlider.OnValueUpdated += f => OnColorChanged();
+        _rInput.OnTextUpdate += s => OnTextUpdate(s, _rInput, _rSlider);
+        _gInput.OnTextUpdate += s => OnTextUpdate(s, _gInput, _gSlider);
+        _bInput.OnTextUpdate += s => OnTextUpdate(s, _bInput, _bSlider);
     }
 
     private void OnBackAction(string _, string previousPage)
@@ -91,11 +109,27 @@ public class ColourPicker
         QuickMenuAPI.GoBack();
     }
 
+    private void OnTextUpdate(string text, TextInput input, SliderFloat slider)
+    {
+        if (!float.TryParse(text, out var newValue) || newValue > 1 || newValue < 0)
+        {
+            input.SetText(slider.SliderValue.ToString("0.00"));
+            return;
+        }
+
+        slider.SetSliderValue(newValue);
+
+        OnColorChanged();
+    }
+
     private void OnColorChanged()
     {
-        var color = new Color(_rSlider.SliderValue, _gSlider.SliderValue, _bSlider.SliderValue);
-        var colorhtml = ColorUtility.ToHtmlStringRGB(color);
-        _colourPreviewUpdate.TriggerEvent(colorhtml);
+        _currentColour = new Color(_rSlider.SliderValue, _gSlider.SliderValue, _bSlider.SliderValue);
+        var colourHtml = ColorUtility.ToHtmlStringRGB(_currentColour);
+        _rInput.SetText(_currentColour.r.ToString("0.00"));
+        _gInput.SetText(_currentColour.g.ToString("0.00"));
+        _bInput.SetText(_currentColour.b.ToString("0.00"));
+        _colourPreviewUpdate.TriggerEvent(colourHtml);
 
         if(_callbackAction != null && _livePreview)
             _callbackAction.Invoke(_currentColour, "#" + ColorUtility.ToHtmlStringRGB(_currentColour));

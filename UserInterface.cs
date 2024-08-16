@@ -21,6 +21,7 @@ namespace BTKUILib
         
         internal static List<Page> RootPages = new();
         internal static List<QMUIElement> QMElements = new();
+        internal static Dictionary<string, TextInput> TextInputs = new();
         internal static Dictionary<string, SliderFloat> Sliders = new();
         internal static Dictionary<string, QMInteractable> Interactables = new();
         internal static List<string> CustomCSSStyles = new();
@@ -79,6 +80,17 @@ namespace BTKUILib
             CVR_MenuManager.Instance.quickMenu.View.BindCall("btkUI-SelectedPlayer", new Action<string, string>(OnSelectedPlayer));
             CVR_MenuManager.Instance.quickMenu.View.BindCall("btkUI-UILoaded", new Action(OnMenuIsLoaded));
             CVR_MenuManager.Instance.quickMenu.View.BindCall("btkUI-CollapseCategory", new Action<string, bool>(OnCollapseCategory));
+            CVR_MenuManager.Instance.quickMenu.View.BindCall("btkUI-TextInputClick", new Action<string>(OnTextInputClock));
+        }
+
+        private void OnTextInputClock(string elementID)
+        {
+            if (!TextInputs.TryGetValue(elementID, out var textInput)) return;
+
+            QuickMenuAPI.OpenKeyboard(textInput.Text, s =>
+            {
+                textInput.Text = s;
+            });
         }
 
         private void OnCollapseCategory(string rowID, bool state)
