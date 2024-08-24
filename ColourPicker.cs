@@ -61,7 +61,7 @@ internal class ColourPicker
         var mainCategory = _colourPickerPage.AddCategory("", false, false);
 
         var colourPreview = new CustomElement("""{"c":"col-6", "s":[{"c":"colour-preview", "a":{"id" : "btkUI-ColorPreview"}}], "a":{"id":"[UUID]"}}""", ElementType.InCategoryElement, null, mainCategory);
-        _colourPreviewUpdate = new CustomEngineOnFunction("btkColourPickerPreview",
+        _colourPreviewUpdate = new CustomEngineOnFunction("internalColourPickerPreview",
                                                           """let element = document.getElementById("btkUI-ColorPreview");element.style.backgroundColor = "#" + colour;""",
                                                           new Parameter("colour", typeof(string), true, false)
         );

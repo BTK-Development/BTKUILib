@@ -694,7 +694,8 @@ cvr.menu.prototype.BTKUI = {
           sliderRoot.setAttribute("data-tooltip", settings.SliderTooltip);
           sliderData.setAttribute("data-rounding", settings.DecimalPlaces);
           sliderData.setAttribute("data-default", settings.DefaultValue);
-          sliderReset.setAttribute("data-defaultvalue", settings.DefaultValue);
+          if(sliderReset !== null)
+            sliderReset.setAttribute("data-defaultvalue", settings.DefaultValue);
 
         if(sliderRoot.id === btkLastTooltipTarget){
             document.getElementById("btkUI-Tooltip").innerHTML = settings.SliderTooltip;
