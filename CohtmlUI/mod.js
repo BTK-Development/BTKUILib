@@ -1131,6 +1131,10 @@ cvr.menu.prototype.BTKUI = {
     btkUpdateIcon: function (elementID, modName, icon, suffix = "Image") {
         let element = document.getElementById(elementID + "-" + suffix);
 
+        //Failed to get with suffix, try without
+        if(element === null)
+            element = document.getElementById(elementID);
+
         if(element === null){
             console.log("Unable to find element with ID " + elementID + "-" + suffix + " unable to update icon!");
             return;
