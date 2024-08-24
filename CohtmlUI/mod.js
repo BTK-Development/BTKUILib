@@ -331,7 +331,7 @@ cvr.menu.prototype.BTKUI = {
                     return "url('" + iconInput + "')";
                 }
             } else {
-                return "url('mods/BTKUI/images/" + modName + "/" + iconInput + ".png')";
+                return "url(coui://uiresources/GameUI/mods/BTKUI/images/" + modName + "/" + iconInput + ".png)";
             }
         }
         return "url('mods/BTKUI/images/Placeholder.png')";
@@ -832,15 +832,13 @@ cvr.menu.prototype.BTKUI = {
         }
 
         if(buttonStyle === 2){
-            let button = document.getElementById("btkUI-Button-" + buttonUUID + "-Tooltip");
+            let button = document.getElementById("btkUI-Button-" + buttonUUID);
             button.style.backgroundImage = buttonBgImage;
             button.style.backgroundRepeat = "no-repeat";
             button.style.backgroundSize = "cover";
         }
     },
     btkOpenMultiSelect: function(name, options, selectedIndex, playerListMode = false){
-        btkMultiSelectPLMode = playerListMode;
-
         let element = cvr("#btkUI-Dropdown-OptionRoot");
         if(playerListMode)
             element = cvr("#btkUI-DropdownPL-OptionRoot");
@@ -899,9 +897,14 @@ cvr.menu.prototype.BTKUI = {
         currentPageBTK = "btkUI-NumberEntry";
     },
 
-    btkPushPage: function (targetPage, resetBreadcrumbs = false, modPage = currentMod){
-        if(currentPageBTK === targetPage)
+    btkPushPage: function (targetPage, resetBreadcrumbs = false, addBreadcrumb = false, modPage = currentMod){
+        if(currentPageBTK === targetPage) {
+            if(addBreadcrumb){
+                breadcrumbsBTK.push(currentPageBTK);
+            }
+
             return;
+        }
 
         uiRefBTK.core.switchCategorySelected("btkUI");
 
@@ -994,7 +997,7 @@ cvr.menu.prototype.BTKUI = {
 
         if (tabIcon !== null && tabIcon.length > 0) {
             let tab = document.getElementById("btkUI-Tab-" + modName + "-Image");
-            tab.style.backgroundImage = "url('mods/BTKUI/images/" + modName + "/" + tabIcon + ".png')";
+            tab.style.backgroundImage = "url(coui://uiresources/GameUI/mods/BTKUI/images/" + modName + "/" + tabIcon + ".png)";
             tab.style.backgroundRepeat = "no-repeat";
             tab.style.backgroundSize = "contain";
         } else {
@@ -1101,7 +1104,7 @@ cvr.menu.prototype.BTKUI = {
 
         updateTitle(menuTitle, menuSubtitle);
 
-        pushPageBTK(rootTarget, false, rootMod);
+        pushPageBTK(rootTarget, false, false, rootMod);
     },
 
     btkUpdateTitle: function (menuTitle, menuSubtitle){
@@ -1313,8 +1316,8 @@ cvr.menu.prototype.BTKUI = {
         if(target === "")
             target = "CVRMainQM";
 
-        cvr("#" + target).show();
         cvr("#" + currentPageBTK).hide();
+        cvr("#" + target).show();
 
         if(target === "CVRMainQM")
             uiRefBTK.core.switchCategorySelected("quickmenu-home");

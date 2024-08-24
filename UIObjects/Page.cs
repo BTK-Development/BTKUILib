@@ -134,6 +134,15 @@ namespace BTKUILib.UIObjects
             }
         }
 
+        /// <summary>
+        /// Called when this page is opened
+        /// </summary>
+        public Action OnPageOpen;
+        /// <summary>
+        /// Called when this page is closed (including multiselect and other special pages)
+        /// </summary>
+        public Action OnPageClosed;
+
         internal bool IsRootPage;
         internal string PageName = "MainPage";
         internal readonly string ModName;
@@ -246,6 +255,16 @@ namespace BTKUILib.UIObjects
         /// </summary>
         public void OpenPage(bool resetBreadcrumbs)
         {
+            OpenPage(resetBreadcrumbs, false);
+        }
+
+        /// <summary>
+        /// Opens this page in Cohtml with optional resetBreadcrumbs param and forceBreadcrumbAdd
+        /// </summary>
+        /// <param name="resetBreadcrumbs">Set this true to reset the breadcrumbs back to the root page</param>
+        /// <param name="forceBreadcrumbAdd">Set this true to allow the breadcrumbs to contain multiple of a page</param>
+        public void OpenPage(bool resetBreadcrumbs, bool forceBreadcrumbAdd)
+        {
             if (!UIUtils.IsQMReady()) return;
 
             if (!RootPage.IsVisible && (RootPage != this || IsRootPage))
@@ -266,7 +285,14 @@ namespace BTKUILib.UIObjects
                 UIUtils.GetInternalView().TriggerEvent("btkPushPage", ElementID, true);
                 return;
             }
-            
+
+            if (forceBreadcrumbAdd)
+            {
+                UIUtils.GetInternalView().TriggerEvent("btkPushPage", ElementID, false, true);
+                OnPageOpen?.Invoke();
+                return;
+            }
+
             UIUtils.GetInternalView().TriggerEvent("btkPushPage", ElementID);
         }
 

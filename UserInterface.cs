@@ -19,16 +19,16 @@ namespace BTKUILib
     {
         internal static UserInterface Instance;
         
-        internal static List<Page> RootPages = new();
-        internal static List<QMUIElement> QMElements = new();
-        internal static Dictionary<string, TextInput> TextInputs = new();
-        internal static Dictionary<string, SliderFloat> Sliders = new();
-        internal static Dictionary<string, QMInteractable> Interactables = new();
-        internal static List<string> CustomCSSStyles = new();
-        internal static List<CustomElement> CustomElements = new();
-        internal static Dictionary<string, List<Page>> ModPages = new();
-        internal static Dictionary<string, Category> Categories = new();
-        internal static List<Page> GeneratedPages = new();
+        internal readonly static List<Page> RootPages = new();
+        internal readonly static List<QMUIElement> QMElements = new();
+        internal readonly static Dictionary<string, TextInput> TextInputs = new();
+        internal readonly static Dictionary<string, SliderFloat> Sliders = new();
+        internal readonly static Dictionary<string, QMInteractable> Interactables = new();
+        internal readonly static List<string> CustomCSSStyles = new();
+        internal readonly static List<CustomElement> CustomElements = new();
+        internal readonly static Dictionary<string, List<Page>> ModPages = new();
+        internal readonly static Dictionary<string, Category> Categories = new();
+        internal readonly static List<Page> GeneratedPages = new();
         internal static bool BTKUIReady;
         internal static bool IsInPlayerList;
         internal MultiSelection SelectedMultiSelect;
@@ -322,6 +322,9 @@ namespace BTKUILib
             QuickMenuAPI.CurrentPageID = targetPage;
 
             QuickMenuAPI.OnBackAction?.Invoke(targetPage, lastPage);
+
+            GeneratedPages.FirstOrDefault(x => x.ElementID == lastPage)?.OnPageClosed?.Invoke();
+            GeneratedPages.FirstOrDefault(x => x.ElementID == targetPage)?.OnPageOpen?.Invoke();
         }
 
         private void OnOpenedPageEvent(string targetPage, string lastPage)
@@ -332,6 +335,9 @@ namespace BTKUILib
             QuickMenuAPI.CurrentPageID = targetPage;
 
             QuickMenuAPI.OnOpenedPage?.Invoke(targetPage, lastPage);
+
+            GeneratedPages.FirstOrDefault(x => x.ElementID == lastPage)?.OnPageClosed?.Invoke();
+            GeneratedPages.FirstOrDefault(x => x.ElementID == targetPage)?.OnPageOpen?.Invoke();
         }
         
         private void OnSliderUpdated(string sliderID, string value, bool resetFired)
