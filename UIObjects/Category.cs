@@ -88,9 +88,23 @@ namespace BTKUILib.UIObjects
         /// <returns></returns>
         public Button AddButton(string buttonText, string buttonIcon, string buttonTooltip, ButtonStyle style)
         {
-            var button = new Button(buttonText, buttonIcon, buttonTooltip, this, style);
+            return AddButton(buttonText, buttonIcon, buttonTooltip, style, 0.5f);
+        }
+
+        /// <summary>
+        /// Creates a simple button
+        /// </summary>
+        /// <param name="buttonText">Text to be displayed on the button</param>
+        /// <param name="buttonIcon">Icon for the button</param>
+        /// <param name="buttonTooltip">Tooltip to be displayed when hovering on the button</param>
+        /// <param name="style">Sets the button style, this cannot be changed after creation!</param>
+        /// <param name="holdWaitTime">Sets the amount of time before the OnHeld action is fired</param>
+        /// <returns></returns>
+        public Button AddButton(string buttonText, string buttonIcon, string buttonTooltip, ButtonStyle style, float holdWaitTime)
+        {
+            var button = new Button(buttonText, buttonIcon, buttonTooltip, this, style, holdWaitTime);
             SubElements.Add(button);
-            
+
             if(UIUtils.IsQMReady())
                 button.GenerateCohtml();
 

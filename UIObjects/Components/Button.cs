@@ -1,6 +1,7 @@
 ﻿using System;
-using ABI_RC.Core.InteractionSystem;
-using cohtml;
+using MelonLoader;
+using System.Collections;
+using UnityEngine;
 
 namespace BTKUILib.UIObjects.Components
 {
@@ -54,20 +55,28 @@ namespace BTKUILib.UIObjects.Components
         /// Action to listen for clicks of the button
         /// </summary>
         public Action OnPress;
+        /// <summary>
+        /// OnHeld is fired when the button is held down for a set amount of time
+        /// </summary>
+        public Action OnHeld;
 
         private string _buttonText;
         private string _buttonIcon;
         private string _buttonTooltip;
+        private object _coroutineTimer;
+        private float _holdWaitTime;
+        private bool _skipClick;
         private Category _category;
         private readonly ButtonStyle _style;
 
-        internal Button(string buttonText, string buttonIcon, string buttonTooltip, Category category, ButtonStyle style = ButtonStyle.TextWithIcon)
+        internal Button(string buttonText, string buttonIcon, string buttonTooltip, Category category, ButtonStyle style = ButtonStyle.TextWithIcon, float holdWaitTime = 0.5f)
         {
             _buttonIcon = buttonIcon;
             _buttonText = buttonText;
             _buttonTooltip = buttonTooltip;
             _category = category;
             _style = style;
+            _holdWaitTime = holdWaitTime;
 
             Parent = category;
 
@@ -84,6 +93,18 @@ namespace BTKUILib.UIObjects.Components
 
         internal override void OnInteraction(bool? toggle = null)
         {
+            if (_coroutineTimer != null)
+            {
+                MelonCoroutines.Stop(_coroutineTimer);
+                _coroutineTimer = null;
+            }
+
+            if (_skipClick)
+            {
+                _skipClick = false;
+                return;
+            }
+
             OnPress?.Invoke();
         }
 
@@ -99,6 +120,23 @@ namespace BTKUILib.UIObjects.Components
             base.GenerateCohtml();
 
             IsGenerated = true;
+        }
+
+        internal void MouseDown()
+        {
+            //Start coroutine
+            _coroutineTimer = MelonCoroutines.Start(MouseDownCoroutine());
+        }
+
+        private IEnumerator MouseDownCoroutine()
+        {
+            yield return new WaitForSeconds(_holdWaitTime);
+
+            _skipClick = true;
+            _coroutineTimer = null;
+
+            //Wait time passed, fire onheld
+            OnHeld?.Invoke();
         }
 
         private void UpdateButton()

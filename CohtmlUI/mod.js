@@ -311,7 +311,7 @@ cvr.menu.prototype.BTKUI = {
         document.addEventListener('mouseover', this.btkOnHover);
         document.addEventListener('mousemove', this.btkSliderMouseMove);
         document.addEventListener("mouseup", this.btkSliderMouseUp);
-        document.addEventListener('mousedown', this.btkSliderMouseDown);
+        document.addEventListener('mousedown', this.btkMouseDownHandler);
 
         console.log("btkUI setup scrollable tab bar");
 
@@ -559,12 +559,20 @@ cvr.menu.prototype.BTKUI = {
         }
     },
 
-    btkSliderMouseDown: function(e){
+    btkMouseDownHandler: function(e){
         let targetElement = e.target;
         let sliderID = null;
 
         if(targetElement != null) {
             while (sliderID == null && targetElement != null && targetElement.classList != null && !targetElement.classList.contains("menu-category")) {
+                //Let's reuse this I guess lol
+                let buttonAction = targetElement.getAttribute("data-action");
+                if(buttonAction !== null) {
+                    //A mouse has a button down event, toss it into C# and deal with it there
+                    engine.call("btkUI-ButtonMouseDown", buttonAction);
+                    return;
+                }
+
                 sliderID = targetElement.getAttribute("data-slider-id");
                 if(sliderID == null)
                     targetElement = targetElement.parentElement;
@@ -1304,11 +1312,11 @@ cvr.menu.prototype.BTKUI = {
         }
 
         if (state) {
-            rowElement.classList.add("hide");
+            rowElement.classList.add("hidden");
             collapseElement.classList.add("icon-expand");
             collapseElement.classList.remove("icon-collapse");
         } else {
-            rowElement.classList.remove("hide");
+            rowElement.classList.remove("hidden");
             collapseElement.classList.remove("icon-expand");
             collapseElement.classList.add("icon-collapse");
         }

@@ -81,6 +81,16 @@ namespace BTKUILib
             CVR_MenuManager.Instance.quickMenu.View.BindCall("btkUI-UILoaded", new Action(OnMenuIsLoaded));
             CVR_MenuManager.Instance.quickMenu.View.BindCall("btkUI-CollapseCategory", new Action<string, bool>(OnCollapseCategory));
             CVR_MenuManager.Instance.quickMenu.View.BindCall("btkUI-TextInputClick", new Action<string>(OnTextInputClock));
+            CVR_MenuManager.Instance.quickMenu.View.BindCall("btkUI-ButtonMouseDown", new Action<string>(ButtonMouseDown));
+        }
+
+        private void ButtonMouseDown(string buttonID)
+        {
+            if (!Interactables.TryGetValue(buttonID, out var buttonInt)) return;
+            if (buttonInt is not Button button) return;
+
+            //We have our button now
+            button.MouseDown();
         }
 
         private void OnTextInputClock(string elementID)
