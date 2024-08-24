@@ -61,7 +61,7 @@ internal class ColourPicker
         var mainCategory = _colourPickerPage.AddCategory("", false, false);
 
         var colourPreview = new CustomElement("""{"c":"col-6", "s":[{"c":"colour-preview", "a":{"id" : "btkUI-ColorPreview"}}], "a":{"id":"[UUID]"}}""", ElementType.InCategoryElement, null, mainCategory);
-        _colourPreviewUpdate = new CustomEngineOnFunction("twUpdateLeashPreview",
+        _colourPreviewUpdate = new CustomEngineOnFunction("btkColourPickerPreview",
                                                           """let element = document.getElementById("btkUI-ColorPreview");element.style.backgroundColor = "#" + colour;""",
                                                           new Parameter("colour", typeof(string), true, false)
         );
@@ -77,12 +77,12 @@ internal class ColourPicker
         _rInput = mainCategory.AddTextInput(_currentColour.r.ToString("0.00"));
         _rInput.ColumnCount = 2;
         _rSlider = mainCategory.AddSlider("Red", "Adjusts the red level for this colour", _currentColour.r, 0, 1, 2, 0, false, true);
-        var gTitle= mainCategory.AddTextBlock("Blue: ");
+        var gTitle= mainCategory.AddTextBlock("Green: ");
         gTitle.ColumnCount = 2;
         _gInput = mainCategory.AddTextInput(_currentColour.g.ToString("0.00"));
         _gInput.ColumnCount = 2;
         _gSlider = mainCategory.AddSlider("Green", "Adjusts the green level for this colour", _currentColour.g, 0, 1, 2, 0, false, true);
-        var bTitle = mainCategory.AddTextBlock("Green: ");
+        var bTitle = mainCategory.AddTextBlock("Blue: ");
         bTitle.ColumnCount = 2;
         _bInput = mainCategory.AddTextInput(_currentColour.b.ToString("0.00"));
         _bInput.ColumnCount = 2;
