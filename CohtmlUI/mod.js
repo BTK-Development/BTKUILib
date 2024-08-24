@@ -1116,7 +1116,7 @@ cvr.menu.prototype.BTKUI = {
         let target = document.getElementById(elementID + "-Root");
 
         if(target === null)
-            target = document.getElementById(targetID);
+            target = document.getElementById(elementID);
 
         if(target === null) return;
 
