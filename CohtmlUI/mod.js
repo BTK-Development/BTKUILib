@@ -1113,11 +1113,14 @@ cvr.menu.prototype.BTKUI = {
     },
 
     btkDeleteElement: function (elementID){
-        let element = document.getElementById(elementID);
+        let target = document.getElementById(elementID + "-Root");
 
-        if(element === null) return;
+        if(target === null)
+            target = document.getElementById(targetID);
 
-        element.parentElement.removeChild(element);
+        if(target === null) return;
+
+        target.parentElement.removeChild(target);
 
         if(document.getElementById("btkUI-TabRoot").childElementCount >= 8)
             cvr("#btkUI-TabScroll-Container").show();
