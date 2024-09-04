@@ -56,8 +56,8 @@ cvr.menu.prototype.BTKUI = {
     register: function(menu){
         uiRefBTK = menu;
         breadcrumbsBTK = [];
-        currentPageBTK = "MainPage";
-        currentMod = "BTKUI";
+        currentPageBTK = "CVRMainQM";
+        currentMod = "CVR";
         currentDraggedSliderBTK = {};
         currentSliderBarBTK = {};
         currentSliderKnobBTK = {};
@@ -363,42 +363,20 @@ cvr.menu.prototype.BTKUI = {
         cvr("#btkUI-UserMenu").show();
         cvr("#btkUI-SharedRoot").show();
 
-        if(plButtonStyle !== "Tab Bar"){
-            let tabCont = document.getElementById("btkUI-TabContainer");
-            if(tabCont !== null)
-                tabCont.classList.remove("container-tabs-left")
-            let scrollCont = document.getElementById("btkUI-TabScroll-Container");
-            if(scrollCont !== null)
-                scrollCont.classList.remove("scroll-bg-left");
-            cvr("#btkUI-UserMenu").hide();
-        }
+        let tabBarMode = false;
 
         switch(plButtonStyle){
-            case "Replace TTS":
-            case "Right Bar":
+            case "ReplaceTTS":
                 cvr("#btkUI-UserMenuRightBar").show();
-                /*let ttsElement = document.getElementsByClassName("button-tts");
+                let ttsElement = document.getElementsByClassName("button-tts");
 
-                if(ttsElement.length === 0){
-                    console.error("Couldn't find TTS element! Unable to replace!");
+                if(ttsElement.length === 0)
                     return;
-                }
 
                 ttsElement = ttsElement[0];
-
-                ttsElement.classList.add("icon-multiuser");
-                ttsElement.style.backgroundImage = "url(mods/BTKUI/images/Multiuser.png)";
-                ttsElement.style.backgroundSize = "contain";
-                ttsElement.style.backgroundPositionY = "0";
-                ttsElement.style.backgroundPositionX = "0";
-
-                ttsElement.removeEventListener("click", uiRefBTK.actions["openTTSKeyboard"]);
-                ttsElement.addEventListener("click", uiRefBTK.actions["btkUI-pushPage"]);
-                ttsElement.setAttribute("data-x", "btkUI-pushPage");
-                ttsElement.setAttribute("data-page", "btkUI-PlayerList");
-                ttsElement.setAttribute("data-tooltip", "Opens the UILib PlayerList");*/
+                ttsElement.classList.add("hidden");
                 break;
-            case "Replace Events":
+            case "ReplaceEvents":
                 let eventButton = document.getElementsByClassName("events");
 
                 if(eventButton.length === 0){
@@ -426,6 +404,19 @@ cvr.menu.prototype.BTKUI = {
                 let label = eventButton.querySelector('.label');
                 label.innerHTML = "Playerlist";
                 break;
+            default:
+                tabBarMode = true;
+                break;
+        }
+
+        if(plButtonStyle !== "TabBar" && !tabBarMode){
+            let tabCont = document.getElementById("btkUI-TabContainer");
+            if(tabCont !== null)
+                tabCont.classList.remove("container-tabs-left")
+            let scrollCont = document.getElementById("btkUI-TabScroll-Container");
+            if(scrollCont !== null)
+                scrollCont.classList.remove("scroll-bg-left");
+            cvr("#btkUI-UserMenu").hide();
         }
     },
 
@@ -848,6 +839,7 @@ cvr.menu.prototype.BTKUI = {
         }
     },
     btkOpenMultiSelect: function(name, options, selectedIndex, playerListMode = false){
+        btkMultiSelectPLMode = playerListMode;
         let element = cvr("#btkUI-Dropdown-OptionRoot");
         if(playerListMode)
             element = cvr("#btkUI-DropdownPL-OptionRoot");

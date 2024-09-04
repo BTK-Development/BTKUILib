@@ -13,7 +13,7 @@ namespace BTKUILib
         public const string Name = "BTKUILib";
         public const string Author = "BTK Development Team";
         public const string Company = "BTK Development";
-        public const string Version = "2.2.0";
+        public const string Version = "2.2.1";
     }
     
     internal class BTKUILib : MelonMod
@@ -26,14 +26,14 @@ namespace BTKUILib
         internal UserInterface UI;
         internal Queue<Action> MainThreadQueue = new();
         internal Dictionary<string, Page> MLPrefsPages = new();
-        internal MelonPreferences_Entry<string> PlayerListStyle;
+        internal MelonPreferences_Entry<PlayerListStyleEnum> PlayerListStyle;
 
         private MelonPreferences_Entry<bool> _displayPrefsTab;
 
         private Thread _mainThread;
         private Page _mlPrefsPage;
         private MultiSelection _playerListButtonStyle;
-        private string[] _playerListOptions = { "Tab Bar", "Right Bar", "Replace Events" };
+        private string[] _playerListStyleNames;
 
         public override void OnInitializeMelon()
         {
@@ -51,7 +51,7 @@ namespace BTKUILib
                     _mlPrefsPage.HideTab = b1;
             });
 
-            PlayerListStyle = MelonPreferences.CreateEntry("BTKUILib", "PlayerListPosition", "Tab Bar", "PlayerList Button Position", "Sets where the playerlist button will appear");
+            PlayerListStyle = MelonPreferences.CreateEntry("BTKUILib", "PlayerListStyleNew", PlayerListStyleEnum.TabBar, "PlayerList Button Style", "Sets where the playerlist button will appear");
             
             Patches.Initialize(HarmonyInstance);
 
@@ -74,6 +74,7 @@ namespace BTKUILib
             prefsTabDisplay.OnValueUpdated += b =>
             {
                 _displayPrefsTab.Value = b;
+                MelonPreferences.Save();
             };
 
             var openListStyle = mainCat.AddButton("Playerlist Button Position", "BTKList", "Change the position of the playerlist button");
@@ -82,11 +83,16 @@ namespace BTKUILib
                 QuickMenuAPI.OpenMultiSelect(_playerListButtonStyle);
             };
 
-            _playerListButtonStyle = new MultiSelection("PlayerList Button Position", _playerListOptions, Array.FindIndex(_playerListOptions, x => x.Contains(PlayerListStyle.Value)));
+            _playerListStyleNames = Enum.GetNames(typeof(PlayerListStyleEnum));
+
+            _playerListButtonStyle = new MultiSelection("PlayerList Button Position", _playerListStyleNames, (int)PlayerListStyle.Value);
             _playerListButtonStyle.OnOptionUpdated += i =>
             {
+                if(!Enum.IsDefined(typeof(PlayerListStyleEnum), i)) return;
+
                 QuickMenuAPI.ShowAlertToast("You must restart ChilloutVR for this change to apply!");
-                PlayerListStyle.Value = _playerListOptions[i];
+                PlayerListStyle.Value = (PlayerListStyleEnum)Enum.Parse(typeof(PlayerListStyleEnum), Enum.GetNames(typeof(PlayerListStyleEnum))[i]);
+                MelonPreferences.Save();
             };
         }
 
@@ -153,5 +159,24 @@ namespace BTKUILib
                 MainThreadQueue.Dequeue()?.Invoke();
             }
         }
+    }
+
+    /// <summary>
+    /// Enum containing the usable styles of playerlist button
+    /// </summary>
+    public enum PlayerListStyleEnum
+    {
+        /// <summary>
+        /// Default style, button appears on the tab bar
+        /// </summary>
+        TabBar,
+        /// <summary>
+        /// Button replaces the existing TTS button on the right sidebar
+        /// </summary>
+        ReplaceTTS,
+        /// <summary>
+        /// Button replaces the unused events button on the QM
+        /// </summary>
+        ReplaceEvents,
     }
 }

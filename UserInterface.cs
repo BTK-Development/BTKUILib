@@ -121,7 +121,7 @@ namespace BTKUILib
             foreach(var css in CustomCSSStyles)
                 UIUtils.GetInternalView().TriggerEvent("btkSetCustomCSS", css);
             
-            UIUtils.GetInternalView().TriggerEvent("btkModInit", BTKUILib.Instance.PlayerListStyle.Value);
+            UIUtils.GetInternalView().TriggerEvent("btkModInit", Enum.GetName(typeof(PlayerListStyleEnum), BTKUILib.Instance.PlayerListStyle.Value));
 
             //Run the ml prefs tab generation
             BTKUILib.Instance.GenerateMlPrefsTab();
