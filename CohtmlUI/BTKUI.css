@@ -293,12 +293,18 @@
   height: 100px;
   width: 100px;
 }
+.btkUI .container-controls .icon-back:hover {
+  filter: brightness(75%);
+}
 .btkUI .container-controls .icon-collapse {
   background: url("images/Arrow Up.png");
   background-size: cover;
   background-repeat: no-repeat;
   height: 90px;
   width: 90px;
+}
+.btkUI .container-controls .icon-collapse:hover {
+  filter: brightness(75%);
 }
 .btkUI .container-controls .icon-expand {
   background: url("images/Arrow Up.png");
@@ -307,6 +313,9 @@
   transform: rotate(180deg);
   height: 90px;
   width: 90px;
+}
+.btkUI .container-controls .icon-expand:hover {
+  filter: brightness(75%);
 }
 .btkUI .container-controls .rowBorder {
   border-bottom-color: #D2D2D2;
@@ -319,6 +328,9 @@
   background-repeat: no-repeat;
   height: 100px;
   width: 100px;
+}
+.btkUI .container-controls .icon-close:hover {
+  filter: brightness(75%);
 }
 .btkUI .container-controls .category-row {
   margin-top: 10px;
@@ -368,12 +380,29 @@
   height: 100px;
   width: 100px;
 }
+.btkUI .container-controls-playerlist .icon-back:hover {
+  filter: brightness(75%);
+}
 .btkUI .container-controls-playerlist .icon-gear {
   background: url("images/Settings.png");
   background-size: cover;
   background-repeat: no-repeat;
   height: 100px;
   width: 100px;
+}
+.btkUI .container-controls-playerlist .icon-gear:hover {
+  filter: brightness(75%);
+}
+.btkUI .container-controls-playerlist .icon-resize {
+  background: url("images/Resize.png");
+  background-size: cover;
+  background-repeat: no-repeat;
+  height: 100px;
+  width: 100px;
+  margin-right: 40px;
+}
+.btkUI .container-controls-playerlist .icon-resize:hover {
+  filter: brightness(75%);
 }
 .btkUI .container-controls-playerlist .icon-close {
   background: url("images/BTKClose.png");
@@ -382,12 +411,18 @@
   height: 100px;
   width: 100px;
 }
+.btkUI .container-controls-playerlist .icon-close:hover {
+  filter: brightness(75%);
+}
 .btkUI .container-controls-playerlist .icon-list {
   background: url("images/BTKList.png");
   background-size: cover;
   background-repeat: no-repeat;
   height: 100px;
   width: 100px;
+}
+.btkUI .container-controls-playerlist .icon-list:hover {
+  filter: brightness(75%);
 }
 .btkUI .container-controls-playerlist .icon-close {
   background: url("images/BTK-Close.png");
@@ -396,12 +431,18 @@
   height: 100px;
   width: 100px;
 }
+.btkUI .container-controls-playerlist .icon-close:hover {
+  filter: brightness(75%);
+}
 .btkUI .container-controls-playerlist .icon-collapse {
   background: url("images/Arrow Up.png");
   background-size: cover;
   background-repeat: no-repeat;
   height: 90px;
   width: 90px;
+}
+.btkUI .container-controls-playerlist .icon-collapse:hover {
+  filter: brightness(75%);
 }
 .btkUI .container-controls-playerlist .icon-expand {
   background: url("images/Arrow Up.png");
@@ -410,6 +451,9 @@
   transform: rotate(180deg);
   height: 90px;
   width: 90px;
+}
+.btkUI .container-controls-playerlist .icon-expand:hover {
+  filter: brightness(75%);
 }
 .btkUI .container-controls-playerlist .rowBorder {
   border-bottom-color: #D2D2D2;
@@ -668,7 +712,7 @@
   text-overflow: ellipsis;
   max-width: 100%;
   max-height: 100%;
-  text-shadow: #000 0 0 10px;
+  text-shadow: 0px 0px 10px #000000, 0px 0px 10px #000000, 0px 0px 10px #000000;
   overflow-wrap: break-word;
   font-size: 32px;
 }

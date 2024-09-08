@@ -25,11 +25,12 @@ internal class ColourPicker
     private Action<Color, string> _callbackAction;
     private bool _livePreview;
 
-    internal ColourPicker()
+    internal static void SetupColourPicker()
     {
-        Instance = this;
+        if (Instance != null) return;
 
-        SetupColourPicker();
+        Instance = new ColourPicker();
+        Instance.SetupColourPickerInstance();
     }
 
     internal void OpenColourPicker(Color currentColor, Action<Color, string> callback, bool livePreview = false)
@@ -49,7 +50,7 @@ internal class ColourPicker
         OnColorChanged();
     }
 
-    private void SetupColourPicker()
+    private void SetupColourPickerInstance()
     {
         if(_colourPickerPage != null) return;
 

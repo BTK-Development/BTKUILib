@@ -120,10 +120,6 @@
     <Content Include="README.md" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="CohtmlUI\images\BTKUILib\BTKList.png" />
-    <EmbeddedResource Include="CohtmlUI\images\BTKClose.png" />
-  </ItemGroup>
-  <ItemGroup>
     <Compile Remove="ExampleUI\ExampleUIMod.cs" />
   </ItemGroup>
   <Target Name="CheckLessc">

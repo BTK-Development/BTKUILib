@@ -5,7 +5,7 @@ using System.Linq;
 using System.Reflection;
 using ABI_RC.Core.InteractionSystem;
 using ABI_RC.Core.Networking;
-using ABI_RC.Core.Player;
+using ABI_RC.Core.Savior;
 using BTKUILib.UIObjects;
 using BTKUILib.UIObjects.Components;
 using BTKUILib.UIObjects.Objects;
@@ -40,10 +40,6 @@ namespace BTKUILib
         {
             Instance = this;
             
-            QuickMenuAPI.UserJoin += UserJoin;
-            QuickMenuAPI.UserLeave += UserLeave;
-            QuickMenuAPI.OnWorldLeave += OnWorldLeave;
-            
             BTKUILib.Log.Msg("Checking if BTKUI is updated...");
             CheckUpdateUI();
         }
@@ -77,11 +73,30 @@ namespace BTKUILib
             CVR_MenuManager.Instance.quickMenu.View.BindCall("btkUI-NumSubmit", new Action<string>(OnNumberInputSubmitted));
             CVR_MenuManager.Instance.quickMenu.View.BindCall("btkUI-RootCreated", new Action<string, string>(OnRootCreated));
             CVR_MenuManager.Instance.quickMenu.View.BindCall("btkUI-TabChange", new Action<string>(OnTabChange));
-            CVR_MenuManager.Instance.quickMenu.View.BindCall("btkUI-SelectedPlayer", new Action<string, string>(OnSelectedPlayer));
             CVR_MenuManager.Instance.quickMenu.View.BindCall("btkUI-UILoaded", new Action(OnMenuIsLoaded));
             CVR_MenuManager.Instance.quickMenu.View.BindCall("btkUI-CollapseCategory", new Action<string, bool>(OnCollapseCategory));
             CVR_MenuManager.Instance.quickMenu.View.BindCall("btkUI-TextInputClick", new Action<string>(OnTextInputClock));
             CVR_MenuManager.Instance.quickMenu.View.BindCall("btkUI-ButtonMouseDown", new Action<string>(ButtonMouseDown));
+            CVR_MenuManager.Instance.quickMenu.View.BindCall("btkUI-ExpandPlayerProfile", new Action(ExpandPlayerProfile));
+            CVR_MenuManager.Instance.quickMenu.View.BindCall("btkUI-ExpandPlayerList", new Action(ExpandPlayerList));
+        }
+
+        private void ExpandPlayerList()
+        {
+            if (string.IsNullOrEmpty(MetaPort.Instance.CurrentInstanceId) || NetworkManager.Instance.GameNetwork.ConnectionState != ConnectionState.Connected)
+            {
+                QuickMenuAPI.ShowAlertToast("You are not connected to an instance!");
+                return;
+            }
+
+            CVR_MenuManager.Instance.ToggleQuickMenu(false);
+            ViewManager.Instance.GetInstanceDetails(MetaPort.Instance.CurrentInstanceId, true);
+        }
+
+        private void ExpandPlayerProfile()
+        {
+            CVR_MenuManager.Instance.ToggleQuickMenu(false);
+            ViewManager.Instance.RequestUserDetailsPage(PlayerList.Instance.SelectedPlayer.Uuid);
         }
 
         private void ButtonMouseDown(string buttonID)
@@ -154,16 +169,6 @@ namespace BTKUILib
             QuickMenuAPI.OnMenuGenerated?.Invoke(CVR_MenuManager.Instance);
             
             BTKUILib.Log.Msg($"Setup {RootPages.Count} root pages and {CustomElements.Count} custom elements! BTKUILib is ready!");
-
-            if (NetworkManager.Instance.GameNetwork.ConnectionState != ConnectionState.Connected || CVRPlayerManager.Instance.NetworkPlayers.Count <= 0) return;
-
-            BTKUILib.Log.Msg("We're currently connected to an instance, populating playerlist with existing players...");
-
-            //Create the players that existed before cohtml was ready
-            foreach (var player in CVRPlayerManager.Instance.NetworkPlayers)
-            {
-                UserJoin(player);
-            }
         }
 
         internal void RegisterRootPage(Page rootPage)
@@ -195,35 +200,7 @@ namespace BTKUILib
             return duplicate;
         }
 
-        private void UserLeave(CVRPlayerEntity obj)
-        {
-            if (!UIUtils.IsQMReady()) return;
-
-            UIUtils.GetInternalView().TriggerEvent("btkRemovePlayer", obj.Uuid, CVRPlayerManager.Instance.NetworkPlayers.Count);
-        }
-
-        private void UserJoin(CVRPlayerEntity obj)
-        {
-            if (!UIUtils.IsQMReady()) return;
-
-            UIUtils.GetInternalView().TriggerEvent("btkAddPlayer", obj.Username, obj.Uuid, obj.ApiProfileImageUrl, CVRPlayerManager.Instance.NetworkPlayers.Count);
-        }
-        
-        private void OnWorldLeave()
-        {
-            if (!UIUtils.IsQMReady()) return;
-
-            UIUtils.GetInternalView().TriggerEvent("btkLeaveWorld");
-        }
-
         #region Cohtml Event Functions
-        
-        private void OnSelectedPlayer(string playerName, string playerID)
-        {
-            QuickMenuAPI.SelectedPlayerName = playerName;
-            QuickMenuAPI.SelectedPlayerID = playerID;
-            QuickMenuAPI.OnPlayerSelected?.Invoke(playerName, playerID);
-        }
 
         internal void OnTabChange(string tabTarget)
         {

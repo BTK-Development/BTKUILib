@@ -1,8 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using ABI_RC.Core.InteractionSystem;
 using BTKUILib.UIObjects.Components;
+using MelonLoader;
+
 // ReSharper disable MethodOverloadWithOptionalParameter
 
 namespace BTKUILib.UIObjects
@@ -430,6 +430,19 @@ namespace BTKUILib.UIObjects
                 slider.GenerateCohtml();
 
             return slider;
+        }
+
+        /// <summary>
+        /// Adds a Category to this Page with it's Collapsed value controlled by a MelonPref
+        /// </summary>
+        /// <param name="entry">MelonPreferences_Entry to store the state of Collapsed</param>
+        /// <param name="showHeader">Sets if the header of this category is visible</param>
+        /// <returns>Generated Category configured with it's OnCollapse set to save to a MelonPref</returns>
+        public Category AddMelonCategory(MelonPreferences_Entry<bool> entry, bool showHeader = true)
+        {
+            Category category = AddCategory(entry.DisplayName, showHeader, true, !entry.Value);
+            category.OnCollapse += b => entry.Value = !b;
+            return category;
         }
 
         /// <inheritdoc />

@@ -21,7 +21,6 @@ namespace BTKUILib
         internal static MelonLogger.Instance Log;
         internal static BTKUILib Instance;
         internal static Page UISettingsPage;
-        internal static ColourPicker ColourPicker;
 
         internal UserInterface UI;
         internal Queue<Action> MainThreadQueue = new();
@@ -58,9 +57,8 @@ namespace BTKUILib
             UI = new UserInterface();
             UI.SetupUI();
 
-            QuickMenuAPI.PlayerSelectPage = new Page("btkUI-PlayerSelectPage");
-
-            ColourPicker = new ColourPicker();
+            ColourPicker.SetupColourPicker();
+            PlayerList.SetupPlayerList();
         }
 
         internal void GenerateSettingsPage()

@@ -5,6 +5,9 @@ using System.Text.RegularExpressions;
 using ABI_RC.Core.InteractionSystem;
 using ABI_RC.Core.UI;
 using cohtml.Net;
+using System;
+using System.IO;
+using System.Linq;
 
 namespace BTKUILib
 {
@@ -38,6 +41,13 @@ namespace BTKUILib
         {
             return input == null ? null : Regex.Replace(Regex.Replace(input, "<.*?>", string.Empty), @"[^0-9a-zA-Z_]+", string.Empty);
         }
+
+        public static Stream GetIconStream(string iconName)
+        {
+            Assembly assembly = Assembly.GetExecutingAssembly();
+            string assemblyName = assembly.GetName().Name;
+            return assembly.GetManifestResourceStream($"{assemblyName}.Resources.{iconName}");
+        }
         
         internal static string CreateMD5(string input)
         {
@@ -68,6 +78,22 @@ namespace BTKUILib
                 _internalViewCache = (View)_internalCohtmlView.GetValue(CVR_MenuManager.Instance.quickMenu.View);
 
             return _internalViewCache;
+        }
+
+        internal static string[] GetPrettyEnumNames<T>() where T : Enum
+        {
+            return Enum.GetNames(typeof(T)).Select(PrettyFormatEnumName).ToArray();
+        }
+
+        internal static int GetEnumIndex<T>(T value) where T : Enum
+        {
+            return Array.IndexOf(Enum.GetValues(typeof(T)), value);
+        }
+
+        private static string PrettyFormatEnumName(string name)
+        {
+            // adds spaces before capital letters (excluding the first letter)
+            return System.Text.RegularExpressions.Regex.Replace(name, "(\\B[A-Z])", " $1");
         }
     }
 }

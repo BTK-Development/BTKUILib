@@ -1,6 +1,7 @@
 ﻿using System;
 using BTKUILib.UIObjects.Components;
-using UnityEngine.UI;
+using MelonLoader;
+using UnityEngine;
 using Button = BTKUILib.UIObjects.Components.Button;
 
 namespace BTKUILib.UIObjects
@@ -331,6 +332,64 @@ namespace BTKUILib.UIObjects
                 UIUtils.GetInternalView().TriggerEvent("btkClearChildren", ElementID);
         }
 
+        /// <summary>
+        /// Adds a ToggleButton to this Category based on a MelonPref
+        /// </summary>
+        /// <param name="entry">MelonPreferences_Entry to use for creating ToggleButton</param>
+        /// <returns>Preconfigured ToggleButton with action to drive MelonPref</returns>
+        public ToggleButton AddMelonToggle(MelonPreferences_Entry<bool> entry)
+        {
+            ToggleButton toggle = AddToggle(entry.DisplayName, entry.Description, entry.Value);
+            toggle.OnValueUpdated += b => entry.Value = b;
+            return toggle;
+        }
+
+        /// <summary>
+        /// Adds a SliderFloat to this category based on a MelonPref
+        /// </summary>
+        /// <param name="entry">MelonPreferences_Entry to use for creating SliderFloat</param>
+        /// <param name="min">Minimum value that the slider can slide to</param>
+        /// <param name="max">Maximum value the slider can slide to</param>
+        /// <param name="decimalPlaces">Set the number of decimal places displayed on the slider</param>
+        /// <param name="allowReset">Allow this slider to be reset using the reset button</param>
+        /// <returns>Preconfigured SliderFloat with action to drive MelonPref</returns>
+        public SliderFloat AddMelonSlider(MelonPreferences_Entry<float> entry, float min,
+            float max, int decimalPlaces = 2, bool allowReset = true)
+        {
+            SliderFloat slider = AddSlider(entry.DisplayName, entry.Description,
+                                           Mathf.Clamp(entry.Value, min, max), min, max, decimalPlaces, entry.DefaultValue, allowReset);
+            slider.OnValueUpdated += f => entry.Value = f;
+            return slider;
+        }
+
+        /// <summary>
+        /// Adds a Button to this Category to open the keyboard based on a MelonPref
+        /// </summary>
+        /// <param name="entry">MelonPreferences_Entry to use for creating this button</param>
+        /// <param name="buttonIcon">Icon for the button</param>
+        /// <param name="buttonTooltip">Tooltip to be displayed when hovering on the button</param>
+        /// <returns>Preconfigured ToggleButton with action to open the Keyboard for this MelonPref</returns>
+        public Button AddMelonStringInput(MelonPreferences_Entry<string> entry, string buttonIcon = "", ButtonStyle buttonStyle = ButtonStyle.TextOnly)
+        {
+            Button button = AddButton(entry.DisplayName, buttonIcon, entry.Description, buttonStyle);
+            button.OnPress += () => QuickMenuAPI.OpenKeyboard(entry.Value, s => entry.Value = s);
+            return button;
+        }
+
+        /// <summary>
+        /// Adds a Button to open the NumberInput based on a MelonPref
+        /// </summary>
+        /// <param name="entry">MelonPreferences_Entry to use for creating this button</param>
+        /// <param name="buttonIcon">Icon for the button</param>
+        /// <param name="buttonTooltip">Tooltip to be displayed when hovering on the button</param>
+        /// <returns>Preconfigured Button with action to open NumberInput for this MelonPref</returns>
+        public Button AddMelonNumberInput(MelonPreferences_Entry<float> entry, string buttonIcon = "", ButtonStyle buttonStyle = ButtonStyle.TextOnly)
+        {
+            Button button = AddButton(entry.DisplayName, buttonIcon, entry.Description, buttonStyle);
+            button.OnPress += () => QuickMenuAPI.OpenNumberInput(entry.DisplayName, entry.Value, f => entry.Value = f);
+            return button;
+        }
+
         internal override void GenerateCohtml()
         {
             if (!UIUtils.IsQMReady()) return;
@@ -347,7 +406,7 @@ namespace BTKUILib.UIObjects
 
             IsGenerated = true;
         }
-        
+
         private void UpdateCategoryName()
         {
             if (!BTKUILib.Instance.IsOnMainThread())
@@ -355,9 +414,9 @@ namespace BTKUILib.UIObjects
                 BTKUILib.Instance.MainThreadQueue.Enqueue(UpdateCategoryName);
                 return;
             }
-            
+
             if (!UIUtils.IsQMReady()) return;
-            
+
             UIUtils.GetInternalView().TriggerEvent("btkUpdateText", $"btkUI-Row-{UUID}-HeaderText", _categoryName);
         }
     }

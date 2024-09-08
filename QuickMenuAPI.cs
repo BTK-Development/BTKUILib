@@ -1,13 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Reflection;
 using ABI_RC.Core.InteractionSystem;
 using ABI_RC.Core.Player;
 using BTKUILib.UIObjects;
-using BTKUILib.UIObjects.Components;
 using BTKUILib.UIObjects.Objects;
-using cohtml;
+using System.Linq;
 using UnityEngine;
 
 namespace BTKUILib
@@ -21,36 +18,48 @@ namespace BTKUILib
         /// Called when the Cohtml menu is regenerated
         /// </summary>
         public static Action<CVR_MenuManager> OnMenuRegenerate;
+
         /// <summary>
         /// Called after BTKUILib has finished generating all menu components and BTKUIReady is set
         /// </summary>
         public static Action<CVR_MenuManager> OnMenuGenerated;
+
         /// <summary>
         /// Called when a user joins the instance, passes the complete CVRPlayerEntity object
         /// </summary>
         public static Action<CVRPlayerEntity> UserLeave;
+
         /// <summary>
         /// Called when a user leaves the instance, passes the complete CVRPlayerEntity object. Some data may be nulled as the player is leaving
         /// </summary>
         public static Action<CVRPlayerEntity> UserJoin;
+
         /// <summary>
         /// Fires when a tab change occurs, this includes when the tab is already focused.
         /// First parameter is the target tab, second is the last tab.
         /// </summary>
         public static Action<string, string> OnTabChange;
+
         /// <summary>
         /// Called when the user is disconnected from a CVR instance
         /// </summary>
         public static Action OnWorldLeave;
-        
+
         /// <summary>
         /// Called when a user is selected in the quick menu, passes the username and user ID
         /// </summary>
         public static Action<string, string> OnPlayerSelected;
+
+        /// <summary>
+        /// Called when a user is selected in the playerlist, passes that players CVRPlayerEntity
+        /// </summary>
+        public static Action<CVRPlayerEntity> OnPlayerEntitySelected;
+
         /// <summary>
         /// Called when a page change occurs, passes the new target page and the previous page
         /// </summary>
         public static Action<string, string> OnOpenedPage;
+
         /// <summary>
         /// Called when back is used, passes the target page and the previous page
         /// </summary>
@@ -60,15 +69,21 @@ namespace BTKUILib
         /// Last selected player's username from the User Select menu
         /// </summary>
         public static string SelectedPlayerName;
+
         /// <summary>
         /// Last selected player's user ID from the User Select menu
         /// </summary>
         public static string SelectedPlayerID;
 
         /// <summary>
+        /// Last selected player's CVRPlayerEntity from the PlayerList page
+        /// </summary>
+        public static CVRPlayerEntity SelectedPlayerEntity => PlayerList.Instance.SelectedPlayer;
+
+        /// <summary>
         /// Player select page for setting up functions that should be used in the context of a user
         /// </summary>
-        public static Page PlayerSelectPage { get; internal set; }
+        public static Page PlayerSelectPage => PlayerList.Instance.PlayerSelectPage;
 
         /// <summary>
         /// Contains the currently opened page element ID
@@ -90,7 +105,7 @@ namespace BTKUILib
                     _miscTabPage.MenuTitle = "Misc";
                     _miscTabPage.MenuSubtitle = "Miscellaneous mod elements be found here!";
                 }
-                
+
                 return _miscTabPage;
             }
         }
@@ -102,7 +117,8 @@ namespace BTKUILib
         internal static Action<float> NumberInputComplete;
         internal static Action<string> OnKeyboardSubmitted;
         internal static DateTime TimeSinceKeyboardOpen = DateTime.Now;
-        
+        internal static bool KeyboardCloseFired = false;
+
         private static Page _miscTabPage;
 
         #region Update Functions
@@ -111,20 +127,17 @@ namespace BTKUILib
         {
             if (!BTKUILib.Instance.IsOnMainThread())
             {
-                BTKUILib.Instance.MainThreadQueue.Enqueue(() =>
-                {
-                    UpdateMenuTitle(title, subtitle);
-                });
+                BTKUILib.Instance.MainThreadQueue.Enqueue(() => { UpdateMenuTitle(title, subtitle); });
                 return;
             }
-            
+
             if (!UIUtils.IsQMReady()) return;
-            
+
             UIUtils.GetInternalView().TriggerEvent("btkUpdateTitle", title, subtitle);
         }
 
         #endregion
-        
+
         #region Utility Functions
 
         /// <summary>
@@ -172,12 +185,12 @@ namespace BTKUILib
 
             if (!Directory.Exists(directory))
                 Directory.CreateDirectory(directory);
-            
+
             var path = $"{directory}\\{iconName}.png";
 
             using var tempStream = new MemoryStream((int)resourceStream.Length);
             resourceStream.CopyTo(tempStream);
-            
+
             File.WriteAllBytes(path, tempStream.ToArray());
         }
 
@@ -207,13 +220,13 @@ namespace BTKUILib
         public static void ShowConfirm(string title, string content, Action onYes, Action onNo = null, string yesText = "Yes", string noText = "No")
         {
             if (!UIUtils.IsQMReady()) return;
-            
+
             ConfirmYes = onYes;
             ConfirmNo = onNo;
-            
+
             UIUtils.GetInternalView().TriggerEvent("btkShowConfirm", title, content, yesText, noText);
         }
-        
+
         /// <summary>
         /// Shows a basic notice dialog with an OK button
         /// </summary>
@@ -224,11 +237,11 @@ namespace BTKUILib
         public static void ShowNotice(string title, string content, Action onOK = null, string okText = "OK")
         {
             if (!UIUtils.IsQMReady()) return;
-            
+
             NoticeOk = onOK;
             UIUtils.GetInternalView().TriggerEvent("btkShowNotice", title, content, okText);
         }
-        
+
         /// <summary>
         /// Opens the number input page, currently limited to 0-9999
         /// </summary>
@@ -238,11 +251,11 @@ namespace BTKUILib
         public static void OpenNumberInput(string name, float input, Action<float> onCompleted)
         {
             if (!UIUtils.IsQMReady()) return;
-            
+
             NumberInputComplete = onCompleted;
             UIUtils.GetInternalView().TriggerEvent("btkOpenNumberInput", name, input);
         }
-        
+
         /// <summary>
         /// Opens the multiselection page
         /// </summary>
@@ -250,7 +263,7 @@ namespace BTKUILib
         public static void OpenMultiSelect(MultiSelection multiSelection)
         {
             if (!UIUtils.IsQMReady()) return;
-            
+
             UserInterface.Instance.SelectedMultiSelect = multiSelection;
             UIUtils.GetInternalView().TriggerEvent("btkOpenMultiSelect", multiSelection.Name, multiSelection.Options, multiSelection.SelectedOption, UserInterface.IsInPlayerList);
         }
@@ -286,7 +299,7 @@ namespace BTKUILib
 
             ColourPicker.Instance.OpenColourPicker(currentColour, callback, liveUpdate);
         }
-        
+
         /// <summary>
         /// Opens the CVR keyboard
         /// </summary>
@@ -295,9 +308,10 @@ namespace BTKUILib
         public static void OpenKeyboard(string currentValue, Action<string> callback)
         {
             if (!UIUtils.IsQMReady()) return;
-            
+
             OnKeyboardSubmitted = callback;
             TimeSinceKeyboardOpen = DateTime.Now;
+            KeyboardCloseFired = false;
             ViewManager.Instance.openMenuKeyboard(currentValue);
         }
 
@@ -309,7 +323,7 @@ namespace BTKUILib
         public static void ShowAlertToast(string message, int delay = 5)
         {
             if (!UIUtils.IsQMReady()) return;
-            
+
             UIUtils.GetInternalView().TriggerEvent("btkAlertToast", message, delay);
         }
 
@@ -333,7 +347,20 @@ namespace BTKUILib
             if (UserInterface.RootPages.Contains(page)) return;
             UserInterface.RootPages.Add(page);
         }
-        
+
+        /// <summary>
+        /// Opens the player settings/action page for the given UserID
+        /// </summary>
+        /// <param name="userId">Target UserID to open the player settings/action page to</param>
+        public static void OpenPlayerListByUserID(string userId)
+        {
+            var playerEntity = CVRPlayerManager.Instance.NetworkPlayers.FirstOrDefault(x => x.Uuid == userId);
+
+            if (playerEntity == null) return;
+
+            PlayerList.Instance.OpenPlayerActionPage(playerEntity);
+        }
+
         #endregion
     }
 }

@@ -14,8 +14,6 @@ cvr.menu.prototype.BTKUI = {
     isDraggingTabRootBTK: false,
     tabRootLastDragNumBTK: {},
     selectedTabRootBTK: {},
-    selectedPlayerIDBTK: "",
-    selectedPlayerNameBTK: "",
     btkAlertToasts: [],
     btkAlertShown: false,
     btkShowAlertFunc: {},
@@ -68,8 +66,6 @@ cvr.menu.prototype.BTKUI = {
         setSliderFunctionBTK = this.btkSliderSetValue;
         pushPageBTK = this.btkPushPage;
         updateTitle = this.btkUpdateTitle;
-        selectedPlayerIDBTK = "";
-        selectedPlayerNameBTK = "";
         changeTabBTK = this.btkChangeTab;
         btkAlertToasts = [];
         btkAlertShown = false;
@@ -185,16 +181,18 @@ cvr.menu.prototype.BTKUI = {
                 {c: "container container-controls-playerlist hide", a:{"id": "btkUI-PlayerList"}, s:[
                         {c: "row header-section", s:[
                                 {c:"col-1", s:[{c: "icon-back", x: "btkUI-Back"}]},
-                                {c:"col", s:[{c:"header", h:"Player Selection | 0 Players in World", a: {"id": "btkUI-PlayerListHeaderText"}}]},
-                                {c:"col-1", s:[{c: "icon-gear", a:{"data-page": "btkUI-SettingsPage"}, x: "btkUI-pushPage"}]}
+                                {c:"col", s:[{c:"header", h:"Playerlist | 0 Players in World", a: {"id": "btkUI-PlayerList-Header"}}]},
+                                {c:"col-1", s:[{c: "icon-resize align-self-center", x: "btkUI-ExpandPlayerList"}]},
+                                {c:"col-1", s:[{c: "icon-gear align-self-center", a:{"data-page": "btkUI-SettingsPage"}, x: "btkUI-pushPage"}]}
                             ]},
                         {c: "scroll-view", s:[{c: "content-subpage scroll-content", s:[
-                                    {c: "row", a:{"id": "btkUI-PlayerListContent"}}
+                                    {c: "row", a:{"id": "btkUI-PlayerList-Content"}}
                                 ]}, {c: "scroll-marker-v"}]}]},
                 {c: "container container-controls-playerlist hide", a:{"id": "btkUI-PlayerSelectPage"}, s:[
                         {c: "row header-section", s:[
                                 {c:"col-1", s:[{c: "icon-back", x: "btkUI-Back"}]},
-                                {c:"col", s:[{c:"header", h:"User", a:{"id": "btkUI-PlayerSelectHeader"}}]}
+                                {c:"col", s:[{c:"header", h:"User", a:{"id": "btkUI-PlayerSelectPage-Header"}}]},
+                                {c:"col-1", s:[{c: "icon-resize align-self-center", x: "btkUI-ExpandPlayerProfile"}]},
                             ]},
                         {c: "scroll-view", s:[{c: "content-subpage scroll-content", s: [
                                     {c: "row", a:{"id": "btkUI-PlayerSelectPage-Content"}},
@@ -233,7 +231,6 @@ cvr.menu.prototype.BTKUI = {
         menu.templates["btkUIRowHeader"] = {c: "row rowBorder", a: {"id": "btkUI-Row-[UUID]-HeaderRoot"}, s:[{c:"col", s:[{c:"header", h:"[Header]", a:{"id": "btkUI-Row-[UUID]-HeaderText"}}]}]};
         menu.templates["btkUIRowHeaderCollapsible"] = {c: "row rowBorder", x: "btkUI-Collapse", a: {"id": "btkUI-Row-[UUID]-HeaderRoot", "data-row": "btkUI-Row-[UUID]"}, s:[{c:"col", s:[{c:"header", h:"[Header]", a:{"id": "btkUI-Row-[UUID]-HeaderText"}}]}, {c: "col-2", s: [{c: "icon-collapse ml-auto", a: {"id": "btkUI-Row-[UUID]-Collapse"}}]}]};
         menu.templates["btkUITab"] = {c: "col-md-2 tab", s:[{c: "tab-content", a:{"id":"btkUI-Tab-[TabName]-Image"}}], a:{"id":"btkUI-Tab-[TabName]", "tabTarget": "btkUI-[TabName]-[PageName]"}, x: "btkUI-TabChange"};
-        menu.templates["btkPlayerListEntry"] = {c:"col-3", s:[{c:"button-fullImage", x:"btkUI-SelectPlayer", s:[{c:"text", h:"[player-name]"}], a:{"id": "btkUI-PlayerButton-[player-id]-Icon","data-id": "[player-id]", "data-name": "[player-name]", "data-tooltip": "Open up the player options for [player-name]"}}], a:{"id": "btkUI-PlayerButton-[player-id]"}};
         menu.templates["btkTextBlock"] = {c: "col-12 align-self-center", h: "[text]", a:{"id": "btkUI-TextBlock-[UUID]-Root"}};
         menu.templates["btkTextInput"] = {c: "col-12 textInput", x: "btkUI-TextInputClick", a:{"id": "btkUI-TextInput-[UUID]-Root", "data-input": "btkUI-TextInput-[UUID]"}, s:[{h:"[text]", a:{"id": "btkUI-TextInput-[UUID]"}}, {c:"text-placeholder", h:"[placeholder]", a:{"id": "btkUI-TextInput-[UUID]-Placeholder"}}]};
 
@@ -256,11 +253,12 @@ cvr.menu.prototype.BTKUI = {
         uiRefBTK.actions["btkUI-NumBack"] = this.actions.btkNumBack;
         uiRefBTK.actions["btkUI-NumSubmit"] = this.actions.btkNumSubmit;
         uiRefBTK.actions["btkUI-TabChange"] = this.actions.btkTabChange;
-        uiRefBTK.actions["btkUI-SelectPlayer"] = this.actions.selectPlayer;
         uiRefBTK.actions["btkUI-ToastDismiss"] = this.actions.btkToastDismiss;
         uiRefBTK.actions["btkUI-SliderReset"] = this.actions.btkSliderReset;
         uiRefBTK.actions["btkUI-Collapse"] = this.actions.btkRowCollapse;
         uiRefBTK.actions["btkUI-TextInputClick"] = this.actions.btkTextInputClick;
+        uiRefBTK.actions["btkUI-ExpandPlayerProfile"] = this.actions.btkExpandPlayerProfile;
+        uiRefBTK.actions["btkUI-ExpandPlayerList"] = this.actions.btkExpandPlayerList;
 
         engine.on("btkModInit", this.btkUILibInit);
         engine.on("btkCreateToggle", this.btkCreateToggle);
@@ -278,13 +276,10 @@ cvr.menu.prototype.BTKUI = {
         engine.on("btkCreateRow", this.btkCreateRow);
         engine.on("btkUpdateText", this.btkUpdateText);
         engine.on("btkPushPage", this.btkPushPage);
-        engine.on("btkAddPlayer", this.btkAddPlayer);
-        engine.on("btkRemovePlayer", this.btkRemovePlayer);
         engine.on("btkSliderUpdateSettings", this.btkSliderUpdateSettings);
         engine.on("btkDeleteElement", this.btkDeleteElement);
         engine.on("btkUpdateIcon", this.btkUpdateIcon);
         engine.on("btkUpdateTooltip", this.btkUpdateTooltip);
-        engine.on("btkLeaveWorld", this.btkLeaveWorld);
         engine.on("btkAlertToast", this.btkShowAlert);
         engine.on("btkClearChildren", this.btkClearChildren);
         engine.on("btkSetDisabled", this.btkSetDisabled);
@@ -418,40 +413,6 @@ cvr.menu.prototype.BTKUI = {
                 scrollCont.classList.remove("scroll-bg-left");
             cvr("#btkUI-UserMenu").hide();
         }
-    },
-
-    btkAddPlayer: function(username, userid, userImage, playerCount){
-        let playerCheck = document.getElementById("btkUI-PlayerButton-" + userid);
-
-        let plHeader = document.getElementById("btkUI-PlayerListHeaderText");
-        plHeader.innerHTML = "Player Selection | " + playerCount + " Players in World";
-
-        if(playerCheck != null) return;
-
-        cvr("#btkUI-PlayerListContent").appendChild(cvr.render(uiRefBTK.templates["btkPlayerListEntry"], {
-            "[player-name]": username,
-            "[player-id]": userid,
-        }, uiRefBTK.templates, uiRefBTK.actions));
-
-        let user = document.querySelector("#btkUI-PlayerButton-" + userid + "-Icon");
-        user.style.background = "url('" + userImage + "')";
-        user.style.backgroundRepeat = "no-repeat";
-        user.style.backgroundSize = "cover";
-    },
-
-    btkRemovePlayer: function(userid, playerCount){
-        let element = document.querySelector("#btkUI-PlayerButton-" + userid);
-        if(element != null){
-            element.parentElement.removeChild(element);
-        }
-        let plHeader = document.getElementById("btkUI-PlayerListHeaderText");
-        plHeader.innerHTML = "Player Selection | " + playerCount + " Players in World";
-    },
-
-    btkLeaveWorld: function(){
-        cvr("#btkUI-PlayerListContent").clear();
-        let plHeader = document.getElementById("btkUI-PlayerListHeaderText");
-        plHeader.innerHTML = "Player Selection | 0 Players in World";
     },
 
     btkCreateSlider: function(parent, sliderID, currentValue, categoryMode, settings){
@@ -1536,28 +1497,6 @@ cvr.menu.prototype.BTKUI = {
 
             engine.call("btkUI-DropdownSelected", index);
         },
-        selectPlayer: function(e){
-            uiRefBTK.core.playSoundCore("Click");
-
-            if(currentPageBTK === "btkUI-PlayerSelectPage")
-                return;
-
-            let playerID = e.currentTarget.getAttribute("data-id");
-            let playerName = e.currentTarget.getAttribute("data-name");
-
-            selectedPlayerNameBTK = playerName;
-            selectedPlayerIDBTK = playerID;
-
-            cvr("#btkUI-PlayerSelectPage").show();
-            cvr("#" + currentPageBTK).hide();
-
-            breadcrumbsBTK.push(currentPageBTK);
-            currentPageBTK = "btkUI-PlayerSelectPage";
-
-            engine.call("btkUI-SelectedPlayer", selectedPlayerNameBTK, selectedPlayerIDBTK);
-
-            cvr("#btkUI-PlayerSelectHeader").innerHTML(playerName);
-        },
         btkConfirmOK: function (){
             uiRefBTK.core.playSoundCore("Click");
             engine.call("btkUI-PopupConfirmOK");
@@ -1590,6 +1529,14 @@ cvr.menu.prototype.BTKUI = {
             let inputTarget = e.currentTarget.getAttribute("data-input");
 
             engine.call("btkUI-TextInputClick", inputTarget);
+        },
+        btkExpandPlayerList: function(){
+            uiRefBTK.core.playSoundCore("Click");
+            engine.call("btkUI-ExpandPlayerList");
+        },
+        btkExpandPlayerProfile: function() {
+            uiRefBTK.core.playSoundCore("Click");
+            engine.call("btkUI-ExpandPlayerProfile");
         }
     }
 }

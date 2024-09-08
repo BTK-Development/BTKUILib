@@ -1,6 +1,6 @@
 ﻿using System;
 using ABI_RC.Core.InteractionSystem;
-using ABI_RC.Core.Player;
+using ABI_RC.Core.Networking.IO.Social;
 using ABI_RC.Systems.GameEventSystem;
 using HarmonyLib;
 using MelonLoader;
@@ -18,6 +18,7 @@ namespace BTKUILib
             
             ApplyPatches(typeof(CVRMenuManagerPatch));
             ApplyPatches(typeof(ViewManagerPatches));
+            ApplyPatches(typeof(UsersPatch));
 
             CVRGameEventSystem.Instance.OnConnectionLost.AddListener((message) =>
             {
@@ -120,6 +121,21 @@ namespace BTKUILib
         }
     }
 
+    [HarmonyPatch(typeof(Users))]
+    class UsersPatch
+    {
+        [HarmonyPatch(nameof(Users.ShowDetails))]
+        [HarmonyPrefix]
+        static bool ShowDetailsPrefix(string userId)
+        {
+            if (!CVR_MenuManager.Instance.IsQuickMenuOpen) return true;
+
+            //QM is open, redirect selection to playerlist
+            QuickMenuAPI.OpenPlayerListByUserID(userId);
+            return false;
+        }
+    }
+
     [HarmonyPatch(typeof(ViewManager))]
     class ViewManagerPatches
     {
@@ -127,11 +143,26 @@ namespace BTKUILib
         [HarmonyPostfix]
         static void SendToWorldUi(string value)
         {
+            var elapsedTime = DateTime.Now.Subtract(QuickMenuAPI.TimeSinceKeyboardOpen);
+
+            BTKUILib.Log.Msg($"SendToWorldUI fired | seconds: {elapsedTime.TotalSeconds} minutes: {elapsedTime.TotalMinutes} fired: {QuickMenuAPI.KeyboardCloseFired}");
+
             //Ensure that we check if the keyboard action was used within 3 minutes, this will avoid the next keyboard usage triggering the action
-            if (DateTime.Now.Subtract(QuickMenuAPI.TimeSinceKeyboardOpen).TotalMinutes <= 3)
+            if (elapsedTime.TotalMinutes <= 3 && (!QuickMenuAPI.KeyboardCloseFired || elapsedTime.TotalSeconds <= 10))
                 QuickMenuAPI.OnKeyboardSubmitted?.Invoke(value);
 
             QuickMenuAPI.OnKeyboardSubmitted = null;
+        }
+
+        [HarmonyPatch(nameof(ViewManager.KeyboardClosed))]
+        [HarmonyPostfix]
+        static void KeyboardClosedPatch()
+        {
+            BTKUILib.Log.Msg("Keyboard Closed Fired");
+
+            //Update cause the keyboard has been closed
+            QuickMenuAPI.TimeSinceKeyboardOpen = DateTime.Now;
+            QuickMenuAPI.KeyboardCloseFired = true;
         }
     }
 }
