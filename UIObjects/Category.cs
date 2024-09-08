@@ -367,7 +367,7 @@ namespace BTKUILib.UIObjects
         /// </summary>
         /// <param name="entry">MelonPreferences_Entry to use for creating this button</param>
         /// <param name="buttonIcon">Icon for the button</param>
-        /// <param name="buttonTooltip">Tooltip to be displayed when hovering on the button</param>
+        /// <param name="buttonStyle">Sets the button style, this cannot be changed after creation!</param>
         /// <returns>Preconfigured ToggleButton with action to open the Keyboard for this MelonPref</returns>
         public Button AddMelonStringInput(MelonPreferences_Entry<string> entry, string buttonIcon = "", ButtonStyle buttonStyle = ButtonStyle.TextOnly)
         {
@@ -381,7 +381,7 @@ namespace BTKUILib.UIObjects
         /// </summary>
         /// <param name="entry">MelonPreferences_Entry to use for creating this button</param>
         /// <param name="buttonIcon">Icon for the button</param>
-        /// <param name="buttonTooltip">Tooltip to be displayed when hovering on the button</param>
+        /// <param name="buttonStyle">Sets the button style, this cannot be changed after creation!</param>
         /// <returns>Preconfigured Button with action to open NumberInput for this MelonPref</returns>
         public Button AddMelonNumberInput(MelonPreferences_Entry<float> entry, string buttonIcon = "", ButtonStyle buttonStyle = ButtonStyle.TextOnly)
         {

@@ -42,6 +42,11 @@ namespace BTKUILib
             return input == null ? null : Regex.Replace(Regex.Replace(input, "<.*?>", string.Empty), @"[^0-9a-zA-Z_]+", string.Empty);
         }
 
+        /// <summary>
+        /// Get stream from an EmbeddedResource with a given name
+        /// </summary>
+        /// <param name="iconName"></param>
+        /// <returns></returns>
         public static Stream GetIconStream(string iconName)
         {
             Assembly assembly = Assembly.GetExecutingAssembly();
