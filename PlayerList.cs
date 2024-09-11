@@ -4,6 +4,7 @@ using ABI_RC.Core.Savior;
 using BTKUILib.UIObjects;
 using BTKUILib.UIObjects.Components;
 using BTKUILib.UIObjects.Objects;
+using System;
 using System.Collections.Generic;
 
 namespace BTKUILib;
@@ -14,8 +15,8 @@ internal class PlayerList
 
     internal Page PlayerSelectPage;
     internal CVRPlayerEntity SelectedPlayer;
+    internal Page InternalPlayerListPage;
 
-    private Page _internalPlayerListPage;
     private Category _internalPlayerListCategory;
     private readonly Dictionary<string, Button> _userButtons = new();
 
@@ -25,6 +26,8 @@ internal class PlayerList
     private SliderFloat _playerVolume;
     private MultiSelection _avatarBlockMode, _propBlockMode;
     private CVRSelfModerationEntryUi _moderationEntry;
+    private bool _playerSelectMode;
+    private Action<CVRPlayerEntity> _playerSelectCallback;
 
     internal static void SetupPlayerList()
     {
@@ -36,6 +39,19 @@ internal class PlayerList
 
     internal void OpenPlayerActionPage(CVRPlayerEntity player)
     {
+        if (_playerSelectMode)
+        {
+            //A player was selected, fire the callback
+            _playerSelectCallback?.Invoke(player);
+
+            _playerSelectMode = false;
+            _playerSelectCallback = null;
+
+            QuickMenuAPI.GoBack();
+            ResetPlayerlist();
+            return;
+        }
+
         //Update the player settings page data
         SelectedPlayer = player;
         QuickMenuAPI.SelectedPlayerName = player.Username;
@@ -53,6 +69,18 @@ internal class PlayerList
         QuickMenuAPI.PlayerSelectPage.OpenPage();
     }
 
+    internal void OpenPlayerPicker(string title, Action<CVRPlayerEntity> callback)
+    {
+        InternalPlayerListPage.PageDisplayName = title;
+        foreach (var button in _userButtons.Values)
+            button.ButtonTooltip = $"Selects {button.ButtonText}";
+
+        _playerSelectMode = true;
+        _playerSelectCallback = callback;
+
+        InternalPlayerListPage.OpenPage();
+    }
+
     private void SetupPlayerListInstance()
     {
         //Attach to events
@@ -62,9 +90,11 @@ internal class PlayerList
         QuickMenuAPI.OnMenuGenerated += OnMenuGenerated;
 
         //Attach to existing page within JS
-        _internalPlayerListPage = new Page("btkUI-PlayerList");
-        _internalPlayerListPage.PageDisplayName = "Playerlist | 0 Players in World";
-        _internalPlayerListCategory = _internalPlayerListPage.AddCategory("Players", false, false);
+        InternalPlayerListPage = new Page("btkUI-PlayerList");
+        InternalPlayerListPage.PageDisplayName = "Playerlist | 0 Players in World";
+        _internalPlayerListCategory = InternalPlayerListPage.AddCategory("Players", false, false);
+
+        InternalPlayerListPage.OnPageClosed += OnPageClosed;
 
         //Setup playerlist action page
         PlayerSelectPage = new Page("btkUI-PlayerSelectPage");
@@ -85,6 +115,19 @@ internal class PlayerList
         blockUser.OnPress += BlockUser;
         _playerVolume = _internalSelectCategory.AddSlider("Player Voice Volume", "Adjust this players voice volume", 100, 0, 200);
         _playerVolume.OnValueUpdated += AdjustVoiceVolume;
+    }
+
+    private void OnPageClosed()
+    {
+        if (!_playerSelectMode) return;
+
+        ResetPlayerlist();
+    }
+
+    private void ResetPlayerlist()
+    {
+        InternalPlayerListPage.PageDisplayName = $"Playerlist | {_userButtons.Count} Players in World";
+        foreach (var button in _userButtons.Values) button.ButtonTooltip = $"Opens the player options for {button.ButtonText}";
     }
 
     private void MuteUser(bool state)
@@ -160,17 +203,19 @@ internal class PlayerList
 
     private void OnMenuGenerated(CVR_MenuManager _)
     {
-        _internalPlayerListPage.PageDisplayName = $"Playerlist | {_userButtons.Count} Players in World";
+        if(!_playerSelectMode)
+            InternalPlayerListPage.PageDisplayName = $"Playerlist | {_userButtons.Count} Players in World";
         //Force page to IsVisible
-        _internalPlayerListPage.IsVisible = true;
-        _internalPlayerListPage.GenerateCohtml();
+        InternalPlayerListPage.IsVisible = true;
+        InternalPlayerListPage.GenerateCohtml();
     }
 
     private void OnWorldLeave()
     {
         _internalPlayerListCategory.ClearChildren();
         _userButtons.Clear();
-        _internalPlayerListPage.PageDisplayName = "Playerlist | 0 Players in World";
+        if(!_playerSelectMode)
+            InternalPlayerListPage.PageDisplayName = "Playerlist | 0 Players in World";
     }
 
     private void UserLeave(CVRPlayerEntity player)
@@ -180,7 +225,8 @@ internal class PlayerList
         button.Delete();
         _userButtons.Remove(player.Uuid);
 
-        _internalPlayerListPage.PageDisplayName = $"Playerlist | {_userButtons.Count} Players in World";
+        if(!_playerSelectMode)
+            InternalPlayerListPage.PageDisplayName = $"Playerlist | {_userButtons.Count} Players in World";
     }
 
     private void UserJoin(CVRPlayerEntity player)
@@ -196,6 +242,7 @@ internal class PlayerList
 
         _userButtons.Add(player.Uuid, newUserBtn);
 
-        _internalPlayerListPage.PageDisplayName = $"Playerlist | {_userButtons.Count} Players in World";
+        if(!_playerSelectMode)
+            InternalPlayerListPage.PageDisplayName = $"Playerlist | {_userButtons.Count} Players in World";
     }
 }

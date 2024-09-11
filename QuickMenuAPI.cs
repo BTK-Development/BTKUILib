@@ -361,6 +361,24 @@ namespace BTKUILib
             PlayerList.Instance.OpenPlayerActionPage(playerEntity);
         }
 
+        /// <summary>
+        /// Opens the playerlist in player selection mode
+        /// </summary>
+        /// <param name="title">Title for the PlayerList while in player selection mode</param>
+        /// <param name="callback">Callback to be fired when a player is selected</param>
+        public static void OpenPlayerSelector(string title, Action<CVRPlayerEntity> callback)
+        {
+            PlayerList.Instance.OpenPlayerPicker(title, callback);
+        }
+
+        /// <summary>
+        /// Opens the playerlist page
+        /// </summary>
+        public static void OpenPlayerList()
+        {
+            PlayerList.Instance.InternalPlayerListPage.OpenPage();
+        }
+
         #endregion
     }
 }
