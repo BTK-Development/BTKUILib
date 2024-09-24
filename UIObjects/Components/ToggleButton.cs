@@ -58,7 +58,7 @@ namespace BTKUILib.UIObjects.Components
         private string _toggleTooltip;
         private Category _category;
 
-        internal ToggleButton(string toggleText, string toggleTooltip, bool initialValue, Category category)
+        internal ToggleButton(string toggleText, string toggleTooltip, bool initialValue, Category category, string uniqueName) : base(uniqueName, category.ModName, category.RootPage.ElementID)
         {
             _toggleValue = initialValue;
             _toggleName = toggleText;

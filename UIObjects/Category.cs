@@ -85,6 +85,19 @@ namespace BTKUILib.UIObjects
         /// <param name="buttonText">Text to be displayed on the button</param>
         /// <param name="buttonIcon">Icon for the button</param>
         /// <param name="buttonTooltip">Tooltip to be displayed when hovering on the button</param>
+        /// <param name="uniqueName">Supply UniqueName to allow this button to be pinned to Quick Access</param>
+        /// <returns></returns>
+        public Button AddButton(string buttonText, string buttonIcon, string buttonTooltip, string uniqueName)
+        {
+            return AddButton(buttonText, buttonIcon, buttonTooltip, ButtonStyle.TextWithIcon, 0.5f, uniqueName);
+        }
+
+        /// <summary>
+        /// Creates a simple button
+        /// </summary>
+        /// <param name="buttonText">Text to be displayed on the button</param>
+        /// <param name="buttonIcon">Icon for the button</param>
+        /// <param name="buttonTooltip">Tooltip to be displayed when hovering on the button</param>
         /// <param name="style">Sets the button style, this cannot be changed after creation!</param>
         /// <returns></returns>
         public Button AddButton(string buttonText, string buttonIcon, string buttonTooltip, ButtonStyle style)
@@ -103,7 +116,22 @@ namespace BTKUILib.UIObjects
         /// <returns></returns>
         public Button AddButton(string buttonText, string buttonIcon, string buttonTooltip, ButtonStyle style, float holdWaitTime)
         {
-            var button = new Button(buttonText, buttonIcon, buttonTooltip, this, style, holdWaitTime);
+            return AddButton(buttonText, buttonIcon, buttonTooltip, style, holdWaitTime, null);
+        }
+
+        /// <summary>
+        /// Creates a simple button
+        /// </summary>
+        /// <param name="buttonText">Text to be displayed on the button</param>
+        /// <param name="buttonIcon">Icon for the button</param>
+        /// <param name="buttonTooltip">Tooltip to be displayed when hovering on the button</param>
+        /// <param name="style">Sets the button style, this cannot be changed after creation!</param>
+        /// <param name="holdWaitTime">Sets the amount of time before the OnHeld action is fired</param>
+        /// <param name="uniqueName">Supply UniqueName to allow this toggle to be pinned to Quick Access</param>
+        /// <returns></returns>
+        public Button AddButton(string buttonText, string buttonIcon, string buttonTooltip, ButtonStyle style, float holdWaitTime, string uniqueName)
+        {
+            var button = new Button(buttonText, buttonIcon, buttonTooltip, this, uniqueName, style, holdWaitTime);
             SubElements.Add(button);
 
             if(UIUtils.IsQMReady())
@@ -121,16 +149,29 @@ namespace BTKUILib.UIObjects
         /// <returns>Newly created toggle object</returns>
         public ToggleButton AddToggle(string toggleText, string toggleTooltip, bool state)
         {
-            var toggle = new ToggleButton(toggleText, toggleTooltip, state, this);
+            return AddToggle(toggleText, toggleTooltip, state, null);
+        }
+
+        /// <summary>
+        /// Simple toggle element
+        /// </summary>
+        /// <param name="toggleText">Text to be displayed on toggle</param>
+        /// <param name="toggleTooltip">Tooltip to be displayed when hovering on the toggle</param>
+        /// <param name="state">Initial state of the toggle</param>
+        /// <param name="uniqueName">Supply UniqueName to allow this toggle to be pinned to Quick Access</param>
+        /// <returns>Newly created toggle object</returns>
+        public ToggleButton AddToggle(string toggleText, string toggleTooltip, bool state, string uniqueName)
+        {
+            var toggle = new ToggleButton(toggleText, toggleTooltip, state, this, uniqueName);
             SubElements.Add(toggle);
-            
+
             if(UIUtils.IsQMReady())
                 toggle.GenerateCohtml();
 
             return toggle;
         }
 
-                /// <summary>
+        /// <summary>
         /// Create a slider on the page
         /// </summary>
         /// <param name="sliderName">Name of the slider, displayed above the slider</param>
@@ -219,7 +260,7 @@ namespace BTKUILib.UIObjects
                 page.InPlayerlist = true;
             }
 
-            var pageButton = new Button(pageName, pageIcon, pageTooltip, this);
+            var pageButton = new Button(pageName, pageIcon, pageTooltip, this, pageName);
             SubElements.Add(pageButton);
             pageButton.OnPress += () =>
             {

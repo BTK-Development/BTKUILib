@@ -207,6 +207,16 @@ cvr.menu.prototype.BTKUI = {
                                 {c: "scroll-marker-v"}
                             ]}
                     ]},
+                {c: "container container-controls-playerlist hide", a:{"id": "btkUI-QuickAccessPage"}, s:[
+                        {c: "row header-section", s:[
+                                {c:"col-1", s:[{c: "icon-close", x: "btkUI-QuickAccessClose"}]},
+                                {c:"col", s:[{c:"header", h:"Quick Access"}]}
+                            ]},
+                        {c: "scroll-view", s:[
+                                {c: "content-subpage scroll-content", s:[], a:{"id": "btkUI-QuickAccess-Content"}},
+                                {c: "scroll-marker-v"}
+                            ]}
+                    ]},
                 {c: "container container-controls-playerlist hide", a:{"id": "btkUI-DropdownPagePL"}, s:[
                         {c: "row header-section", s:[
                                 {c:"col-1", s:[{c: "icon-back", x: "btkUI-Back"}]},
@@ -354,11 +364,35 @@ cvr.menu.prototype.BTKUI = {
 
         cvr("#btkUI-TooltipContainer").hide();
     },
-    btkUILibInit: function (plButtonStyle) {
+    btkUILibInit: function (plButtonStyle, enableQuickAccess) {
         cvr("#btkUI-UserMenu").show();
         cvr("#btkUI-SharedRoot").show();
 
         let tabBarMode = false;
+
+        if(enableQuickAccess){
+            let debugButton = document.getElementsByClassName("button-debug");
+
+            if(debugButton.length === 0){
+                console.error("Couldn't find debug button! Unable to replace!");
+                return;
+            }
+
+            debugButton = debugButton[0];
+
+            debugButton.removeEventListener("click", uiRefBTK.actions["switchCategory"]);
+            debugButton.addEventListener("click", uiRefBTK.actions["btkUI-pushPage"]);
+            debugButton.setAttribute("data-x", "btkUI-pushPage");
+            debugButton.setAttribute("data-page", "btkUI-QuickAccessPage");
+            debugButton.setAttribute("data-tooltip", "Opens the UILib Quick Access Panel");
+
+            let icon = debugButton.querySelector('.icon');
+            icon.classList.add("icon-star");
+            icon.style.backgroundImage = "url(mods/BTKUI/images/Placeholder.png)";
+            icon.style.backgroundSize = "contain";
+            icon.style.backgroundPositionY = "0";
+            icon.style.backgroundPositionX = "0";
+        }
 
         switch(plButtonStyle){
             case "ReplaceTTS":

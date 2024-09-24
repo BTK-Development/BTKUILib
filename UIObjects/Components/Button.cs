@@ -69,7 +69,7 @@ namespace BTKUILib.UIObjects.Components
         private Category _category;
         private readonly ButtonStyle _style;
 
-        internal Button(string buttonText, string buttonIcon, string buttonTooltip, Category category, ButtonStyle style = ButtonStyle.TextWithIcon, float holdWaitTime = 0.5f)
+        internal Button(string buttonText, string buttonIcon, string buttonTooltip, Category category, string uniqueName, ButtonStyle style = ButtonStyle.TextWithIcon, float holdWaitTime = 0.5f) : base(uniqueName, category.ModName, category.RootPage.ElementID)
         {
             _buttonIcon = buttonIcon;
             _buttonText = buttonText;
