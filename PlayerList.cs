@@ -81,6 +81,17 @@ internal class PlayerList
         InternalPlayerListPage.OpenPage();
     }
 
+    internal void ResetListAfterConnRecovery()
+    {
+        _internalPlayerListCategory.ClearChildren();
+        _userButtons.Clear();
+
+        foreach (var player in CVRPlayerManager.Instance.NetworkPlayers)
+        {
+            UserJoin(player);
+        }
+    }
+
     private void SetupPlayerListInstance()
     {
         //Attach to events

@@ -31,6 +31,20 @@ namespace BTKUILib
                     BTKUILib.Log.Error(e);
                 }
             });
+
+            CVRGameEventSystem.Instance.OnConnectionRecovered.AddListener(s =>
+            {
+                if (PlayerList.Instance == null) return;
+
+                try
+                {
+                    PlayerList.Instance.ResetListAfterConnRecovery();
+                }
+                catch (Exception e)
+                {
+                    BTKUILib.Log.Error(e);
+                }
+            });
             
             CVRGameEventSystem.Instance.OnDisconnected.AddListener(s =>
             {
