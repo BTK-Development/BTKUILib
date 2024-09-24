@@ -3,6 +3,8 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
 using ABI_RC.Core.InteractionSystem;
+using ABI_RC.Core.Player;
+using ABI_RC.Core.Savior;
 using ABI_RC.Core.UI;
 using cohtml.Net;
 using MelonLoader;
@@ -10,6 +12,7 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using UnityEngine;
 
 namespace BTKUILib
 {
@@ -20,6 +23,9 @@ namespace BTKUILib
     {
         private static MD5 _hasher = MD5.Create();
         private static FieldInfo _internalCohtmlView = typeof(CohtmlControlledViewWrapper).GetField("_view", BindingFlags.Instance | BindingFlags.NonPublic);
+        private static PropertyInfo _selfUsername = typeof(MetaPort).Assembly.GetType("ABI_RC.Core.Networking.AuthManager").GetProperty("Username", BindingFlags.Static | BindingFlags.Public);
+        private static FieldInfo _animatorGetter = typeof(PuppetMaster).GetField("_animator", BindingFlags.Instance | BindingFlags.NonPublic);
+        private static MethodInfo _kickUserMethod = typeof(MetaPort).Assembly.GetType("ABI_RC.Core.Networking.Guardian.GuardianExtendedControls").GetMethod("KickUser", BindingFlags.Static | BindingFlags.NonPublic);
         private static View _internalViewCache;
 
         /// <summary>
@@ -55,6 +61,31 @@ namespace BTKUILib
 
             string assemblyName = melon.MelonAssembly.Assembly.GetName().Name;
             return melon.MelonAssembly.Assembly.GetManifestResourceStream($"{assemblyName}.Resources.{iconName}");
+        }
+
+        /// <summary>
+        /// Gets the private Animator from PuppetMaster
+        /// </summary>
+        /// <param name="pm">Target puppet master</param>
+        /// <returns>Private avatar animator</returns>
+        public static Animator GetAvatarAnimator(PuppetMaster pm)
+        {
+            if (pm == null) return null;
+            return (Animator)_animatorGetter.GetValue(pm);
+        }
+
+        /// <summary>
+        /// Gets the username of the local user
+        /// </summary>
+        /// <returns>Local users username</returns>
+        public static string GetSelfUsername()
+        {
+            return (string)_selfUsername.GetValue(null);
+        }
+
+        internal static void KickUser(string uuid)
+        {
+            _kickUserMethod.Invoke(null, [uuid]);
         }
         
         internal static string CreateMD5(string input)

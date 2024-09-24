@@ -1,4 +1,7 @@
 using ABI_RC.Core.InteractionSystem;
+using ABI_RC.Core.Networking.API;
+using ABI_RC.Core.Networking.API.UserWebsocket;
+using ABI_RC.Core.Networking.IO.Social;
 using ABI_RC.Core.Player;
 using ABI_RC.Core.Savior;
 using BTKUILib.UIObjects;
@@ -14,7 +17,7 @@ internal class PlayerList
     internal static PlayerList Instance;
 
     internal Page PlayerSelectPage;
-    internal CVRPlayerEntity SelectedPlayer;
+    internal UIPlayerObject SelectedPlayer;
     internal Page InternalPlayerListPage;
 
     private Category _internalPlayerListCategory;
@@ -27,7 +30,9 @@ internal class PlayerList
     private MultiSelection _avatarBlockMode, _propBlockMode;
     private CVRSelfModerationEntryUi _moderationEntry;
     private bool _playerSelectMode;
-    private Action<CVRPlayerEntity> _playerSelectCallback;
+    private Action<UIPlayerObject> _playerSelectCallback;
+    private UIPlayerObject _localUserObject;
+    private Button _friendButton;
 
     internal static void SetupPlayerList()
     {
@@ -37,7 +42,7 @@ internal class PlayerList
         Instance.SetupPlayerListInstance();
     }
 
-    internal void OpenPlayerActionPage(CVRPlayerEntity player)
+    internal void OpenPlayerActionPage(UIPlayerObject player)
     {
         if (_playerSelectMode)
         {
@@ -59,17 +64,22 @@ internal class PlayerList
         QuickMenuAPI.OnPlayerSelected?.Invoke(player.Username, player.Uuid);
         QuickMenuAPI.OnPlayerEntitySelected?.Invoke(player);
 
-        _moderationEntry = MetaPort.Instance.SelfModerationManager.GetPlayerSelfModerationProfile(player.Uuid, player.AvatarId);
+        _internalSelectCategory.Hidden = player.IsLocalUser;
+
+        _moderationEntry = MetaPort.Instance.SelfModerationManager.GetPlayerSelfModerationProfile(player.Uuid, player.AvatarID);
         _muteUser.ToggleValue = _moderationEntry.mute;
         _playerVolume.SetSliderValue(_moderationEntry.voiceVolume*100f);
         _propBlockMode.SetSelectedOptionWithoutAction(_moderationEntry.userPropVisibility);
         _avatarBlockMode.SetSelectedOptionWithoutAction(_moderationEntry.userAvatarVisibility);
+        _friendButton.ButtonText = Friends.FriendsWith(player.Uuid) ? "Unfriend" : "Add Friend";
+        _friendButton.ButtonTooltip = Friends.FriendsWith(player.Uuid) ? "Unfriend this user" : "Send a friend request to this user";
+        _friendButton.ButtonIcon = Friends.FriendsWith(player.Uuid) ? "UserMinus" : "UserAdd";
 
         QuickMenuAPI.PlayerSelectPage.PageDisplayName = player.Username;
         QuickMenuAPI.PlayerSelectPage.OpenPage();
     }
 
-    internal void OpenPlayerPicker(string title, Action<CVRPlayerEntity> callback)
+    internal void OpenPlayerPicker(string title, Action<UIPlayerObject> callback)
     {
         InternalPlayerListPage.PageDisplayName = title;
         foreach (var button in _userButtons.Values)
@@ -86,10 +96,17 @@ internal class PlayerList
         _internalPlayerListCategory.ClearChildren();
         _userButtons.Clear();
 
+        AddLocalUser();
+
         foreach (var player in CVRPlayerManager.Instance.NetworkPlayers)
         {
             UserJoin(player);
         }
+    }
+
+    internal void OnWorldJoin()
+    {
+        AddLocalUser();
     }
 
     private void SetupPlayerListInstance()
@@ -106,6 +123,8 @@ internal class PlayerList
         _internalPlayerListCategory = InternalPlayerListPage.AddCategory("Players", false, false);
 
         InternalPlayerListPage.OnPageClosed += OnPageClosed;
+
+        _localUserObject = new UIPlayerObject(null);
 
         //Setup playerlist action page
         PlayerSelectPage = new Page("btkUI-PlayerSelectPage");
@@ -124,8 +143,55 @@ internal class PlayerList
         reloadAvatar.OnPress += ReloadAvatar;
         var blockUser = _internalSelectCategory.AddButton("Block User", "BlockUser", "Blocks the selected user");
         blockUser.OnPress += BlockUser;
+        _friendButton = _internalSelectCategory.AddButton("Add Friend", "UserAdd", "Sends a friend request to this user!");
+        _friendButton.OnPress += FriendButtonPress;
+        var kickUser = _internalSelectCategory.AddButton("Kick User", "ExitDoor", "Kick this user from the instance (Only instance owner/moderator)");
+        kickUser.OnPress += KickUser;
+        var voteKick = _internalSelectCategory.AddButton("Vote Kick", "ThumbsDown", "Start a vote kick against this user!");
+        voteKick.OnPress += VoteKick;
         _playerVolume = _internalSelectCategory.AddSlider("Player Voice Volume", "Adjust this players voice volume", 100, 0, 200);
         _playerVolume.OnValueUpdated += AdjustVoiceVolume;
+    }
+
+    private void VoteKick()
+    {
+        QuickMenuAPI.ShowConfirm("Start Vote Kick?", $"Are you sure you want to start a vote kick against {SelectedPlayer.Username}? They won't be able to rejoin for an hour!", () =>
+        {
+            ViewManager.Instance.StartVoteKick(SelectedPlayer.Uuid);
+        });
+    }
+
+    private void KickUser()
+    {
+        QuickMenuAPI.ShowConfirm("Kick User?", $"Are you sure you want to kick from the instance {SelectedPlayer.Username}? They won't be able to rejoin for an hour!", () =>
+        {
+            UIUtils.KickUser(SelectedPlayer.Uuid);
+        });
+    }
+
+    private void FriendButtonPress()
+    {
+        if (Friends.FriendsWith(SelectedPlayer.Uuid))
+        {
+            //Remove friend
+            QuickMenuAPI.ShowConfirm("Remove Friend?", $"Are you sure you want to unfriend {SelectedPlayer.Username}?", () =>
+            {
+                ApiConnection.SendWebSocketRequest(RequestType.UnFriend, new
+                {
+                    id = SelectedPlayer.Uuid
+                });
+            });
+        }
+        else
+        {
+            QuickMenuAPI.ShowConfirm("Send Friend Request?", $"Are you sure you want to send a friend request to {SelectedPlayer.Username}?", () =>
+            {
+                ApiConnection.SendWebSocketRequest(RequestType.FriendRequestSend, new
+                {
+                    id = SelectedPlayer.Uuid
+                });
+            });
+        }
     }
 
     private void OnPageClosed()
@@ -227,6 +293,8 @@ internal class PlayerList
         _userButtons.Clear();
         if(!_playerSelectMode)
             InternalPlayerListPage.PageDisplayName = "Playerlist | 0 Players in World";
+
+        AddLocalUser();
     }
 
     private void UserLeave(CVRPlayerEntity player)
@@ -242,16 +310,38 @@ internal class PlayerList
 
     private void UserJoin(CVRPlayerEntity player)
     {
+        if(_userButtons.Count == 0)
+            AddLocalUser();
+
         if (_userButtons.ContainsKey(player.Uuid)) return;
+
+        var playerObject = new UIPlayerObject(player);
 
         var newUserBtn = _internalPlayerListCategory.AddButton(player.Username, player.ApiProfileImageUrl, $"Opens the player options for {player.Username}!", ButtonStyle.FullSizeImage);
         newUserBtn.OnPress += () =>
         {
             //User select
-            OpenPlayerActionPage(player);
+            OpenPlayerActionPage(playerObject);
         };
 
         _userButtons.Add(player.Uuid, newUserBtn);
+
+        if(!_playerSelectMode)
+            InternalPlayerListPage.PageDisplayName = $"Playerlist | {_userButtons.Count} Players in World";
+    }
+
+    private void AddLocalUser()
+    {
+        if (_userButtons.ContainsKey(_localUserObject.Uuid)) return;
+
+        var newUserBtn = _internalPlayerListCategory.AddButton(_localUserObject.Username, _localUserObject.PlayerIconURL, $"Opens the player options for {_localUserObject.Username}!", ButtonStyle.FullSizeImage);
+        newUserBtn.OnPress += () =>
+        {
+            //User select
+            OpenPlayerActionPage(_localUserObject);
+        };
+
+        _userButtons.Add(_localUserObject.Uuid, newUserBtn);
 
         if(!_playerSelectMode)
             InternalPlayerListPage.PageDisplayName = $"Playerlist | {_userButtons.Count} Players in World";

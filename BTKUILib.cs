@@ -28,6 +28,7 @@ namespace BTKUILib
         internal MelonPreferences_Entry<PlayerListStyleEnum> PlayerListStyle;
 
         private MelonPreferences_Entry<bool> _displayPrefsTab;
+        private MelonPreferences_Entry<bool> _miscTabFirst;
 
         private Thread _mainThread;
         private Page _mlPrefsPage;
@@ -51,6 +52,8 @@ namespace BTKUILib
             });
 
             PlayerListStyle = MelonPreferences.CreateEntry("BTKUILib", "PlayerListStyleNew", PlayerListStyleEnum.TabBar, "PlayerList Button Style", "Sets where the playerlist button will appear");
+
+            _miscTabFirst = MelonPreferences.CreateEntry("BTKUILib", "MiscTabFirst", false, "Misc Tab Always First", "Makes sure the misc tab is always first in the tab row");
             
             Patches.Initialize(HarmonyInstance);
 
@@ -59,6 +62,14 @@ namespace BTKUILib
 
             ColourPicker.SetupColourPicker();
             PlayerList.SetupPlayerList();
+
+            if (!_miscTabFirst.Value) return;
+
+            QuickMenuAPI.MiscTabPage = Page.GetOrCreatePage("Misc", "Misc", true, "MiscIcon");
+            QuickMenuAPI.MiscTabPage.Protected = true;
+            QuickMenuAPI.MiscTabPage.MenuTitle = "Misc";
+            QuickMenuAPI.MiscTabPage.MenuSubtitle = "Miscellaneous mod elements be found here!";
+            QuickMenuAPI.MiscTabPage.HideTab = true;
         }
 
         internal void GenerateSettingsPage()
@@ -79,6 +90,15 @@ namespace BTKUILib
             openListStyle.OnPress += () =>
             {
                 QuickMenuAPI.OpenMultiSelect(_playerListButtonStyle);
+            };
+
+            var miscTabFirst = mainCat.AddToggle("Misc Tab First", "Sets if the Misc Tab should be first in the tab list (requires restart)", _miscTabFirst.Value);
+            miscTabFirst.OnValueUpdated += b =>
+            {
+                _miscTabFirst.Value = b;
+                MelonPreferences.Save();
+
+                QuickMenuAPI.ShowNotice("Restart Required!", "To change the Misc tab first setting you must restart your game! This setting will be applied on the next startup!");
             };
 
             _playerListStyleNames = Enum.GetNames(typeof(PlayerListStyleEnum));

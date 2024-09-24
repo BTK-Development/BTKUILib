@@ -1,14 +1,19 @@
 ﻿using System;
 using ABI_RC.Core.InteractionSystem;
+using ABI_RC.Core.Networking.API;
+using ABI_RC.Core.Networking.API.Responses;
 using ABI_RC.Core.Networking.IO.Social;
 using ABI_RC.Systems.GameEventSystem;
 using HarmonyLib;
 using MelonLoader;
+using System.Threading.Tasks;
 
 namespace BTKUILib
 {
     internal class Patches
     {
+        internal static UserDetailsResponse LocalUserDetails;
+
         private static HarmonyLib.Harmony _modInstance;
         private static bool _firstOnLoadComplete;
         
@@ -30,6 +35,11 @@ namespace BTKUILib
                 {
                     BTKUILib.Log.Error(e);
                 }
+            });
+
+            CVRGameEventSystem.Instance.OnConnected.AddListener(msg =>
+            {
+                PlayerList.Instance.OnWorldJoin();
             });
 
             CVRGameEventSystem.Instance.OnConnectionRecovered.AddListener(s =>
@@ -56,6 +66,24 @@ namespace BTKUILib
                 {
                     BTKUILib.Log.Error(e);
                 }
+            });
+
+            CVRGameEventSystem.Authentication.OnLogin.AddListener(resp =>
+            {
+                Task.Run(async () =>
+                {
+                    var profileRequest = (await ApiConnection.MakeRequest<UserDetailsResponse>(ApiConnection.ApiOperation.UserDetails, new
+                    {
+                        userID = resp.UserId
+                    }, null, false)).Data;
+
+                    LocalUserDetails = profileRequest;
+
+                }).ContinueWith(t =>
+                {
+                    if (!t.IsFaulted) return;
+                    BTKUILib.Log.Error("Unable to retrieve local user details! User entry in PlayerList will have no image!");
+                });
             });
             
             CVRGameEventSystem.World.OnLoad.AddListener((message) =>

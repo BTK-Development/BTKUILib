@@ -53,7 +53,7 @@ namespace BTKUILib
         /// <summary>
         /// Called when a user is selected in the playerlist, passes that players CVRPlayerEntity
         /// </summary>
-        public static Action<CVRPlayerEntity> OnPlayerEntitySelected;
+        public static Action<UIPlayerObject> OnPlayerEntitySelected;
 
         /// <summary>
         /// Called when a page change occurs, passes the new target page and the previous page
@@ -78,7 +78,7 @@ namespace BTKUILib
         /// <summary>
         /// Last selected player's CVRPlayerEntity from the PlayerList page
         /// </summary>
-        public static CVRPlayerEntity SelectedPlayerEntity => PlayerList.Instance.SelectedPlayer;
+        public static UIPlayerObject SelectedPlayerEntity => PlayerList.Instance.SelectedPlayer;
 
         /// <summary>
         /// Player select page for setting up functions that should be used in the context of a user
@@ -97,7 +97,6 @@ namespace BTKUILib
         {
             get
             {
-                //Create the page as needed
                 if (_miscTabPage == null)
                 {
                     _miscTabPage = Page.GetOrCreatePage("Misc", "Misc", true, "MiscIcon");
@@ -106,8 +105,16 @@ namespace BTKUILib
                     _miscTabPage.MenuSubtitle = "Miscellaneous mod elements be found here!";
                 }
 
+                //Create the page as needed
+                if (_miscTabPage.HideTab)
+                {
+                    _miscTabPage.HideTab = false;
+                }
+
                 return _miscTabPage;
             }
+
+            internal set => _miscTabPage = value;
         }
 
         //Internal actions for utility functions
@@ -358,7 +365,9 @@ namespace BTKUILib
 
             if (playerEntity == null) return;
 
-            PlayerList.Instance.OpenPlayerActionPage(playerEntity);
+            var playerObject = new UIPlayerObject(playerEntity);
+
+            PlayerList.Instance.OpenPlayerActionPage(playerObject);
         }
 
         /// <summary>
@@ -366,7 +375,7 @@ namespace BTKUILib
         /// </summary>
         /// <param name="title">Title for the PlayerList while in player selection mode</param>
         /// <param name="callback">Callback to be fired when a player is selected</param>
-        public static void OpenPlayerSelector(string title, Action<CVRPlayerEntity> callback)
+        public static void OpenPlayerSelector(string title, Action<UIPlayerObject> callback)
         {
             PlayerList.Instance.OpenPlayerPicker(title, callback);
         }

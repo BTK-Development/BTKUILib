@@ -122,6 +122,15 @@
   <ItemGroup>
     <Compile Remove="ExampleUI\ExampleUIMod.cs" />
   </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="CohtmlUI\images\BTKUILib\UserAdd.png" />
+    <None Remove="CohtmlUI\images\BTKUILib\UserMinus.png" />
+    <EmbeddedResource Include="CohtmlUI\images\BTKUILib\UserMinus.png" />
+    <None Remove="CohtmlUI\images\BTKUILib\Exit-Icon.png" />
+    <EmbeddedResource Include="CohtmlUI\images\BTKUILib\ExitDoor.png" />
+    <None Remove="CohtmlUI\images\BTKUILib\ThumbsDown.png" />
+    <EmbeddedResource Include="CohtmlUI\images\BTKUILib\ThumbsDown.png" />
+  </ItemGroup>
   <Target Name="CheckLessc">
     <Exec Command="lessc --version" ConsoleToMSBuild="true" ContinueOnError="true" IgnoreExitCode="true">
       <Output TaskParameter="ExitCode" PropertyName="LesscExitCode" />
