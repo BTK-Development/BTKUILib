@@ -5,7 +5,9 @@ using System.Text.RegularExpressions;
 using ABI_RC.Core.InteractionSystem;
 using ABI_RC.Core.UI;
 using cohtml.Net;
+using MelonLoader;
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 
@@ -49,9 +51,10 @@ namespace BTKUILib
         /// <returns></returns>
         public static Stream GetIconStream(string iconName)
         {
-            Assembly assembly = Assembly.GetExecutingAssembly();
-            string assemblyName = assembly.GetName().Name;
-            return assembly.GetManifestResourceStream($"{assemblyName}.Resources.{iconName}");
+            var melon = MelonUtils.GetMelonFromStackTrace();
+
+            string assemblyName = melon.MelonAssembly.Assembly.GetName().Name;
+            return melon.MelonAssembly.Assembly.GetManifestResourceStream($"{assemblyName}.Resources.{iconName}");
         }
         
         internal static string CreateMD5(string input)
