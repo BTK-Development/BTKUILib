@@ -10,7 +10,7 @@ using MelonLoader;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("BTKDevelopment")]
 [assembly: AssemblyProduct("BTKUILib")]
-[assembly: AssemblyCopyright("BTKDevelopment Copyright © 2022")]
+[assembly: AssemblyCopyright("BTKDevelopment Copyright © 2024")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -32,8 +32,8 @@ using MelonLoader;
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("2.2.0.0")]
-[assembly: AssemblyFileVersion("2.2.0.0")]
+[assembly: AssemblyVersion(BTKUILib.BuildInfo.Version + ".0")]
+[assembly: AssemblyFileVersion(BTKUILib.BuildInfo.Version + ".0")]
 [assembly: MelonInfo(typeof(BTKUILib.BTKUILib), BTKUILib.BuildInfo.Name, BTKUILib.BuildInfo.Version, BTKUILib.BuildInfo.Author)]
 [assembly: MelonGame("Alpha Blend Interactive", "ChilloutVR")]
 [assembly: MelonPriority(-10)]
