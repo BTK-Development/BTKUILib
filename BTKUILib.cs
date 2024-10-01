@@ -13,7 +13,7 @@ namespace BTKUILib
         public const string Name = "BTKUILib";
         public const string Author = "BTK Development Team";
         public const string Company = "BTK Development";
-        public const string Version = "2.3.0";
+        public const string Version = "2.3.1";
     }
     
     internal class BTKUILib : MelonMod
@@ -26,6 +26,7 @@ namespace BTKUILib
         internal Queue<Action> MainThreadQueue = new();
         internal Dictionary<string, Page> MLPrefsPages = new();
         internal MelonPreferences_Entry<PlayerListStyleEnum> PlayerListStyle;
+        internal MelonPreferences_Entry<bool> QMPlayerSelectorRedirect;
 
         private MelonPreferences_Entry<bool> _displayPrefsTab;
         private MelonPreferences_Entry<bool> _miscTabFirst;
@@ -54,6 +55,8 @@ namespace BTKUILib
             PlayerListStyle = MelonPreferences.CreateEntry("BTKUILib", "PlayerListStyleNew", PlayerListStyleEnum.TabBar, "PlayerList Button Style", "Sets where the playerlist button will appear");
 
             _miscTabFirst = MelonPreferences.CreateEntry("BTKUILib", "MiscTabFirst", false, "Misc Tab Always First", "Makes sure the misc tab is always first in the tab row");
+
+            QMPlayerSelectorRedirect = MelonPreferences.CreateEntry("BTKUILib", "PlayerSelectorRedirect", true, "Redirect Player QM Selector", "Chooses if the player selector should open the QM player details or always go to the big menu");
             
             Patches.Initialize(HarmonyInstance);
 
@@ -99,6 +102,13 @@ namespace BTKUILib
                 MelonPreferences.Save();
 
                 QuickMenuAPI.ShowNotice("Restart Required!", "To change the Misc tab first setting you must restart your game! This setting will be applied on the next startup!");
+            };
+
+            var playerSelector = mainCat.AddToggle("Player Selector QM Redirect", "Sets if the player selector should open the QM Player Details page or the big menu", QMPlayerSelectorRedirect.Value);
+            playerSelector.OnValueUpdated += b =>
+            {
+                QMPlayerSelectorRedirect.Value = b;
+                MelonPreferences.Save();
             };
 
             _playerListStyleNames = Enum.GetNames(typeof(PlayerListStyleEnum));
