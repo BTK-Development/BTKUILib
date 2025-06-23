@@ -152,11 +152,13 @@ namespace BTKUILib
         }
 
         //We'll use this point to detect a menu reload/setup and ensure BTKUIReady is false
-        [HarmonyPatch("OnFinishedLoad")]
-        [HarmonyPostfix]
-        static void UpdateModListPatch()
+        [HarmonyPatch("UpdateModList")]
+        [HarmonyPrefix]
+        static bool UpdateModListPatch()
         {
             UserInterface.BTKUIReady = false;
+
+            return true;
         }
     }
 
