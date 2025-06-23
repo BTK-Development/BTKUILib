@@ -5,6 +5,7 @@ using ABI_RC.Core.Player;
 using BTKUILib.UIObjects;
 using BTKUILib.UIObjects.Objects;
 using System.Linq;
+using ABI_RC.Core.UI.UIRework.Managers;
 using UnityEngine;
 
 namespace BTKUILib
@@ -316,10 +317,23 @@ namespace BTKUILib
         {
             if (!UIUtils.IsQMReady()) return;
 
-            OnKeyboardSubmitted = callback;
-            TimeSinceKeyboardOpen = DateTime.Now;
-            KeyboardCloseFired = false;
-            ViewManager.Instance.openMenuKeyboard(currentValue);
+            KeyboardManager.Instance.ShowKeyboard(currentValue, callback);
+        }
+
+        /// <summary>
+        /// Opens the CVR keyboard, this exposes all functional parameters on the KeyboardManager.ShowKeyboard function
+        /// </summary>
+        /// <param name="currentText">Current text to pass to the keyboard</param>
+        /// <param name="callback">Action to be called when keyboard text is submitted</param>
+        /// <param name="placeholder">Placeholder text to show when the text field is empty, can be null</param>
+        /// <param name="maxCharacterCount">Max character count allowed on this field</param>
+        /// <param name="multiLine">Sets if the keyboard should enable multiline mode</param>
+        /// <param name="title">Title to be displayed above the keyboard text field</param>
+        public static void OpenKeyboard(string currentText, Action<string> callback, string placeholder, int maxCharacterCount, bool multiLine, string title)
+        {
+            if (!UIUtils.IsQMReady()) return;
+
+            KeyboardManager.Instance.ShowKeyboard(currentText, callback, placeholder, maxCharacterCount: maxCharacterCount, multiLine: multiLine, title: title);
         }
 
         /// <summary>

@@ -61,24 +61,24 @@ namespace BTKUILib
                 root.TabGenerated = false;
             }
 
-            CVR_MenuManager.Instance.quickMenu.View.BindCall("btkUI-ButtonAction", new Action<string>(HandleButtonAction));
-            CVR_MenuManager.Instance.quickMenu.View.BindCall("btkUI-Toggle", new Action<string, bool>(OnToggle));
-            CVR_MenuManager.Instance.quickMenu.View.BindCall("btkUI-PopupConfirmOK", new Action(ConfirmOK));
-            CVR_MenuManager.Instance.quickMenu.View.BindCall("btkUI-PopupConfirmNo", new Action(ConfirmNo));
-            CVR_MenuManager.Instance.quickMenu.View.BindCall("btkUI-PopupNoticeOK", new Action(NoticeClose));
-            CVR_MenuManager.Instance.quickMenu.View.BindCall("btkUI-SliderValueUpdated", new Action<string, string, bool>(OnSliderUpdated));
-            CVR_MenuManager.Instance.quickMenu.View.BindCall("btkUI-OpenedPage", new Action<string, string>(OnOpenedPageEvent));
-            CVR_MenuManager.Instance.quickMenu.View.BindCall("btkUI-BackAction", new Action<string, string>(OnBackActionEvent));
-            CVR_MenuManager.Instance.quickMenu.View.BindCall("btkUI-DropdownSelected", new Action<int>(DropdownSelected));
-            CVR_MenuManager.Instance.quickMenu.View.BindCall("btkUI-NumSubmit", new Action<string>(OnNumberInputSubmitted));
-            CVR_MenuManager.Instance.quickMenu.View.BindCall("btkUI-RootCreated", new Action<string, string>(OnRootCreated));
-            CVR_MenuManager.Instance.quickMenu.View.BindCall("btkUI-TabChange", new Action<string>(OnTabChange));
-            CVR_MenuManager.Instance.quickMenu.View.BindCall("btkUI-UILoaded", new Action(OnMenuIsLoaded));
-            CVR_MenuManager.Instance.quickMenu.View.BindCall("btkUI-CollapseCategory", new Action<string, bool>(OnCollapseCategory));
-            CVR_MenuManager.Instance.quickMenu.View.BindCall("btkUI-TextInputClick", new Action<string>(OnTextInputClock));
-            CVR_MenuManager.Instance.quickMenu.View.BindCall("btkUI-ButtonMouseDown", new Action<string>(ButtonMouseDown));
-            CVR_MenuManager.Instance.quickMenu.View.BindCall("btkUI-ExpandPlayerProfile", new Action(ExpandPlayerProfile));
-            CVR_MenuManager.Instance.quickMenu.View.BindCall("btkUI-ExpandPlayerList", new Action(ExpandPlayerList));
+            CVR_MenuManager.Instance.cohtmlView.View.BindCall("btkUI-ButtonAction", new Action<string>(HandleButtonAction));
+            CVR_MenuManager.Instance.cohtmlView.View.BindCall("btkUI-Toggle", new Action<string, bool>(OnToggle));
+            CVR_MenuManager.Instance.cohtmlView.View.BindCall("btkUI-PopupConfirmOK", new Action(ConfirmOK));
+            CVR_MenuManager.Instance.cohtmlView.View.BindCall("btkUI-PopupConfirmNo", new Action(ConfirmNo));
+            CVR_MenuManager.Instance.cohtmlView.View.BindCall("btkUI-PopupNoticeOK", new Action(NoticeClose));
+            CVR_MenuManager.Instance.cohtmlView.View.BindCall("btkUI-SliderValueUpdated", new Action<string, string, bool>(OnSliderUpdated));
+            CVR_MenuManager.Instance.cohtmlView.View.BindCall("btkUI-OpenedPage", new Action<string, string>(OnOpenedPageEvent));
+            CVR_MenuManager.Instance.cohtmlView.View.BindCall("btkUI-BackAction", new Action<string, string>(OnBackActionEvent));
+            CVR_MenuManager.Instance.cohtmlView.View.BindCall("btkUI-DropdownSelected", new Action<int>(DropdownSelected));
+            CVR_MenuManager.Instance.cohtmlView.View.BindCall("btkUI-NumSubmit", new Action<string>(OnNumberInputSubmitted));
+            CVR_MenuManager.Instance.cohtmlView.View.BindCall("btkUI-RootCreated", new Action<string, string>(OnRootCreated));
+            CVR_MenuManager.Instance.cohtmlView.View.BindCall("btkUI-TabChange", new Action<string>(OnTabChange));
+            CVR_MenuManager.Instance.cohtmlView.View.BindCall("btkUI-UILoaded", new Action(OnMenuIsLoaded));
+            CVR_MenuManager.Instance.cohtmlView.View.BindCall("btkUI-CollapseCategory", new Action<string, bool>(OnCollapseCategory));
+            CVR_MenuManager.Instance.cohtmlView.View.BindCall("btkUI-TextInputClick", new Action<string>(OnTextInputClock));
+            CVR_MenuManager.Instance.cohtmlView.View.BindCall("btkUI-ButtonMouseDown", new Action<string>(ButtonMouseDown));
+            CVR_MenuManager.Instance.cohtmlView.View.BindCall("btkUI-ExpandPlayerProfile", new Action(ExpandPlayerProfile));
+            CVR_MenuManager.Instance.cohtmlView.View.BindCall("btkUI-ExpandPlayerList", new Action(ExpandPlayerList));
         }
 
         private void ExpandPlayerList()

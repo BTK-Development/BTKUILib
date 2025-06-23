@@ -22,7 +22,6 @@ namespace BTKUILib
             _modInstance = modInstance;
             
             ApplyPatches(typeof(CVRMenuManagerPatch));
-            ApplyPatches(typeof(ViewManagerPatches));
             ApplyPatches(typeof(UsersPatch));
 
             CVRGameEventSystem.Instance.OnConnectionLost.AddListener((message) =>
@@ -138,9 +137,9 @@ namespace BTKUILib
     [HarmonyPatch(typeof(CVR_MenuManager))]
     class CVRMenuManagerPatch
     {
-        [HarmonyPatch("RegisterEvents")]
+        [HarmonyPatch("OnReadyForBindings")]
         [HarmonyPostfix]
-        static void MarkMenuAsReady(CVR_MenuManager __instance)
+        static void MarkMenuAsReady()
         {
             try
             {
@@ -153,13 +152,11 @@ namespace BTKUILib
         }
 
         //We'll use this point to detect a menu reload/setup and ensure BTKUIReady is false
-        [HarmonyPatch("UpdateModList")]
-        [HarmonyPrefix]
-        static bool UpdateModListPatch()
+        [HarmonyPatch("OnFinishedLoad")]
+        [HarmonyPostfix]
+        static void UpdateModListPatch()
         {
             UserInterface.BTKUIReady = false;
-
-            return true;
         }
     }
 
@@ -170,37 +167,11 @@ namespace BTKUILib
         [HarmonyPrefix]
         static bool ShowDetailsPrefix(string userId)
         {
-            if (!CVR_MenuManager.Instance.IsQuickMenuOpen || !BTKUILib.Instance.QMPlayerSelectorRedirect.Value) return true;
+            if (!CVR_MenuManager.Instance.IsViewShown || !BTKUILib.Instance.QMPlayerSelectorRedirect.Value) return true;
 
             //QM is open, redirect selection to playerlist
             QuickMenuAPI.OpenPlayerListByUserID(userId);
             return false;
-        }
-    }
-
-    [HarmonyPatch(typeof(ViewManager))]
-    class ViewManagerPatches
-    {
-        [HarmonyPatch("SendToWorldUi")]
-        [HarmonyPostfix]
-        static void SendToWorldUi(string value)
-        {
-            var elapsedTime = DateTime.Now.Subtract(QuickMenuAPI.TimeSinceKeyboardOpen);
-
-            //Ensure that we check if the keyboard action was used within 3 minutes, this will avoid the next keyboard usage triggering the action
-            if (elapsedTime.TotalMinutes <= 3 && (!QuickMenuAPI.KeyboardCloseFired || elapsedTime.TotalSeconds <= 10))
-                QuickMenuAPI.OnKeyboardSubmitted?.Invoke(value);
-
-            QuickMenuAPI.OnKeyboardSubmitted = null;
-        }
-
-        [HarmonyPatch(nameof(ViewManager.KeyboardClosed))]
-        [HarmonyPostfix]
-        static void KeyboardClosedPatch()
-        {
-            //Update cause the keyboard has been closed
-            QuickMenuAPI.TimeSinceKeyboardOpen = DateTime.Now;
-            QuickMenuAPI.KeyboardCloseFired = true;
         }
     }
 }

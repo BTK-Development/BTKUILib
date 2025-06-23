@@ -111,10 +111,10 @@ namespace BTKUILib
 
         internal static View GetInternalView()
         {
-            if (CVR_MenuManager.Instance == null || CVR_MenuManager.Instance.quickMenu == null) return null;
+            if (CVR_MenuManager.Instance == null || CVR_MenuManager.Instance.cohtmlView == null) return null;
 
             if (_internalViewCache == null)
-                _internalViewCache = (View)_internalCohtmlView.GetValue(CVR_MenuManager.Instance.quickMenu.View);
+                _internalViewCache = (View)_internalCohtmlView.GetValue(CVR_MenuManager.Instance.cohtmlView.View);
 
             return _internalViewCache;
         }
