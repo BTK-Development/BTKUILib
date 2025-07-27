@@ -25,12 +25,12 @@ namespace BTKUILib
         public static Action<CVR_MenuManager> OnMenuGenerated;
 
         /// <summary>
-        /// Called when a user joins the instance, passes the complete CVRPlayerEntity object
+        /// Called when a user leaves the instance, passes the complete CVRPlayerEntity object. Some data may be nulled as the player is leaving
         /// </summary>
         public static Action<CVRPlayerEntity> UserLeave;
 
         /// <summary>
-        /// Called when a user leaves the instance, passes the complete CVRPlayerEntity object. Some data may be nulled as the player is leaving
+        /// Called when a user joins the instance, passes the complete CVRPlayerEntity object
         /// </summary>
         public static Action<CVRPlayerEntity> UserJoin;
 
