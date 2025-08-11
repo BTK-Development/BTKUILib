@@ -66,7 +66,7 @@ internal class PlayerList
 
         _internalSelectCategory.Hidden = player.IsLocalUser;
 
-        _moderationEntry = MetaPort.Instance.SelfModerationManager.GetPlayerSelfModerationProfile(player.Uuid, player.AvatarID);
+        _moderationEntry = MetaPort.Instance.SelfModerationManager.GetPlayerSelfModerationProfile(player.Uuid);
         _muteUser.ToggleValue = _moderationEntry.mute;
         _playerVolume.SetSliderValue(_moderationEntry.voiceVolume*100f);
         _propBlockMode.SetSelectedOptionWithoutAction(_moderationEntry.userPropVisibility);
