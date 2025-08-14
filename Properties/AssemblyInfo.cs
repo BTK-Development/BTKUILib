@@ -35,6 +35,6 @@ using MelonLoader;
 [assembly: AssemblyVersion(BTKUILib.BuildInfo.Version + ".0")]
 [assembly: AssemblyFileVersion(BTKUILib.BuildInfo.Version + ".0")]
 [assembly: MelonInfo(typeof(BTKUILib.BTKUILib), BTKUILib.BuildInfo.Name, BTKUILib.BuildInfo.Version, BTKUILib.BuildInfo.Author)]
-[assembly: MelonGame("Alpha Blend Interactive", "ChilloutVR")]
+[assembly: MelonGame("ChilloutVR", "ChilloutVR")]
 [assembly: MelonPriority(-10)]
 [assembly: HarmonyDontPatchAll]
