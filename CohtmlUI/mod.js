@@ -125,7 +125,6 @@ cvr.menu.prototype.BTKUI = {
                                     ]}
                             ]}
                     ], a: {"id": "btkUI-TabContainer"}},
-                {c: "container-tooltip hide", s:[{c:"content", h:"tooltip info", a:{"id": "btkUI-Tooltip"}}], a:{"id": "btkUI-TooltipContainer"}},
                 {c: "container-alertToast hide", s:[{c:"content", h:"toasty!", a:{"id": "btkUI-AlertToast"}}], a:{"id": "btkUI-AlertToastContainer"}, x:"btkUI-ToastDismiss"}
             ], a: {"id": "btkUI-SharedRoot"}};
         menu.templates["btkUI-menu"] = {c: "btkUI menu-category hide", s: [
@@ -303,7 +302,6 @@ cvr.menu.prototype.BTKUI = {
     init: function(menu){
         console.log("btkUI Init");
 
-        document.addEventListener('mouseover', this.btkOnHover);
         document.addEventListener('mousemove', this.btkSliderMouseMove);
         document.addEventListener("mouseup", this.btkSliderMouseUp);
         document.addEventListener('mousedown', this.btkMouseDownHandler);
@@ -330,29 +328,6 @@ cvr.menu.prototype.BTKUI = {
             }
         }
         return "url('mods/BTKUI/images/Placeholder.png')";
-    },
-
-    btkOnHover: function (e){
-        targetElement = e.target;
-        tooltipInfo = null;
-
-        if(targetElement != null) {
-            while (tooltipInfo == null && targetElement != null && targetElement.classList != null && !targetElement.classList.contains("menu-category")) {
-                tooltipInfo = targetElement.getAttribute("data-tooltip");
-
-                if (tooltipInfo != null) {
-                    btkLastTooltipTarget = targetElement.id;
-
-                    document.getElementById("btkUI-Tooltip").innerHTML = tooltipInfo;
-                    cvr("#btkUI-TooltipContainer").show();
-                    return;
-                }
-
-                targetElement = targetElement.parentElement;
-            }
-        }
-
-        cvr("#btkUI-TooltipContainer").hide();
     },
     btkUILibInit: function (plButtonStyle) {
         cvr("#btkUI-UserMenu").show();

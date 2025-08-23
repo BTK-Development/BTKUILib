@@ -10,8 +10,8 @@ using BTKUILib.UIObjects;
 using BTKUILib.UIObjects.Components;
 using BTKUILib.UIObjects.Objects;
 using DarkRift;
+using ICSharpCode.SharpZipLib.Zip;
 using MelonLoader;
-using MelonLoader.ICSharpCode.SharpZipLib.Zip;
 
 namespace BTKUILib
 {
