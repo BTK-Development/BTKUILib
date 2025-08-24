@@ -11,7 +11,6 @@
   <ItemGroup>
     <Reference Include="0Harmony">
       <HintPath>..\3rdparty\ml\0Harmony.dll</HintPath>
-      <Private>False</Private>
     </Reference>
     <Reference Include="Assembly-CSharp">
       <HintPath>..\3rdparty\Managed\Assembly-CSharp.dll</HintPath>
@@ -39,7 +38,6 @@
     </Reference>
     <Reference Include="MelonLoader">
       <HintPath>..\3rdparty\ml\MelonLoader.dll</HintPath>
-      <Private>False</Private>
     </Reference>
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\3rdparty\Managed\Newtonsoft.Json.dll</HintPath>
@@ -132,10 +130,14 @@
     <EmbeddedResource Include="CohtmlUI\images\BTKUILib\ThumbsDown.png" />
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="ILRepack.Lib.MSBuild.Task" Version="2.0.43">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
     <PackageReference Include="SharpZipLib" Version="1.4.2" />
   </ItemGroup>
   <Target Name="CheckLessc">
-    <Exec Command="lessc --version" ConsoleToMSBuild="true" ContinueOnError="true" IgnoreExitCode="true">
+    <Exec Command="lessc --version" ContinueOnError="true" IgnoreExitCode="true">
       <Output TaskParameter="ExitCode" PropertyName="LesscExitCode" />
     </Exec>
     <Warning Text="Lessc is NOT installed. We're going to skip the LESS compilation... You can fix by running: npm install -g less" Condition="'$(LesscExitCode)' != '0'" />
@@ -151,5 +153,10 @@
     <ItemGroup>
       <EmbeddedResource Include="BTKUIBuild.zip" />
     </ItemGroup>
+  </Target>
+  <Target Name="Move Files to Merged Directory" AfterTargets="Build">
+      <Message Text="Moving files from $(OutputPath) to merged directory"/>
+      <Copy SourceFiles="$(OutputPath)/BTKUILib.pdb" DestinationFolder="$(OutputPath)/merged"/>
+      <Copy SourceFiles="$(OutputPath)/BTKUILib.xml" DestinationFolder="$(OutputPath)/merged"/>
   </Target>
 </Project>
