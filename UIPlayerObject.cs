@@ -114,15 +114,7 @@ public class UIPlayerObject
         /// <summary>
         /// Returns the AvatarID of this user
         /// </summary>
-        public string AvatarID
-        {
-            get
-            {
-                if (!_isRemotePlayer)
-                    return MetaPort.Instance.currentAvatarGuid;
-                return ReferenceEquals(_playerEntity, null) ? null : _playerEntity.PuppetMaster.AvatarDescriptor?.AssetInfo?.objectId;
-            }
-        }
+        public string AvatarID => !_isRemotePlayer ? MetaPort.Instance.currentAvatarGuid : _playerEntity?.ContentMetadata.AssetId;
 
         /// <summary>
         /// Returns the player ImageURL from the API, if local user is null API didn't give us the user details
