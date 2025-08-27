@@ -7,6 +7,7 @@
         <ItemGroup>
             <InputAssemblies Include="$(OutputPath)/$(AssemblyName).dll" />
             <InputAssemblies Include="$(OutputPath)/ICSharpCode.SharpZipLib.dll" />
+            <InputAssemblies Include="$(OutputPath)/System.Threading.Tasks.Extensions.dll" />
             <IlRepackLibs Include="$(OutputPath)" />
         </ItemGroup>
         <Message Text="MERGING: @(InputAssemblies->'%(Filename)') into $(OutputAssembly)" Importance="High" />
