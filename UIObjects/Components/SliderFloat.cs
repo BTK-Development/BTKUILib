@@ -9,17 +9,15 @@ namespace BTKUILib.UIObjects.Components
     /// </summary>
     public class SliderFloat : QMUIElement
     {
+        private readonly ABI_RC.Systems.UI.UILib.UIObjects.Components.SliderFloat _internalSlider;
+        
         /// <summary>
         /// Get or set the name of this slider, will update on the fly
         /// </summary>
         public string SliderName
         {
-            get => _sliderName;
-            set
-            {
-                _sliderName = value;
-                UpdateSlider();
-            }
+            get => _internalSlider.SliderName;
+            set => _internalSlider.SliderName = value;
         }
 
         /// <summary>
@@ -27,12 +25,8 @@ namespace BTKUILib.UIObjects.Components
         /// </summary>
         public string SliderTooltip
         {
-            get => _sliderTooltip;
-            set
-            {
-                _sliderTooltip = value; 
-                UpdateSlider();
-            }
+            get => _internalSlider.SliderTooltip;
+            set => _internalSlider.SliderTooltip = value;
         }
 
         /// <summary>
@@ -40,12 +34,8 @@ namespace BTKUILib.UIObjects.Components
         /// </summary>
         public float MinValue
         {
-            get => _minValue;
-            set
-            {
-                _minValue = value; 
-                UpdateSlider();
-            }
+            get => _internalSlider.MinValue;
+            set => _internalSlider.MinValue = value;
         }
 
         /// <summary>
@@ -53,12 +43,8 @@ namespace BTKUILib.UIObjects.Components
         /// </summary>
         public float MaxValue
         {
-            get => _maxValue;
-            set
-            {
-                _maxValue = value;
-                UpdateSlider();
-            }
+            get => _internalSlider.MaxValue;
+            set => _internalSlider.MaxValue = value;
         }
         
         /// <summary>
@@ -66,12 +52,8 @@ namespace BTKUILib.UIObjects.Components
         /// </summary>
         public int DecimalPlaces
         {
-            get => _decimalPlaces;
-            set
-            {
-                _decimalPlaces = value;
-                UpdateSlider();
-            }
+            get => _internalSlider.DecimalPlaces;
+            set => _internalSlider.DecimalPlaces = value;
         }
 
         /// <summary>
@@ -79,12 +61,8 @@ namespace BTKUILib.UIObjects.Components
         /// </summary>
         public float DefaultValue
         {
-            get => _defaultValue;
-            set
-            {
-                _defaultValue = value;
-                UpdateSlider();
-            }
+            get => _internalSlider.DefaultValue;
+            set => _internalSlider.DefaultValue = value;
         }
 
         /// <summary>
@@ -92,38 +70,20 @@ namespace BTKUILib.UIObjects.Components
         /// </summary>
         public bool AllowDefaultReset
         {
-            get => _allowDefaultReset;
-            set
-            {
-                _allowDefaultReset = value;
-                UpdateSlider();
-            }
+            get => _internalSlider.AllowDefaultReset;
+            set => _internalSlider.AllowDefaultReset = value;
         }
 
         /// <summary>
         /// Get the current value of the slider
         /// </summary>
-        public float SliderValue
-        {
-            get => _sliderValue;
-            internal set
-            {
-                _sliderValue = value;
-                OnValueUpdated?.Invoke(value);
-            }
-        }
+        public float SliderValue => _internalSlider.SliderValue;
 
         /// <inheritdoc />
         public override bool Hidden
         {
-            get => base.Hidden;
-            set
-            {
-                base.Hidden = value;
-
-                if (!UIUtils.IsQMReady()) return;
-                UIUtils.GetInternalView().TriggerEvent("btkSetHidden", $"{ElementID}-Root", value);
-            }
+            get => _internalSlider.Hidden;
+            set => _internalSlider.Hidden = value;
         }
 
         /// <summary>
@@ -135,34 +95,17 @@ namespace BTKUILib.UIObjects.Components
         /// </summary>
         public Action OnSliderReset;
 
-        private float _sliderValue;
-        private string _sliderName;
-        private string _sliderTooltip;
-        private float _minValue;
-        private float _maxValue;
-        private int _decimalPlaces;
-        private float _defaultValue;
-        private bool _allowDefaultReset;
-        private bool _inCategoryMode;
-        private bool _noTitle;
-
-        internal SliderFloat(QMUIElement parent, string sliderName, string sliderTooltip, float initalValue, float minValue = 0f, float maxValue = 10f, int decimalPlaces = 2, float defaultValue = 0f, bool allowDefaultReset = false, bool inCategoryMode = false, bool noTitle = false)
+        internal SliderFloat(ABI_RC.Systems.UI.UILib.UIObjects.Components.SliderFloat slider) : base(slider)
         {
-            _sliderValue = initalValue;
-            _sliderName = sliderName;
-            _sliderTooltip = sliderTooltip;
-            _minValue = minValue;
-            _maxValue = maxValue;
-            _decimalPlaces = decimalPlaces;
-            _defaultValue = defaultValue;
-            _allowDefaultReset = allowDefaultReset;
-            _inCategoryMode = inCategoryMode;
-            _noTitle = noTitle;
-            Parent = parent;
-            
-            UserInterface.Sliders.Add(UUID, this);
-            
-            ElementID = $"btkUI-Slider-{UUID}";
+            _internalSlider = slider;
+            slider.OnValueUpdated += f =>
+            {
+                OnValueUpdated?.Invoke(f);
+            };
+            slider.OnSliderReset += () =>
+            {
+                OnSliderReset?.Invoke();
+            };
         }
 
         /// <summary>
@@ -171,81 +114,13 @@ namespace BTKUILib.UIObjects.Components
         /// <param name="value"></param>
         public void SetSliderValue(float value)
         {
-            _sliderValue = value;
-            UpdateSlider();
+            _internalSlider.SetSliderValue(value);
         }
         
         /// <inheritdoc />
         public override void Delete()
         {
-            base.Delete();
-            
-            if (Protected) return;
-            
-            Parent.SubElements.Remove(this);
+            _internalSlider.Delete();
         }
-
-        internal override void GenerateCohtml()
-        {
-            if (!UIUtils.IsQMReady()) return;
-
-            if (RootPage is { IsVisible: false }) return;
-
-            if (!IsGenerated)
-            {
-                var settings = new SliderSettings
-                {
-                    SliderName = _sliderName,
-                    SliderTooltip = _sliderTooltip,
-                    MinValue = _minValue,
-                    MaxValue = _maxValue,
-                    DecimalPlaces = _decimalPlaces,
-                    DefaultValue = _defaultValue,
-                    AllowDefaultReset = _allowDefaultReset,
-                    NoTitleMode = _noTitle
-                };
-                
-                UIUtils.GetInternalView().TriggerEvent("btkCreateSlider", Parent.ElementID, UUID, _sliderValue, _inCategoryMode, settings);
-            }
-
-            base.GenerateCohtml();
-
-            IsGenerated = true;
-        }
-
-        private void UpdateSlider()
-        {
-            if (!IsVisible) return;
-
-            if (!Parent.IsVisible) return;
-
-            if (!UIUtils.IsQMReady()) return;
-
-            var settings = new SliderSettings
-            {
-                SliderName = _sliderName,
-                SliderTooltip = _sliderTooltip,
-                MinValue = _minValue,
-                MaxValue = _maxValue,
-                DecimalPlaces = _decimalPlaces,
-                DefaultValue = _defaultValue,
-                AllowDefaultReset = _allowDefaultReset
-            };
-
-            UIUtils.GetInternalView().TriggerEvent("btkSliderUpdateSettings", UUID, settings);
-            UIUtils.GetInternalView().TriggerEvent("btkSliderSetValue", UUID, SliderValue);
-        }
-    }
-
-    struct SliderSettings
-    {
-        public string SliderName;
-        public string SliderTooltip;
-        public float MinValue;
-        public float MaxValue;
-        public float DecimalPlaces;
-        public float DefaultValue;
-        public bool AllowDefaultReset;
-        public bool NoTitleMode;
     }
 }

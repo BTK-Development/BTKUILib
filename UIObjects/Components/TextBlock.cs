@@ -5,58 +5,19 @@ namespace BTKUILib.UIObjects.Components;
 /// </summary>
 public class TextBlock : QMUIElement
 {
+    private ABI_RC.Systems.UI.UILib.UIObjects.Components.TextBlock _internalTextBlock;
+    
     /// <summary>
     /// Text property of this TextBlock, changing this will update on the fly
     /// </summary>
     public string Text
     {
-        get => _text;
-        set
-        {
-            _text = value;
-            UpdateText();
-        }
+        get => _internalTextBlock.Text;
+        set => _internalTextBlock.Text = value;
     }
 
-    private string _text;
-    private string[] _additionalCSSClasses;
-
-    internal TextBlock(string text, Category category, params string[] additionalCSSClasses)
+    internal TextBlock(ABI_RC.Systems.UI.UILib.UIObjects.Components.TextBlock block) : base(block)
     {
-        _text = text;
-        _additionalCSSClasses = additionalCSSClasses;
-
-        Parent = category;
-
-        ElementID = $"btkUI-TextBlock-{UUID}-Root";
-    }
-
-    internal override void GenerateCohtml()
-    {
-        if (!UIUtils.IsQMReady()) return;
-
-        if (RootPage is { IsVisible: false }) return;
-
-        if(!IsGenerated)
-            UIUtils.GetInternalView().TriggerEvent("btkCreateTextBlock", Parent.ElementID, UUID, Text);
-
-        base.GenerateCohtml();
-
-        IsGenerated = true;
-    }
-
-    private void UpdateText()
-    {
-        if(!IsVisible) return;
-
-        if (!BTKUILib.Instance.IsOnMainThread())
-        {
-            BTKUILib.Instance.MainThreadQueue.Enqueue(UpdateText);
-            return;
-        }
-
-        if (!UIUtils.IsQMReady()) return;
-
-        UIUtils.GetInternalView().TriggerEvent("btkUpdateText", ElementID, Text);
+        _internalTextBlock = block;
     }
 }

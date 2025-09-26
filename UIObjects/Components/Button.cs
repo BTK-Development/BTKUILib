@@ -1,27 +1,23 @@
 ﻿using System;
+using JetBrains.Annotations;
 using MelonLoader;
-using System.Collections;
-using UnityEngine;
 
 namespace BTKUILib.UIObjects.Components
 {
-
     /// <summary>
     /// Basic button element
     /// </summary>
     public class Button : QMInteractable
     {
+        private readonly ABI_RC.Systems.UI.UILib.UIObjects.Components.Button _internalButton;
+        
         /// <summary>
         /// Get or set the text displayed on this button, will update on the fly
         /// </summary>
         public string ButtonText
         {
-            get => _buttonText;
-            set
-            {
-                _buttonText = value;
-                UpdateButton();
-            }
+            get => _internalButton.ButtonText;
+            set => _internalButton.ButtonText = value;
         }
 
         /// <summary>
@@ -30,12 +26,8 @@ namespace BTKUILib.UIObjects.Components
         /// </summary>
         public string ButtonIcon
         {
-            get => _buttonIcon;
-            set
-            {
-                _buttonIcon = value;
-                UpdateButton();
-            }
+            get => _internalButton.ButtonIcon;
+            set => _internalButton.ButtonIcon = value;
         }
 
         /// <summary>
@@ -43,12 +35,8 @@ namespace BTKUILib.UIObjects.Components
         /// </summary>
         public string ButtonTooltip
         {
-            get => _buttonTooltip;
-            set
-            {
-                _buttonTooltip = value;
-                UpdateButton();
-            }
+            get => _internalButton.ButtonTooltip;
+            set => _internalButton.ButtonTooltip = value;
         }
 
         /// <summary>
@@ -60,99 +48,23 @@ namespace BTKUILib.UIObjects.Components
         /// </summary>
         public Action OnHeld;
 
-        private string _buttonText;
-        private string _buttonIcon;
-        private string _buttonTooltip;
-        private object _coroutineTimer;
-        private float _holdWaitTime;
-        private bool _skipClick;
-        private Category _category;
-        private readonly ButtonStyle _style;
-
-        internal Button(string buttonText, string buttonIcon, string buttonTooltip, Category category, ButtonStyle style = ButtonStyle.TextWithIcon, float holdWaitTime = 0.5f)
+        internal Button(ABI_RC.Systems.UI.UILib.UIObjects.Components.Button button) : base(button)
         {
-            _buttonIcon = buttonIcon;
-            _buttonText = buttonText;
-            _buttonTooltip = buttonTooltip;
-            _category = category;
-            _style = style;
-            _holdWaitTime = holdWaitTime;
-
-            Parent = category;
-
-            ElementID = "btkUI-Button-" + UUID;
+            _internalButton = button;
+            button.OnPress += () =>
+            {
+                OnPress?.Invoke();
+            };
+            button.OnHeld += () =>
+            {
+                OnHeld?.Invoke();
+            };
         }
 
         /// <inheritdoc />
         public override void Delete()
         {
-            base.Delete();
-            if (Protected) return;
-            _category.SubElements.Remove(this);
-        }
-
-        internal override void OnInteraction(bool? toggle = null)
-        {
-            if (_coroutineTimer != null)
-            {
-                MelonCoroutines.Stop(_coroutineTimer);
-                _coroutineTimer = null;
-            }
-
-            if (_skipClick)
-            {
-                _skipClick = false;
-                return;
-            }
-
-            OnPress?.Invoke();
-        }
-
-        internal override void GenerateCohtml()
-        {
-            if (!UIUtils.IsQMReady()) return;
-
-            if (RootPage is { IsVisible: false }) return;
-
-            if (!IsGenerated)
-                UIUtils.GetInternalView().TriggerEvent("btkCreateButton", _category.ElementID, _buttonText, _buttonIcon, _buttonTooltip, UUID, _category.ModName, (int)_style);
-            
-            base.GenerateCohtml();
-
-            IsGenerated = true;
-        }
-
-        internal void MouseDown()
-        {
-            //Start coroutine
-            _coroutineTimer = MelonCoroutines.Start(MouseDownCoroutine());
-        }
-
-        private IEnumerator MouseDownCoroutine()
-        {
-            yield return new WaitForSeconds(_holdWaitTime);
-
-            _skipClick = true;
-            _coroutineTimer = null;
-
-            //Wait time passed, fire onheld
-            OnHeld?.Invoke();
-        }
-
-        private void UpdateButton()
-        {
-            if(!IsVisible) return;
-
-            if (!BTKUILib.Instance.IsOnMainThread())
-            {
-                BTKUILib.Instance.MainThreadQueue.Enqueue(UpdateButton);
-                return;
-            }
-
-            if(_style != ButtonStyle.TextOnly)
-                UIUtils.GetInternalView().TriggerEvent("btkUpdateIcon", ElementID, _category.ModName, _buttonIcon, _style == ButtonStyle.TextWithIcon ? "Image" : "");
-            UIUtils.GetInternalView().TriggerEvent("btkUpdateTooltip", $"{ElementID}-Root", _buttonTooltip);
-            UIUtils.GetInternalView().TriggerEvent("btkUpdateText", $"{ElementID}-Text", _buttonText);
+            _internalButton.Delete();
         }
     }
 

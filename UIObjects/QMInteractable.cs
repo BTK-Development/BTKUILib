@@ -6,21 +6,9 @@
     /// </summary>
     public class QMInteractable : QMUIElement
     {
-        internal QMInteractable()
+        internal QMInteractable(ABI_RC.Systems.UI.UILib.UIObjects.QMUIElement internalElement) : base(internalElement)
         {
-            UserInterface.Interactables.Add(UUID, this);
-        }
-
-        internal virtual void OnInteraction(bool? toggle = null)
-        {
-
-        }
-
-        internal override void DeleteInternal(bool tabChange = false)
-        {
-            base.DeleteInternal(tabChange);
-
-            UserInterface.Interactables.Remove(UUID);
+            
         }
     }
 }

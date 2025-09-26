@@ -11,30 +11,22 @@ namespace BTKUILib.UIObjects
     /// </summary>
     public class Category : QMUIElement
     {
+        internal readonly ABI_RC.Systems.UI.UILib.UIObjects.Category InternalCategory;
+        
         /// <summary>
         /// Category name, will update on the fly
         /// </summary>
         public string CategoryName
         {
-            get => _categoryName;
-            set
-            {
-                _categoryName = value;
-                UpdateCategoryName();
-            }
+            get => InternalCategory.CategoryName;
+            set => InternalCategory.CategoryName = value;
         }
 
         /// <inheritdoc />
         public override bool Hidden
         {
-            get => base.Hidden;
-            set
-            {
-                base.Hidden = value;
-
-                if (!UIUtils.IsQMReady()) return;
-                UIUtils.GetInternalView().TriggerEvent("btkSetHidden", $"{ElementID}-HeaderRoot", value);
-            }
+            get => InternalCategory.Hidden;
+            set => InternalCategory.Hidden = value;
         }
 
         /// <summary>
@@ -42,29 +34,14 @@ namespace BTKUILib.UIObjects
         /// </summary>
         public Action<bool> OnCollapse;
 
-        internal string ModName => _modName ?? LinkedPage.ModName;
-
-        internal readonly Page LinkedPage;
-        internal bool Collapsed;
-        private string _categoryName;
-        private readonly string _modName;
-        private bool _showHeader = false;
-        private bool _canCollapse;
-
-        internal Category(string categoryName, Page page, bool showHeader = true, string modName = null, bool canCollapse = true, bool collapsed = false)
+        internal Category(ABI_RC.Systems.UI.UILib.UIObjects.Category internalCategory)
         {
-            _categoryName = categoryName;
-            LinkedPage = page;
-            _showHeader = showHeader;
-            _modName = UIUtils.GetCleanString(modName);
-            Collapsed = collapsed;
-            _canCollapse = canCollapse;
-
-            Parent = page;
-            
-            ElementID = "btkUI-Row-" + UUID;
-
-            UserInterface.Categories.Add(ElementID, this);
+            InternalCategory = internalCategory;
+            InternalElement = internalCategory;
+            InternalCategory.OnCollapse += b =>
+            {
+                OnCollapse?.Invoke(b);
+            };
         }
         
         /// <summary>
@@ -103,13 +80,9 @@ namespace BTKUILib.UIObjects
         /// <returns></returns>
         public Button AddButton(string buttonText, string buttonIcon, string buttonTooltip, ButtonStyle style, float holdWaitTime)
         {
-            var button = new Button(buttonText, buttonIcon, buttonTooltip, this, style, holdWaitTime);
-            SubElements.Add(button);
+            var internalButton = InternalCategory.AddButton(buttonText, buttonIcon, buttonTooltip, (ABI_RC.Systems.UI.UILib.UIObjects.Components.ButtonStyle)style, holdWaitTime);
 
-            if(UIUtils.IsQMReady())
-                button.GenerateCohtml();
-
-            return button;
+            return new Button(internalButton);
         }
 
         /// <summary>
@@ -121,13 +94,9 @@ namespace BTKUILib.UIObjects
         /// <returns>Newly created toggle object</returns>
         public ToggleButton AddToggle(string toggleText, string toggleTooltip, bool state)
         {
-            var toggle = new ToggleButton(toggleText, toggleTooltip, state, this);
-            SubElements.Add(toggle);
-            
-            if(UIUtils.IsQMReady())
-                toggle.GenerateCohtml();
+            var internalToggle = InternalCategory.AddToggle(toggleText, toggleTooltip, state);
 
-            return toggle;
+            return new ToggleButton(internalToggle);
         }
 
                 /// <summary>
@@ -191,13 +160,10 @@ namespace BTKUILib.UIObjects
         /// <returns></returns>
         public SliderFloat AddSlider(string sliderName, string sliderTooltip, float initialValue, float minValue, float maxValue, int decimalPlaces, float defaultValue, bool allowReset, bool noTitle)
         {
-            var slider = new SliderFloat(this, sliderName, sliderTooltip, initialValue, minValue, maxValue, decimalPlaces, defaultValue, allowReset, true, noTitle);
-            SubElements.Add(slider);
+            var internalSlider = InternalCategory.AddSlider(sliderName, sliderTooltip, initialValue, minValue, maxValue,
+                decimalPlaces, defaultValue, allowReset, noTitle);
 
-            if(UIUtils.IsQMReady())
-                slider.GenerateCohtml();
-
-            return slider;
+            return new SliderFloat(internalSlider);
         }
 
         /// <summary>
@@ -210,31 +176,9 @@ namespace BTKUILib.UIObjects
         /// <returns>Newly created page object with SubpageButton set to the created button</returns>
         public Page AddPage(string pageName, string pageIcon, string pageTooltip, string modName)
         {
-            modName = UIUtils.GetCleanString(modName);
-            var page = Page.GetOrCreatePage(modName, pageName, category: this);
-            SubElements.Add(page);
-
-            if (modName == "BTKUILib" && LinkedPage.ElementID == "btkUI-PlayerSelectPage")
-            {
-                page.InPlayerlist = true;
-            }
-
-            var pageButton = new Button(pageName, pageIcon, pageTooltip, this);
-            SubElements.Add(pageButton);
-            pageButton.OnPress += () =>
-            {
-                page.OpenPage();
-            };
-
-            if (UIUtils.IsQMReady())
-            {
-                page.GenerateCohtml();
-                pageButton.GenerateCohtml();
-            }
-
-            page.SubpageButton = pageButton;
-
-            return page;
+            var internalPage = InternalCategory.AddPage(pageName, pageIcon, pageTooltip, modName);
+            
+            return new Page(internalPage);
         }
 
         /// <summary>
@@ -243,16 +187,7 @@ namespace BTKUILib.UIObjects
         /// <param name="element"></param>
         public void AddCustomElement(CustomElement element)
         {
-            if (element.ElementType != ElementType.InCategoryElement)
-            {
-                BTKUILib.Log.Error($"You cannot add a {element.ElementType} custom element to a Category!");
-                return;
-            }
-
-            SubElements.Add(element);
-
-            if(UIUtils.IsQMReady())
-                element.GenerateCohtml();
+            InternalCategory.AddCustomElement(element.InternalCE);
         }
 
         /// <summary>
@@ -262,12 +197,8 @@ namespace BTKUILib.UIObjects
         /// <returns>TextBlock object, you can use this to configure the textblock further or update it down the road</returns>
         public TextBlock AddTextBlock(string text)
         {
-            var block = new TextBlock(text, this);
-
-            SubElements.Add(block);
-
-            if(UIUtils.IsQMReady())
-                block.GenerateCohtml();
+            var internalBlock = InternalCategory.AddTextBlock(text);
+            var block = new TextBlock(internalBlock);
 
             return block;
         }
@@ -281,26 +212,16 @@ namespace BTKUILib.UIObjects
         /// <returns></returns>
         public TextInput AddTextInput(string text, string placeholder = "", InputType type = InputType.Text)
         {
-            var input = new TextInput(text, placeholder, type, this);
-
-            SubElements.Add(input);
-
-            if(UIUtils.IsQMReady())
-                input.GenerateCohtml();
-
+            var internalInput = InternalCategory.AddTextInput(text, placeholder,(ABI_RC.Systems.UI.UILib.UIObjects.Components.InputType)type);
+            var input = new TextInput(internalInput);
+            
             return input;
         }
 
         /// <inheritdoc />
         public override void Delete()
         {
-            //Delete the row header with the row
-            UIUtils.GetInternalView().TriggerEvent("btkDeleteElement", ElementID + "-HeaderRoot");
-            
-            base.Delete();
-
-            if (Protected) return;
-            LinkedPage.SubElements.Remove(this);
+            InternalCategory.Delete();
         }
 
         /// <summary>
@@ -308,28 +229,7 @@ namespace BTKUILib.UIObjects
         /// </summary>
         public void ClearChildren()
         {
-            //Iterate through each subelement and ensure ClearChildren and Delete is fired
-            foreach (var subElement in SubElements.ToArray())
-            {
-                if(subElement.Deleted) continue;
-
-                switch (subElement)
-                {
-                    case Page page:
-                        page.ClearChildren();
-                        break;
-                    case Category cat:
-                        cat.ClearChildren();
-                        break;
-                }
-
-                subElement.Delete();
-            }
-
-            SubElements.Clear();
-
-            if(UIUtils.IsQMReady() && IsVisible)
-                UIUtils.GetInternalView().TriggerEvent("btkClearChildren", ElementID);
+            InternalCategory.ClearChildren();
         }
 
         /// <summary>
@@ -388,36 +288,6 @@ namespace BTKUILib.UIObjects
             Button button = AddButton(entry.DisplayName, buttonIcon, entry.Description, buttonStyle);
             button.OnPress += () => QuickMenuAPI.OpenNumberInput(entry.DisplayName, entry.Value, f => entry.Value = f);
             return button;
-        }
-
-        internal override void GenerateCohtml()
-        {
-            if (!UIUtils.IsQMReady()) return;
-
-            if (RootPage is { IsVisible: false }) return;
-
-            if(!IsGenerated)
-                UIUtils.GetInternalView().TriggerEvent("btkCreateRow", LinkedPage.ElementID, UUID, _canCollapse, Collapsed, _showHeader ? _categoryName : null);
-            
-            foreach(var element in SubElements)
-                element.GenerateCohtml();
-
-            base.GenerateCohtml();
-
-            IsGenerated = true;
-        }
-
-        private void UpdateCategoryName()
-        {
-            if (!BTKUILib.Instance.IsOnMainThread())
-            {
-                BTKUILib.Instance.MainThreadQueue.Enqueue(UpdateCategoryName);
-                return;
-            }
-
-            if (!UIUtils.IsQMReady()) return;
-
-            UIUtils.GetInternalView().TriggerEvent("btkUpdateText", $"btkUI-Row-{UUID}-HeaderText", _categoryName);
         }
     }
 }

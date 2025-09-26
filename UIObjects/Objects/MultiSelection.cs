@@ -1,5 +1,6 @@
 ﻿using MelonLoader;
 using System;
+using ABI_RC.Core;
 
 namespace BTKUILib.UIObjects.Objects
 {
@@ -8,6 +9,8 @@ namespace BTKUILib.UIObjects.Objects
     /// </summary>
     public class MultiSelection
     {
+        internal readonly ABI_RC.Systems.UI.UILib.UIObjects.Objects.MultiSelection InternalMultiSelect;
+        
         /// <summary>
         /// Option array
         /// </summary>
@@ -28,15 +31,9 @@ namespace BTKUILib.UIObjects.Objects
         /// </summary>
         public int SelectedOption
         {
-            get => _selectedOption;
-            set
-            {
-                _selectedOption = value;
-                OnOptionUpdated?.Invoke(_selectedOption);
-            }
+            get => InternalMultiSelect.SelectedOption;
+            set => InternalMultiSelect.SelectedOption = value;
         }
-
-        private int _selectedOption = -1;
 
         /// <summary>
         /// Create a new multiselection object
@@ -46,9 +43,11 @@ namespace BTKUILib.UIObjects.Objects
         /// <param name="selectedOption">Index of currently selected object</param>
         public MultiSelection(string name, string[] options, int selectedOption)
         {
-            Name = name;
-            Options = options;
-            _selectedOption = selectedOption;
+            InternalMultiSelect = new ABI_RC.Systems.UI.UILib.UIObjects.Objects.MultiSelection(name, options, selectedOption);
+            InternalMultiSelect.OnOptionUpdated += i =>
+            {
+                OnOptionUpdated?.Invoke(InternalMultiSelect.SelectedOption);
+            };
         }
 
         /// <summary>
@@ -57,7 +56,7 @@ namespace BTKUILib.UIObjects.Objects
         /// <param name="option"></param>
         public void SetSelectedOptionWithoutAction(int option)
         {
-            _selectedOption = option;
+            InternalMultiSelect.SetSelectedOptionWithoutAction(option);
         }
 
         /// <summary>
@@ -70,8 +69,8 @@ namespace BTKUILib.UIObjects.Objects
         {
             MultiSelection multiSelection = new(
                 entry.DisplayName,
-                UIUtils.GetPrettyEnumNames<TEnum>(),
-                UIUtils.GetEnumIndex(entry.Value)
+                CVRTools.GetPrettyEnumNames<TEnum>(),
+                CVRTools.GetEnumIndex(entry.Value)
             )
             {
                 OnOptionUpdated = i => entry.Value = (TEnum)Enum.Parse(typeof(TEnum), Enum.GetNames(typeof(TEnum))[i])

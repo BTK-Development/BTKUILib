@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using ABI_RC.Core.InteractionSystem;
+using Unity.Collections.LowLevel.Unsafe;
 
 namespace BTKUILib.UIObjects.Objects;
 
@@ -11,9 +13,7 @@ public class CustomEngineOnFunction
 {
     //Max 8 parameters of type T
     //Must use the correct TriggerEvent function
-    internal string FunctionName { get; private set; }
-    internal string JSCode { get; private set; }
-    internal Parameter[] Parameters { get; private set; }
+    internal readonly ABI_RC.Systems.UI.UILib.UIObjects.Objects.CustomEngineOnFunction InternalCEFunction;
 
     /// <summary>
     /// Function constructor, components of this cannot be modified after generation
@@ -23,9 +23,7 @@ public class CustomEngineOnFunction
     /// <param name="parameters">Parameters that are sent with your function from C#, there is a max of 8 supported</param>
     public CustomEngineOnFunction(string functionName, string jsCode, params Parameter[] parameters)
     {
-        FunctionName = functionName;
-        JSCode = jsCode;
-        Parameters = parameters;
+        InternalCEFunction = new ABI_RC.Systems.UI.UILib.UIObjects.Objects.CustomEngineOnFunction(functionName, jsCode, UnsafeUtility.As<Parameter[], ABI_RC.Systems.UI.UILib.UIObjects.Objects.Parameter[]>(ref parameters));
     }
 
     /// <summary>
@@ -35,57 +33,7 @@ public class CustomEngineOnFunction
     /// <exception cref="Exception">Exception thrown if you pass in to many parameters</exception>
     public void TriggerEvent(params object[] parameters)
     {
-        if (!UIUtils.IsQMReady()) return;
-
-        if (parameters.Length == 0 && Parameters.Any(x=>x.Required))
-            throw new Exception($"CustomEngineOnEvent {FunctionName} TriggerEvent was attempted with 0 parameters yet there are required parameters!");
-
-        for (int i = 0; i < Parameters.Length; i++)
-        {
-            var funcParam = Parameters[i];
-
-            if (funcParam.Required && parameters.Length < i + 1)
-                throw new Exception($"CustomEngineOnEvent {FunctionName} TriggerEvent was attempted with a missing required parameter!");
-
-            var parameter = parameters[i];
-
-            if((parameter == null && !funcParam.Nullable) || (parameter!=null && parameter.GetType() != funcParam.ParameterType))
-                throw new Exception($"CustomEngineOnEvent {FunctionName} TriggerEvent was attempted with parameter that is either null or not the expected type!");
-        }
-
-        //Param check complete, pass to JS
-        switch (parameters.Length)
-        {
-            case 0:
-                UIUtils.GetInternalView().TriggerEvent(FunctionName);
-                break;
-            case 1:
-                UIUtils.GetInternalView().TriggerEvent(FunctionName, parameters[0]);
-                break;
-            case 2:
-                UIUtils.GetInternalView().TriggerEvent(FunctionName, parameters[0], parameters[1]);
-                break;
-            case 3:
-                UIUtils.GetInternalView().TriggerEvent(FunctionName, parameters[0], parameters[1], parameters[2]);
-                break;
-            case 4:
-                UIUtils.GetInternalView().TriggerEvent(FunctionName, parameters[0], parameters[1], parameters[2], parameters[3]);
-                break;
-            case 5:
-                UIUtils.GetInternalView().TriggerEvent(FunctionName, parameters[0], parameters[1], parameters[2], parameters[3], parameters[4]);
-                break;
-            case 6:
-                UIUtils.GetInternalView().TriggerEvent(FunctionName, parameters[0], parameters[1], parameters[2], parameters[3], parameters[4], parameters[5]);
-                break;
-            case 7:
-                UIUtils.GetInternalView().TriggerEvent(FunctionName, parameters[0], parameters[1], parameters[2], parameters[3], parameters[4], parameters[5], parameters[6]);
-                break;
-            case 8:
-                UIUtils.GetInternalView().TriggerEvent(FunctionName, parameters[0], parameters[1], parameters[2], parameters[3], parameters[4], parameters[5], parameters[6], parameters[7]);
-                break;
-            default:
-                throw new Exception($"CustomEngineOnEvent {FunctionName} TriggerEvent was attempted with too many parameters! Maximum parameters is 8!");
-        }
+        InternalCEFunction.TriggerEvent(parameters);
     }
 }
 

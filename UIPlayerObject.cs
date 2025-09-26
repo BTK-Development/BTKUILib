@@ -9,142 +9,68 @@ namespace BTKUILib;
 /// </summary>
 public class UIPlayerObject
 {
-        private readonly CVRPlayerEntity _playerEntity;
-        private readonly bool _isRemotePlayer;
+    internal ABI_RC.Systems.UI.UILib.UIPlayerObject InternalPlayerObject;
 
-        internal UIPlayerObject(CVRPlayerEntity playerEntity)
-        {
-            _playerEntity = playerEntity;
+    public UIPlayerObject(ABI_RC.Systems.UI.UILib.UIPlayerObject internalPlayerObject)
+    {
+        InternalPlayerObject = internalPlayerObject;
+    }
 
-            if (ReferenceEquals(playerEntity, null)) return;
+    /// <summary>
+    /// Returns full CVRPlayerEntity for remote users, null for local
+    /// </summary>
+    public CVRPlayerEntity CVRPlayer => InternalPlayerObject.CVRPlayer;
 
-            _isRemotePlayer = true;
-        }
+    /// <summary>
+    /// returns the avatar object
+    /// </summary>
+    public GameObject AvatarObject => InternalPlayerObject.AvatarObject;
 
-        /// <summary>
-        /// Returns full CVRPlayerEntity for remote users, null for local
-        /// </summary>
-        public CVRPlayerEntity CVRPlayer => _isRemotePlayer ? _playerEntity : null;
+    /// <summary>
+    /// Returns the UUID for this user
+    /// </summary>
+    public string Uuid => InternalPlayerObject.Uuid;
 
-        /// <summary>
-        /// returns the avatar object
-        /// </summary>
-        public GameObject AvatarObject
-        {
-            get
-            {
-                if (!_isRemotePlayer)
-                    return PlayerSetup.Instance.AvatarObject;
+    /// <summary>
+    /// Returns the Username of this user
+    /// </summary>
+    public string Username => InternalPlayerObject.Username;
+    /// <summary>
+    /// Returns the private animator from the PuppetMaster
+    /// </summary>
+    public Animator AvatarAnimator => InternalPlayerObject.AvatarAnimator;
 
-                return _playerEntity.PuppetMaster == null ? null : _playerEntity.PuppetMaster.AvatarObject;
-            }
-        }
+    /// <summary>
+    /// Returns the player's root gameobject
+    /// </summary>
+    public GameObject PlayerGameObject => InternalPlayerObject.PlayerGameObject;
 
-        /// <summary>
-        /// Returns the UUID for this user
-        /// </summary>
-        public string Uuid
-        {
-            get
-            {
-                if (!_isRemotePlayer)
-                    return MetaPort.Instance.ownerId;
-                return ReferenceEquals(_playerEntity, null) ? null : _playerEntity.Uuid;
-            }
-        }
+    /// <summary>
+    /// Returns the AvatarID of this user
+    /// </summary>
+    public string AvatarID => InternalPlayerObject.AvatarID;
 
-        /// <summary>
-        /// Returns the Username of this user
-        /// </summary>
-        public string Username
-        {
-            get
-            {
-                if (!_isRemotePlayer)
-                    return UIUtils.GetSelfUsername();
-                return ReferenceEquals(_playerEntity, null) ? null : _playerEntity.Username;
-            }
-        }
+    /// <summary>
+    /// Returns the player ImageURL from the API, if local user is null API didn't give us the user details
+    /// </summary>
+    public string PlayerIconURL => InternalPlayerObject.PlayerIconURL;
 
-        /// <summary>
-        /// Returns the private animator from the PuppetMaster
-        /// </summary>
-        public Animator AvatarAnimator
-        {
-            get
-            {
-                if (!_isRemotePlayer)
-                    return PlayerSetup.Instance.Animator;
-                return ReferenceEquals(_playerEntity, null) ? null : UIUtils.GetAvatarAnimator(_playerEntity.PuppetMaster);
-            }
-        }
+    /// <summary>
+    /// Returns true if this UIPlayerObject is the local user
+    /// </summary>
+    public bool IsLocalUser => InternalPlayerObject.IsLocalUser;
 
-        /// <summary>
-        /// Returns the player's root gameobject
-        /// </summary>
-        public GameObject PlayerGameObject
-        {
-            get
-            {
-                if (!_isRemotePlayer)
-                    return PlayerSetup.Instance.gameObject;
-                return ReferenceEquals(_playerEntity, null) ? null : _playerEntity.PlayerObject;
-            }
-        }
+    /// <inheritdoc />
+    public override string ToString()
+    {
+        return $"UIPlayerObject - [Uuid: {Uuid}, Username: {Username}]";
+    }
 
-        /// <summary>
-        /// Returns the player position, remote users require some weirdness
-        /// </summary>
-        public Vector3 PlayerPosition
-        {
-            get
-            {
-                if (!_isRemotePlayer)
-                    return PlayerSetup.Instance.GetPlayerPosition();
-                // remote players avatar root is stuck at their playspace center, game bug :)
-                return ReferenceEquals(_playerEntity, null)
-                    ? Vector3.zero
-                    : _playerEntity.PuppetMaster.GetViewWorldPosition() with
-                    {
-                        y = _playerEntity.PuppetMaster.transform.position.y
-                    };
-            }
-        }
-
-        /// <summary>
-        /// Returns the AvatarID of this user
-        /// </summary>
-        public string AvatarID => !_isRemotePlayer ? MetaPort.Instance.currentAvatarGuid : _playerEntity?.ContentMetadata.AssetId;
-
-        /// <summary>
-        /// Returns the player ImageURL from the API, if local user is null API didn't give us the user details
-        /// </summary>
-        public string PlayerIconURL
-        {
-            get
-            {
-                if (!_isRemotePlayer)
-                    return Patches.LocalUserDetails?.ImageUrl;
-                return ReferenceEquals(_playerEntity, null) ? "" : _playerEntity.ApiProfileImageUrl;
-            }
-        }
-
-        /// <summary>
-        /// Returns true if this UIPlayerObject is the local user
-        /// </summary>
-        public bool IsLocalUser => !_isRemotePlayer;
-
-        /// <inheritdoc />
-        public override string ToString()
-        {
-            return $"UIPlayerObject - [Uuid: {Uuid}, Username: {Username}]";
-        }
-
-        /// <inheritdoc />
-        public override bool Equals(object obj)
-        {
-            if(obj is UIPlayerObject playerObject)
-                return Uuid == playerObject.Uuid;
-            return false;
-        }
+    /// <inheritdoc />
+    public override bool Equals(object obj)
+    {
+        if(obj is UIPlayerObject playerObject)
+            return Uuid == playerObject.Uuid;
+        return false;
+    }
 }

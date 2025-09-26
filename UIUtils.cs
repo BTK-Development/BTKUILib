@@ -1,17 +1,12 @@
-﻿using System.Reflection;
-using System.Security.Cryptography;
-using System.Text;
-using System.Text.RegularExpressions;
+﻿using System.IO;
+using System.Reflection;
 using ABI_RC.Core.InteractionSystem;
+using ABI_RC.Core.Networking.IO.Self;
 using ABI_RC.Core.Player;
 using ABI_RC.Core.Savior;
-using ABI_RC.Core.UI;
-using cohtml.Net;
+using ABI_RC.Systems.GameEventSystem;
+using ABI_RC.Systems.UI.UILib.UIObjects;
 using MelonLoader;
-using System;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
 using UnityEngine;
 
 namespace BTKUILib
@@ -21,35 +16,23 @@ namespace BTKUILib
     /// </summary>
     public static class UIUtils
     {
-        private static MD5 _hasher = MD5.Create();
-        private static FieldInfo _internalCohtmlView = typeof(CohtmlControlledViewWrapper).GetField("_view", BindingFlags.Instance | BindingFlags.NonPublic);
-        private static PropertyInfo _selfUsername = typeof(MetaPort).Assembly.GetType("ABI_RC.Core.Networking.AuthManager").GetProperty("Username", BindingFlags.Static | BindingFlags.Public);
-        private static FieldInfo _animatorGetter = typeof(PuppetMaster).GetField("_animator", BindingFlags.Instance | BindingFlags.NonPublic);
-        private static MethodInfo _kickUserMethod = typeof(MetaPort).Assembly.GetType("ABI_RC.Core.Networking.Guardian.GuardianExtendedControls").GetMethod("KickUser", BindingFlags.Static | BindingFlags.NonPublic);
-        private static View _internalViewCache;
-
+        private static FieldInfo _qmuiElementProtected = typeof(QMUIElement).GetField("Protected", BindingFlags.Instance | BindingFlags.NonPublic);
+        private static FieldInfo _internalUILibSettingsCat = typeof(CVR_MenuManager).GetField("UISettingsMainCategory", BindingFlags.Static | BindingFlags.NonPublic);
+        private static FieldInfo _getInternalUsername = typeof(MetaPort).Assembly.GetType("ABI_RC.Core.Networking.AuthManager").GetField("Username", BindingFlags.Static | BindingFlags.Public);
+        
         /// <summary>
         /// Check if the CVR_MenuManager view is ready
         /// </summary>
         /// <returns>True if view is ready, false if it's not</returns>
-        public static bool IsQMReady()
-        {
-            if (CVR_MenuManager.Instance == null)
-                return false;
-
-            return UserInterface.BTKUIReady;
-        }
-
+        public static bool IsQMReady() => CVR_MenuManager.Instance.IsReady;
+        
         /// <summary>
         /// Clean non alphanumeric characters from a given string
         /// </summary>
         /// <param name="input">Input string</param>
         /// <returns>Cleaned string</returns>
-        public static string GetCleanString(string input)
-        {
-            return input == null ? null : Regex.Replace(Regex.Replace(input, "<.*?>", string.Empty), @"[^0-9a-zA-Z_]+", string.Empty);
-        }
-
+        public static string GetCleanString(string input) => ABI_RC.Systems.UI.UILib.UIUtils.GetCleanString(input);
+        
         /// <summary>
         /// Get stream from an EmbeddedResource with a given name
         /// </summary>
@@ -68,11 +51,7 @@ namespace BTKUILib
         /// </summary>
         /// <param name="pm">Target puppet master</param>
         /// <returns>Private avatar animator</returns>
-        public static Animator GetAvatarAnimator(PuppetMaster pm)
-        {
-            if (pm == null) return null;
-            return (Animator)_animatorGetter.GetValue(pm);
-        }
+        public static Animator GetAvatarAnimator(PuppetMaster pm) => pm.Animator;
 
         /// <summary>
         /// Gets the username of the local user
@@ -80,59 +59,17 @@ namespace BTKUILib
         /// <returns>Local users username</returns>
         public static string GetSelfUsername()
         {
-            return (string)_selfUsername.GetValue(null);
-        }
-
-        internal static void KickUser(string uuid)
-        {
-            _kickUserMethod.Invoke(null, [uuid]);
+            return (string)_getInternalUsername.GetValue(null);
         }
         
-        internal static string CreateMD5(string input)
+        internal static void SetProtected(this UIObjects.QMUIElement qmuiElement, bool value)
         {
-            // Use input string to calculate MD5 hash
-            byte[] inputBytes = Encoding.ASCII.GetBytes(input);
-            return CreateMD5(inputBytes);
+            _qmuiElementProtected.SetValue(qmuiElement.InternalElement, value);
         }
 
-        internal static string CreateMD5(byte[] bytes)
+        internal static Category GetInternalSettingsPage()
         {
-            byte[] hashBytes = _hasher.ComputeHash(bytes);
-
-            // Convert the byte array to hexadecimal string
-            StringBuilder sb = new StringBuilder();
-            for (int i = 0; i < hashBytes.Length; i++)
-            {
-                sb.Append(hashBytes[i].ToString("X2"));
-            }
-
-            return sb.ToString();
-        }
-
-        internal static View GetInternalView()
-        {
-            if (CVR_MenuManager.Instance == null || CVR_MenuManager.Instance.cohtmlView == null) return null;
-
-            if (_internalViewCache == null)
-                _internalViewCache = (View)_internalCohtmlView.GetValue(CVR_MenuManager.Instance.cohtmlView.View);
-
-            return _internalViewCache;
-        }
-
-        internal static string[] GetPrettyEnumNames<T>() where T : Enum
-        {
-            return Enum.GetNames(typeof(T)).Select(PrettyFormatEnumName).ToArray();
-        }
-
-        internal static int GetEnumIndex<T>(T value) where T : Enum
-        {
-            return Array.IndexOf(Enum.GetValues(typeof(T)), value);
-        }
-
-        private static string PrettyFormatEnumName(string name)
-        {
-            // adds spaces before capital letters (excluding the first letter)
-            return System.Text.RegularExpressions.Regex.Replace(name, "(\\B[A-Z])", " $1");
+            return (Category)_internalUILibSettingsCat.GetValue(null);
         }
     }
 }

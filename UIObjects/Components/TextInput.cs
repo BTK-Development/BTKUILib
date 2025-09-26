@@ -7,6 +7,8 @@ namespace BTKUILib.UIObjects.Components;
 /// </summary>
 public class TextInput : QMUIElement
 {
+    private readonly ABI_RC.Systems.UI.UILib.UIObjects.Components.TextInput _internalTextInput;
+    
     /// <summary>
     /// OnTextUpdate action, this is fired when the textinput is changed by the user
     /// </summary>
@@ -15,46 +17,20 @@ public class TextInput : QMUIElement
     /// <summary>
     /// TextInput text property, to update this you must use TextInput.SetText
     /// </summary>
-    public string Text
-    {
-        get => _text;
-        internal set
-        {
-            _text = value;
-            OnTextUpdate?.Invoke(value);
-        }
-    }
+    public string Text => _internalTextInput.Text;
 
     /// <summary>
     /// Placeholder text, this will update on the fly, it'll be shown when no text is entered
     /// </summary>
     public string Placeholder
     {
-        get => _placeholder;
-        set
-        {
-            _placeholder = value;
-            UpdateTextInput();
-        }
+        get => _internalTextInput.Placeholder;
+        set => _internalTextInput.Placeholder = value;
     }
 
-    private string _text;
-    private string _placeholder;
-    private InputType _type;
-    private string[] _additionalCSSClasses;
-
-    internal TextInput(string text, string placeholder, InputType type, Category category, params string[] additionalCSSClasses)
+    internal TextInput(ABI_RC.Systems.UI.UILib.UIObjects.Components.TextInput text) : base(text)
     {
-        _text = text;
-        _placeholder = placeholder;
-        _type = type;
-        _additionalCSSClasses = additionalCSSClasses;
-
-        Parent = category;
-
-        ElementID = $"btkUI-TextInput-{UUID}";
-
-        UserInterface.TextInputs.Add(ElementID, this);
+        _internalTextInput = text;
     }
 
     /// <summary>
@@ -63,42 +39,7 @@ public class TextInput : QMUIElement
     /// <param name="text"></param>
     public void SetText(string text)
     {
-        _text = text;
-        UpdateTextInput();
-    }
-
-    internal override void GenerateCohtml()
-    {
-        if (!UIUtils.IsQMReady()) return;
-
-        if (RootPage is { IsVisible: false }) return;
-
-        if(!IsGenerated)
-            UIUtils.GetInternalView().TriggerEvent("btkCreateTextInput", Parent.ElementID, UUID, Text, Placeholder, _type, _additionalCSSClasses);
-
-        base.GenerateCohtml();
-
-        IsGenerated = true;
-    }
-
-    internal override void DeleteInternal(bool tabChange = false)
-    {
-        base.DeleteInternal(tabChange);
-
-        UserInterface.TextInputs.Remove(ElementID);
-    }
-
-    private void UpdateTextInput()
-    {
-        if(!IsVisible) return;
-
-        if (!BTKUILib.Instance.IsOnMainThread())
-        {
-            BTKUILib.Instance.MainThreadQueue.Enqueue(UpdateTextInput);
-            return;
-        }
-
-        UIUtils.GetInternalView().TriggerEvent("btkUpdateText", ElementID, _text);
+        _internalTextInput.SetText(text);
     }
 }
 

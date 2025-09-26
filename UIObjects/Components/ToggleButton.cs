@@ -9,17 +9,15 @@ namespace BTKUILib.UIObjects.Components
     /// </summary>
     public class ToggleButton : QMInteractable
     {
+        private ABI_RC.Systems.UI.UILib.UIObjects.Components.ToggleButton _internalToggleButton;
+        
         /// <summary>
         /// Gets or sets the current state of the toggle, will update on the fly
         /// </summary>
         public bool ToggleValue
         {
-            get => _toggleValue;
-            set
-            {
-                _toggleValue = value;
-                UpdateToggle();
-            }
+            get => _internalToggleButton.ToggleValue;
+            set => _internalToggleButton.ToggleValue = value;
         }
 
         /// <summary>
@@ -27,12 +25,8 @@ namespace BTKUILib.UIObjects.Components
         /// </summary>
         public string ToggleName
         {
-            get => _toggleName;
-            set
-            {
-                _toggleName = value;
-                UpdateToggle();
-            }
+            get => _internalToggleButton.ToggleName;
+            set => _internalToggleButton.ToggleName = value;
         }
 
         /// <summary>
@@ -40,12 +34,8 @@ namespace BTKUILib.UIObjects.Components
         /// </summary>
         public string ToggleTooltip
         {
-            get => _toggleTooltip;
-            set
-            {
-                _toggleTooltip = value;
-                UpdateToggle();
-            }
+            get => _internalToggleButton.ToggleTooltip;
+            set => _internalToggleButton.ToggleTooltip = value;
         }
 
         /// <summary>
@@ -53,78 +43,19 @@ namespace BTKUILib.UIObjects.Components
         /// </summary>
         public Action<bool> OnValueUpdated;
 
-        private bool _toggleValue;
-        private string _toggleName;
-        private string _toggleTooltip;
-        private Category _category;
-
-        internal ToggleButton(string toggleText, string toggleTooltip, bool initialValue, Category category)
+        internal ToggleButton(ABI_RC.Systems.UI.UILib.UIObjects.Components.ToggleButton toggle) : base(toggle)
         {
-            _toggleValue = initialValue;
-            _toggleName = toggleText;
-            _toggleTooltip = toggleTooltip;
-            _category = category;
-
-            Parent = category;
-            
-            ElementID = $"btkUI-Toggle-{UUID}";
+            _internalToggleButton = toggle;
+            toggle.OnValueUpdated += b =>
+            {
+                OnValueUpdated?.Invoke(b);
+            };
         }
 
         /// <inheritdoc />
         public override void Delete()
         {
-            if (Protected)
-                BTKUILib.Log.Error($"You cannot delete a protected element! ElementID: {ElementID}");
-            
-            _category.SubElements.Remove(this);
-            
-            UserInterface.QMElements.Remove(this);
-
-            if (!UIUtils.IsQMReady()) return;
-            UIUtils.GetInternalView().TriggerEvent("btkDeleteElement", $"{ElementID}-Root");
-        }
-
-        internal override void OnInteraction(bool? toggle = null)
-        {
-            if (toggle == null)
-            {
-                BTKUILib.Log.Error("Toggle received an event that contained a null toggle state! That shouldn't happen!");
-                return;
-            }
-
-            _toggleValue = toggle.Value;
-            OnValueUpdated?.Invoke(_toggleValue);
-        }
-
-        internal override void GenerateCohtml()
-        {
-            if (!UIUtils.IsQMReady()) return;
-
-            if (RootPage is { IsVisible: false }) return;
-
-            if(!IsGenerated)
-                UIUtils.GetInternalView().TriggerEvent("btkCreateToggle", _category.ElementID, _toggleName, UUID, _toggleTooltip, _toggleValue);
-            
-            base.GenerateCohtml();
-
-            IsGenerated = true;
-        }
-
-        private void UpdateToggle()
-        {
-            if(!IsVisible) return;
-
-            if (!BTKUILib.Instance.IsOnMainThread())
-            {
-                BTKUILib.Instance.MainThreadQueue.Enqueue(UpdateToggle);
-                return;
-            }
-
-            if (!UIUtils.IsQMReady()) return;
-            
-            UIUtils.GetInternalView().TriggerEvent("btkSetToggleState", ElementID, _toggleValue);
-            UIUtils.GetInternalView().TriggerEvent("btkUpdateTooltip", $"{ElementID}-Root", _toggleTooltip);
-            UIUtils.GetInternalView().TriggerEvent("btkUpdateText", $"{ElementID}-Text", _toggleName);
+            _internalToggleButton.Delete();
         }
     }
 }

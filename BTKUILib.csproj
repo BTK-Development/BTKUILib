@@ -13,8 +13,7 @@
       <HintPath>..\3rdparty\ml\0Harmony.dll</HintPath>
     </Reference>
     <Reference Include="Assembly-CSharp">
-      <HintPath>..\3rdparty\Managed\Assembly-CSharp.dll</HintPath>
-      <Private>False</Private>
+      <HintPath>..\..\..\CVR Build\ChilloutVR_Data\Managed\Assembly-CSharp.dll</HintPath>
     </Reference>
     <Reference Include="cohtml.Net">
       <HintPath>..\3rdparty\Managed\cohtml.Net.dll</HintPath>
@@ -97,66 +96,15 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="CohtmlUI\.idea\.gitignore" />
-    <Content Include="CohtmlUI\.idea\CohtmlUI.iml" />
-    <Content Include="CohtmlUI\.idea\discord.xml" />
-    <Content Include="CohtmlUI\.idea\modules.xml" />
-    <Content Include="CohtmlUI\.idea\vcs.xml" />
-    <Content Include="CohtmlUI\.idea\watcherTasks.xml" />
-    <Content Include="CohtmlUI\.idea\workspace.xml" />
-    <Content Include="CohtmlUI\bootstrap-grid.min.css" />
-    <Content Include="CohtmlUI\BTKUI.css" />
-    <Content Include="CohtmlUI\BTKUI.css.map" />
-    <Content Include="CohtmlUI\BTKUI.less" />
-    <Content Include="CohtmlUI\images\Arrow Left.png" />
-    <Content Include="CohtmlUI\images\Arrow Up.png" />
-    <Content Include="CohtmlUI\images\Checkmark.png" />
-    <Content Include="CohtmlUI\images\Multiuser.png" />
-    <Content Include="CohtmlUI\images\Settings.png" />
-    <Content Include="CohtmlUI\mod.js" />
     <Content Include="LICENSE" />
     <Content Include="README.md" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Remove="ExampleUI\ExampleUIMod.cs" />
+    <EmbeddedResource Include="Resources\Pencil.png" />
+    <EmbeddedResource Include="Resources\Settings.png" />
+    <EmbeddedResource Include="Resources\Star.png" />
+    <None Remove="Images\MelonLoader\Pencil.png" />
+    <None Remove="Images\MelonLoader\Settings.png" />
+    <None Remove="Images\MelonLoader\Star.png" />
   </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="CohtmlUI\images\BTKUILib\UserAdd.png" />
-    <None Remove="CohtmlUI\images\BTKUILib\UserMinus.png" />
-    <EmbeddedResource Include="CohtmlUI\images\BTKUILib\UserMinus.png" />
-    <None Remove="CohtmlUI\images\BTKUILib\Exit-Icon.png" />
-    <EmbeddedResource Include="CohtmlUI\images\BTKUILib\ExitDoor.png" />
-    <None Remove="CohtmlUI\images\BTKUILib\ThumbsDown.png" />
-    <EmbeddedResource Include="CohtmlUI\images\BTKUILib\ThumbsDown.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="ILRepack.Lib.MSBuild.Task" Version="2.0.43">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
-    <PackageReference Include="SharpZipLib" Version="1.4.2" />
-  </ItemGroup>
-  <Target Name="CheckLessc">
-    <Exec Command="lessc --version" ContinueOnError="true" IgnoreExitCode="true">
-      <Output TaskParameter="ExitCode" PropertyName="LesscExitCode" />
-    </Exec>
-    <Warning Text="Lessc is NOT installed. We're going to skip the LESS compilation... You can fix by running: npm install -g less" Condition="'$(LesscExitCode)' != '0'" />
-  </Target>
-  <Target Name="CompileLess" DependsOnTargets="CheckLessc" Condition="'$(LesscExitCode)' == '0'">
-    <CreateItem Include="$(MSBuildProjectDirectory)\**\*.less">
-      <Output TaskParameter="Include" ItemName="DynamicLessFiles" />
-    </CreateItem>
-    <Exec Command="lessc &quot;%(DynamicLessFiles.FullPath)&quot; &quot;%(DynamicLessFiles.RootDir)%(DynamicLessFiles.Directory)%(DynamicLessFiles.Filename).css&quot;" />
-  </Target>
-  <Target Name="ZipBTKUIBuild" BeforeTargets="BeforeBuild" DependsOnTargets="CheckLessc;CompileLess">
-    <ZipDirectory SourceDirectory="$(MSBuildProjectDirectory)\CohtmlUI" DestinationFile="$(MSBuildProjectDirectory)\BTKUIBuild.zip" Overwrite="true" />
-    <ItemGroup>
-      <EmbeddedResource Include="BTKUIBuild.zip" />
-    </ItemGroup>
-  </Target>
-  <Target Name="Move Files to Merged Directory" AfterTargets="Build">
-      <Message Text="Moving files from $(OutputPath) to merged directory"/>
-      <Copy SourceFiles="$(OutputPath)/BTKUILib.pdb" DestinationFolder="$(OutputPath)/merged"/>
-      <Copy SourceFiles="$(OutputPath)/BTKUILib.xml" DestinationFolder="$(OutputPath)/merged"/>
-  </Target>
 </Project>

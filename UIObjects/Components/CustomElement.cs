@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using ABI_RC.Core.InteractionSystem;
 using BTKUILib.UIObjects.Objects;
 
@@ -11,19 +12,12 @@ namespace BTKUILib.UIObjects.Components;
 /// </summary>
 public class CustomElement : QMUIElement
 {
+    internal ABI_RC.Systems.UI.UILib.UIObjects.Components.CustomElement InternalCE;
+    
     /// <summary>
     /// Called when the custom element has completed its GenerateCohtml function, you can safely use engineOn functions from here
     /// </summary>
     public Action OnElementGenerated { get; set; }
-
-    //btkUI-Custom-[UUID] required in "id" of root
-    internal ElementType ElementType;
-
-    private string _template;
-    private Page _parentPage;
-    private Category _parentCategory;
-    private Dictionary<string, string> _actionFunctions = new();
-    private List<CustomEngineOnFunction> _engineOnFunctions = new();
 
     /// <summary>
     /// Custom element constructor, most parts of a custom element cannot be changed after generation
@@ -34,19 +28,12 @@ public class CustomElement : QMUIElement
     /// <param name="parentCategory">Parent category of the element, only used for in category elements</param>
     public CustomElement(string template, ElementType elementType, Page parentPage = null, Category parentCategory = null)
     {
-        _template = template;
-        ElementType = elementType;
-        _parentPage = parentPage;
-        _parentCategory = parentCategory;
-
-        if (parentCategory != null)
-            Parent = parentCategory;
-        if (parentPage != null)
-            Parent = parentPage;
-
-        ElementID = "btkUI-Custom-" + UUID;
-
-        UserInterface.CustomElements.Add(this);
+        InternalCE = new ABI_RC.Systems.UI.UILib.UIObjects.Components.CustomElement(template, (ABI_RC.Systems.UI.UILib.UIObjects.Components.ElementType)elementType, parentPage?.InternalPage, parentCategory?.InternalCategory);
+        InternalElement = InternalCE;
+        InternalCE.OnElementGenerated += () =>
+        {
+            OnElementGenerated?.Invoke();
+        };
     }
 
     /// <summary>
@@ -56,13 +43,7 @@ public class CustomElement : QMUIElement
     /// <param name="actionCode">Javascript code to be executed on click</param>
     public void AddAction(string actionName, string actionCode)
     {
-        if (_actionFunctions.ContainsKey(actionName))
-        {
-            BTKUILib.Log.Error("Duplicate action name given for custom element!");
-            return;
-        }
-
-        _actionFunctions.Add(actionName, actionCode);
+        InternalCE.AddAction(actionName, actionCode);
     }
 
     /// <summary>
@@ -71,8 +52,7 @@ public class CustomElement : QMUIElement
     /// <param name="actionName"></param>
     public void RemoveAction(string actionName)
     {
-        if (_actionFunctions.ContainsKey(actionName))
-            _actionFunctions.Remove(actionName);
+        InternalCE.RemoveAction(actionName);
     }
 
     /// <summary>
@@ -80,7 +60,7 @@ public class CustomElement : QMUIElement
     /// </summary>
     public void ClearActions()
     {
-        _actionFunctions.Clear();
+        InternalCE.ClearActions();
     }
 
     /// <summary>
@@ -92,13 +72,7 @@ public class CustomElement : QMUIElement
     /// <param name="function">CustomEngineOnFunction object containing code and parameters</param>
     public void AddEngineOnFunction(CustomEngineOnFunction function)
     {
-        if (_engineOnFunctions.Any(x => x.FunctionName == function.FunctionName))
-        {
-            BTKUILib.Log.Error($"Duplicate function name, {function.FunctionName} already exists in CustomElement!");
-            return;
-        }
-
-        _engineOnFunctions.Add(function);
+        InternalCE.AddEngineOnFunction(function.InternalCEFunction);
     }
 
     /// <summary>
@@ -107,11 +81,7 @@ public class CustomElement : QMUIElement
     /// <param name="functionName"></param>
     public void RemoveEngineOnFunction(string functionName)
     {
-        var function = _engineOnFunctions.FirstOrDefault(x => x.FunctionName == functionName);
-
-        if (function == null) return;
-
-        _engineOnFunctions.Remove(function);
+        InternalCE.RemoveEngineOnFunction(functionName);
     }
 
     /// <summary>
@@ -119,53 +89,7 @@ public class CustomElement : QMUIElement
     /// </summary>
     public void ClearEngineOnFunctions()
     {
-        _engineOnFunctions.Clear();
-    }
-
-    internal override void DeleteInternal(bool tabChange = false)
-    {
-        UserInterface.CustomElements.Remove(this);
-
-        base.DeleteInternal(tabChange);
-    }
-
-    internal override void GenerateCohtml()
-    {
-        if (!UIUtils.IsQMReady()) return;
-
-        if (RootPage is { IsVisible: false } && ElementType != ElementType.GlobalElement) return;
-
-        if (!IsGenerated)
-        {
-            foreach(var action in _actionFunctions)
-                UIUtils.GetInternalView().TriggerEvent("btkAddCustomAction", action.Key, action.Value);
-
-            foreach (var function in _engineOnFunctions)
-                UIUtils.GetInternalView().TriggerEvent("btkAddCustomEngineFunction", function.FunctionName, function.JSCode, function.Parameters.Select(x=> x.ParameterName).ToArray());
-
-            switch (ElementType)
-            {
-                case ElementType.GlobalElement:
-                    UIUtils.GetInternalView().TriggerEvent("btkCreateCustomGlobal", UUID, _template);
-                    break;
-                case ElementType.CustomPage:
-                    break;
-                case ElementType.OnPageElement:
-                    break;
-                case ElementType.InCategoryElement:
-                    if (_parentCategory == null)
-                        throw new Exception("Cannot create a custom element with a category when no parent category is given!");
-
-                    UIUtils.GetInternalView().TriggerEvent("btkCreateCustomElementCategory", _parentCategory.ElementID, UUID, _template);
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
-
-            OnElementGenerated?.Invoke();
-        }
-
-        base.GenerateCohtml();
+        InternalCE.ClearEngineOnFunctions();
     }
 }
 
