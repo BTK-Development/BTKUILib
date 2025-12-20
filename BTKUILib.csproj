@@ -13,7 +13,7 @@
       <HintPath>..\3rdparty\ml\0Harmony.dll</HintPath>
     </Reference>
     <Reference Include="Assembly-CSharp">
-      <HintPath>..\..\..\CVR Build\ChilloutVR_Data\Managed\Assembly-CSharp.dll</HintPath>
+      <HintPath>..\3rdparty\Managed\Assembly-CSharp.dll</HintPath>
     </Reference>
     <Reference Include="cohtml.Net">
       <HintPath>..\3rdparty\Managed\cohtml.Net.dll</HintPath>
