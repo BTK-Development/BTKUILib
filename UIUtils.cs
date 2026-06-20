@@ -1,10 +1,12 @@
 ﻿using System.IO;
 using System.Reflection;
 using ABI_RC.Core.InteractionSystem;
+using ABI_RC.Core.Networking;
 using ABI_RC.Core.Networking.IO.Self;
 using ABI_RC.Core.Player;
 using ABI_RC.Core.Savior;
 using ABI_RC.Systems.GameEventSystem;
+using ABI_RC.Systems.UI.UILib.Features;
 using ABI_RC.Systems.UI.UILib.UIObjects;
 using MelonLoader;
 using UnityEngine;
@@ -17,8 +19,7 @@ namespace BTKUILib
     public static class UIUtils
     {
         private static FieldInfo _qmuiElementProtected = typeof(QMUIElement).GetField("Protected", BindingFlags.Instance | BindingFlags.NonPublic);
-        private static FieldInfo _internalUILibSettingsCat = typeof(CVR_MenuManager).GetField("UISettingsMainCategory", BindingFlags.Static | BindingFlags.NonPublic);
-        private static FieldInfo _getInternalUsername = typeof(MetaPort).Assembly.GetType("ABI_RC.Core.Networking.AuthManager").GetField("Username", BindingFlags.Static | BindingFlags.Public);
+        private static FieldInfo _internalUILibSettingsCat = typeof(QuickMenuSettings).GetField("UISettingsMainCategory", BindingFlags.Static | BindingFlags.NonPublic);
         
         /// <summary>
         /// Check if the CVR_MenuManager view is ready
@@ -59,7 +60,7 @@ namespace BTKUILib
         /// <returns>Local users username</returns>
         public static string GetSelfUsername()
         {
-            return (string)_getInternalUsername.GetValue(null);
+            return AuthManager.Username;
         }
         
         internal static void SetProtected(this UIObjects.QMUIElement qmuiElement, bool value)

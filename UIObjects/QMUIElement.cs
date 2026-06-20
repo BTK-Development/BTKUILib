@@ -92,9 +92,13 @@ namespace BTKUILib.UIObjects
         public virtual int? ColumnCount
         {
             get => InternalElement.ColumnCount;
-            set => InternalElement.ColumnCount = value;
+            set
+            {
+                if (value != null) 
+                    InternalElement.ColumnCount = value.Value;
+            }
         }
-        
+
         private QMUIElement _adapterParentElement;
         private QMUIElement _adapterRootElement;
         private ABI_RC.Systems.UI.UILib.UIObjects.QMUIElement _internalElement;
